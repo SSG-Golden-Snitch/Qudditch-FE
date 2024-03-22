@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react'
 
 export default function Stock() {
   const [pagination, setPagination] = useState({
-    page: 2,
+    page: 1,
     recordSize: 10,
   })
   const [storeStock, setStoreStock] = useState([])
 
-  const handleStoreStock = async () => {
+  const handleStoreStock = async (page) => {
+    setPagination({ page: page, recordSize: 10 })
+    console.log(page)
     const storeStockReqUrl = new URL('http://localhost:8080/api/store/stock')
     storeStockReqUrl.searchParams.append('page', pagination['page'])
     storeStockReqUrl.searchParams.append('recordSize', pagination['recordSize'])
