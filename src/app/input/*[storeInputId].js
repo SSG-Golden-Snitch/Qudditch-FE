@@ -3,13 +3,16 @@
 import { CustomTable } from "@/components/customTable";
 import { useEffect, useState } from "react";
 
-export default function Input() {
+export default function InputDetail() {
+  const [pagination, setPagination] = useState({
+    page: 1,
+    recordSize: 20,
+  });
   const [inputItem, setinputItem] = useState([]);
 
   const handleinputItem = async () => {
     const inputItemReqUrl = new URL("http://localhost:8080/api/store/stock/input");
-    inputItemReqUrl.searchParams.append("page", pagination["page"]);
-    inputItemReqUrl.searchParams.append("recordSize", pagination["recordSize"]);
+    inputItemReqUrl.pathname = "39";
 
     console.log(pagination["page"]);
     console.log(pagination["recordSize"]);
@@ -45,6 +48,7 @@ export default function Input() {
     <div className="p-6 py-16 sm:ml-48 bg-gray-100 h-screen">
       <CustomTable
         data={inputItem}
+        pagination={pagination}
         header={[
           { label: "items", col_name: "items" },
           { label: "입고일", col_name: "inputAt" },
