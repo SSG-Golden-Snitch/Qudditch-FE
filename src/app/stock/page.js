@@ -4,22 +4,15 @@ import { CustomTable } from '@/components/customTable'
 import { useEffect, useState } from 'react'
 
 export default function Stock() {
-  const [pagination, setPagination] = useState({
-    page: 1,
-    recordSize: 10,
-  })
+  const [pagination, setPagination] = useState([])
   const [storeStock, setStoreStock] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleStoreStock = async (page) => {
     setPagination({ page: page, recordSize: 10 })
     console.log(page)
-    const storeStockReqUrl = new URL('http://localhost:8080/api/store/stock')
-    storeStockReqUrl.searchParams.append('page', pagination['page'])
-    storeStockReqUrl.searchParams.append('recordSize', pagination['recordSize'])
-
-    setPagination({ ...pagination, page: pagination['page'] + 1 })
-
-    console.log(pagination['page'])
+    const storeStockReqUrl = new URL(`http://localhost:8080/api/store/stock?page=${page}`)
 
     await fetch(storeStockReqUrl, {
       method: 'GET',
@@ -39,8 +32,15 @@ export default function Stock() {
     handleStoreStock()
   }, [])
 
+  const handlePage = (page) => {
+    handleStoreStock(page)
+  }
+
+  if (isLoading) return <div>Loading...</div>
+  if (error) return <div>Error: {error}</div>
+
   return (
-    <div className="h-screen bg-gray-100 p-6 py-16 sm:ml-48">
+    <div className="h-screen bg-gray-100 p-6 py-16 ">
       <CustomTable
         data={storeStock}
         pagination={pagination}
