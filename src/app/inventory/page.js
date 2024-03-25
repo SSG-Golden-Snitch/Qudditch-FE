@@ -75,11 +75,9 @@ export default function Stock() {
 
   if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
 
-  //   if (error) return <div className="h-screen bg-gray-100 p-6 py-16 ">{error}</div>
-
   return (
-    <div className="flex h-screen flex-col bg-gray-100 py-10">
-      <div className="px-12 pb-5 text-right">
+    <div className="flex h-screen flex-col bg-gray-100 py-5">
+      <div className="px-3 pb-5 text-right">
         <Select
           className="w-32"
           id="categories"
@@ -118,10 +116,11 @@ export default function Stock() {
                 { label: 'edit', col_name: 'edit' },
               ]}
             />
-            <div className="items-center justify-center">
+            <div className="fixed bottom-1 items-center justify-center">
               <Pagination
                 currentPage={pagination.paginationParam.page}
                 totalPages={pagination.totalPageCount}
+                showIcons={true}
                 onPageChange={(page) => handlePage(page)}
               />
             </div>
