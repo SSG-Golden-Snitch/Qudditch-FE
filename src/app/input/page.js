@@ -65,7 +65,7 @@ export default function Input() {
   if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 py-10">
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
       <div className="flex flex-col items-center">
         {error ? (
           <div className="text-red-500">{error}</div>
@@ -75,13 +75,13 @@ export default function Input() {
               data={storeInput}
               pagination={pagination}
               header={[
-                { label: '입고 번호', col_name: 'storeInputId' },
-                { label: '상품', col_name: 'items' },
-                { label: '입고일', col_name: 'inputAt' },
-                { label: '다운로드', col_name: 'download' },
+                { label: 'No', col_name: 'storeInputId' },
+                { label: 'products', col_name: 'items' },
+                { label: 'input', col_name: 'inputAt' },
+                { label: 'download', col_name: 'download' },
               ]}
             />
-            <div className="fixed bottom-1 flex items-center justify-center">
+            <div className="relative flex items-center justify-center pt-10">
               <Pagination
                 currentPage={pagination.paginationParam.page}
                 totalPages={pagination.totalPageCount}

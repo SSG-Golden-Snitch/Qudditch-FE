@@ -76,7 +76,7 @@ export default function Stock() {
   if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 py-5">
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
       <div className="px-3 pb-5 text-right">
         <Select
           className="w-32"
@@ -116,7 +116,7 @@ export default function Stock() {
                 { label: 'edit', col_name: 'edit' },
               ]}
             />
-            <div className="fixed bottom-1 items-center justify-center">
+            <div className="relative items-center justify-center pt-10">
               <Pagination
                 currentPage={pagination.paginationParam.page}
                 totalPages={pagination.totalPageCount}
