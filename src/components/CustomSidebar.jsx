@@ -1,5 +1,12 @@
 import { Sidebar } from 'flowbite-react'
-import { HiChartPie, HiInbox, HiShoppingBag, HiUser, HiViewBoards } from 'react-icons/hi'
+import {
+  HiChartPie,
+  HiCreditCard,
+  HiInbox,
+  HiShoppingBag,
+  HiUser,
+  HiViewBoards,
+} from 'react-icons/hi'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -32,6 +39,11 @@ const CustomSidebar = () => {
       title: '폐기',
       icon: HiShoppingBag,
       path: '/discard',
+    },
+    {
+      title: '판매',
+      icon: HiCreditCard,
+      path: '/sales',
     },
   ]
 
