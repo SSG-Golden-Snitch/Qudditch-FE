@@ -1,4 +1,5 @@
 'use cliet'
+import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 
 async function searchProductByName(productName) {
@@ -12,6 +13,7 @@ async function searchProductByName(productName) {
 }
 
 export default function GetDetail({ id }) {
+  const router = useRouter()
   const [order, setOrder] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -38,6 +40,12 @@ export default function GetDetail({ id }) {
   }
 
   const addToOrder = (product) => {
+    const existingProduct = order.products.find((p) => p.id === product.id)
+    if (existingProduct) {
+      alert(`${existingProduct.name}은(는) 이미 주문에 추가된 제품입니다.`)
+      return
+    }
+
     const updatedOrder = { ...order }
     updatedOrder.products.push(product)
     setOrder(updatedOrder)
@@ -45,7 +53,7 @@ export default function GetDetail({ id }) {
 
   const handleQuantityChange = (index, newQuantity) => {
     const updatedProducts = [...order.products]
-    updatedProducts[index].qty = newQuantity
+    updatedProducts[index].qty = Math.max(newQuantity, 0) // 수량을 0 미만으로 내려가지 않도록 처리
     setOrder({ ...order, products: updatedProducts })
   }
 
@@ -64,32 +72,32 @@ export default function GetDetail({ id }) {
     })
 
     if (response.ok) {
-      alert('수정성공!!')
+      alert('수정 성공!!')
+      router.push(`/order/detail/${id}`)
     } else {
-      alert('수정실패!!')
+      alert('수정 실패!!')
     }
   }
+
   if (!order) {
     return <div>Loading...</div>
   }
+
   const removeFromOrder = async (index) => {
-    // 주문에서 제품을 제거하는 함수
     const updatedOrder = { ...order }
-    const removedProduct = updatedOrder.products.splice(index, 1)[0] // 제거된 제품
+    const removedProduct = updatedOrder.products.splice(index, 1)[0]
     setOrder(updatedOrder)
 
-    // 서버에 제품의 수량을 0으로 설정하여 삭제 요청을 보냄
     const response = await fetch(`http://localhost:8080/api/store/order/detail/update/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify([{ productId: removedProduct.id, qty: 0 }]), // 수량을 0으로 설정하여 삭제 요청을 보냄
+      body: JSON.stringify([{ productId: removedProduct.id, qty: 0 }]),
     })
 
     if (!response.ok) {
       console.error('제품 삭제에 실패했습니다.')
-      // 제품 삭제에 실패했을 경우, 다시 제품을 추가
       updatedOrder.products.splice(index, 0, removedProduct)
       setOrder(updatedOrder)
     }
