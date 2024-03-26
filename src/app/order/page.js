@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 const URL = 'http://localhost:8080/api/store/order'
 
-async function getorderList(page = 1, recordSize = 20) {
+async function getorderList(page = 1, recordSize = 10) {
   const response = await fetch(`${URL}?page=${page}&recordSize=${recordSize}`)
   const data = await response.json()
   return data

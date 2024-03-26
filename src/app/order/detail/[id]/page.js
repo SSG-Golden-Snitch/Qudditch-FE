@@ -1,5 +1,6 @@
 'use client'
 import OrderDetailPage from '@/components/orderProductList'
+import { useRouter } from 'next/navigation'
 
 export async function getData({ params: { id } }) {
   const storeOrder = await getStoreOrder(id)
@@ -26,6 +27,7 @@ async function getXlsx(id) {
 }
 
 export default async function OrderDetail({ params: { id } }) {
+  const router = useRouter()
   const handleXlsxClick = async () => {
     try {
       await getXlsx(id)
@@ -37,6 +39,7 @@ export default async function OrderDetail({ params: { id } }) {
     <div className="flex flex-col bg-gray-100 py-16">
       <OrderDetailPage id={id} />
       <button onClick={handleXlsxClick}>발주서다운로드</button>
+      <button onClick={() => router.push(`update/${id}`)}>발주수정</button>
     </div>
   )
 }

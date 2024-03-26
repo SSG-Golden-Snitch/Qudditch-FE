@@ -1,6 +1,7 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 async function searchProductByName(productName) {
   const URL = `http://localhost:8080/api/product/find/${productName}`
@@ -23,10 +24,30 @@ async function insertOrder(products) {
   })
 
   if (!response.ok) {
-    throw new Error('발주 추가 실패')
+    // 여기서 오류 처리
+    const text = await response.text() // 응답을 텍스트로 받기
+    throw new Error(`발주 등록 실패: ${text}`)
   }
 
-  return await response.json()
+  const contentType = response.headers.get('Content-Type')
+  if (contentType && contentType.includes('application/json')) {
+    return await response.json()
+  } else {
+    // JSON이 아니면 텍스트 메시지로 처리
+    const text = await response.text()
+    console.log(text) // 텍스트 응답을 콘솔에 출력
+    return text // 텍스트 응답을 반환
+  }
+}
+
+async function recommendOrder() {
+  const URL = 'http://localhost:8080/api/store/recommend'
+  const response = await fetch(URL)
+  if (!response.ok) {
+    throw new Error('추천목록 불러오기 실패')
+  }
+  const result = await response.json()
+  return result.list
 }
 
 export default function OrderInsertPage() {
@@ -34,6 +55,19 @@ export default function OrderInsertPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [orderProducts, setOrderProducts] = useState([])
+  const [recommend, setRecommend] = useState([])
+
+  useEffect(() => {
+    const fetchRecommend = async () => {
+      try {
+        const recommended = await recommendOrder()
+        setRecommend(recommended)
+      } catch (error) {
+        console.error('추천 목록 불러오기 실패:', error)
+      }
+    }
+    fetchRecommend()
+  }, [])
 
   const handleSearch = async () => {
     try {
@@ -45,11 +79,40 @@ export default function OrderInsertPage() {
   }
 
   const addToOrder = (product) => {
-    setOrderProducts((current) => [...current, { ...product, qty: 1 }])
+    const id = product.productId || product.id
+
+    const newProduct = {
+      id,
+      brand: product.brand,
+      name: product.name,
+      image: product.image,
+      qty: 1, // 추천 목록에서 추가 시 qty를 무조건 1로 설정
+    }
+
+    setOrderProducts((current) => {
+      const existingProductIndex = current.findIndex((p) => p.id === id)
+      if (existingProductIndex >= 0) {
+        // 이미 목록에 있는 상품의 경우 수량을 1 증가
+        const updatedProducts = [...current]
+        updatedProducts[existingProductIndex].qty += 1 // 수량 증가
+        return updatedProducts
+      } else {
+        // 새 상품 추가
+        return [...current, newProduct]
+      }
+    })
   }
 
   const updateQty = (id, qty) => {
-    setOrderProducts((current) => current.map((p) => (p.id === id ? { ...p, qty } : p)))
+    setOrderProducts((current) =>
+      current.map((p) => {
+        if (p.id === id) {
+          // 수량이 0보다 작으면 0으로 설정
+          return { ...p, qty: Math.max(qty, 0) }
+        }
+        return p
+      }),
+    )
   }
 
   const handleSubmit = async () => {
@@ -117,6 +180,27 @@ export default function OrderInsertPage() {
                   value={product.qty}
                   onChange={(e) => updateQty(product.id, parseInt(e.target.value, 10))}
                 />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <table>
+        <thead>
+          <tr>
+            <th>브랜드</th>
+            <th>제품명</th>
+            <th>수량</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recommend.map((product) => (
+            <tr key={product.id}>
+              <td>{product.brand}</td>
+              <td>{product.name}</td>
+              <td>
+                <button onClick={() => addToOrder(product)}>추가</button>
               </td>
             </tr>
           ))}
