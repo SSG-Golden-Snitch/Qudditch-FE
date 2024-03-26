@@ -2,23 +2,30 @@
 
 import { CustomTable } from '@/components/customTable'
 import { useEffect, useState } from 'react'
+import { Pagination } from 'flowbite-react'
 
 export default function Input() {
-  const [inputItem, setinputItem] = useState([])
+  const [pagination, setPagination] = useState({
+    paginationParam: {
+      page: 1,
+    },
+    totalPageCount: 0,
+    startPage: 0,
+    endPage: 0,
+    existPrev: false,
+    existNext: false,
+  })
+  const [storeInput, setStoreInput] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const handleinputItem = async () => {
-    const inputItemReqUrl = new URL('http://localhost:8080/api/store/stock/input')
-    inputItemReqUrl.searchParams.append('page', pagination['page'])
-    inputItemReqUrl.searchParams.append('recordSize', pagination['recordSize'])
+  const handleStoreInput = async (page = 1) => {
+    setError(null)
+    setIsLoading(true)
 
-    console.log(pagination['page'])
-    console.log(pagination['recordSize'])
+    const storeInputReqUrl = new URL(`http://localhost:8080/api/store/stock/input?page=${page}`)
 
-    setPagination({ ...pagination, page: pagination['page'] + 1 })
-
-    console.log(pagination['page'])
-
-    await fetch(inputItemReqUrl, {
+    await fetch(storeInputReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -28,29 +35,64 @@ export default function Input() {
     })
       .then((res) => res.json())
       .then((res) => {
-        setinputItem(res['data'])
-        setPagination(res['pagination'])
+        if (res['status'] === 'fail') {
+          throw new Error(res['message'])
+        } else {
+          setStoreInput(res['data'])
+          setPagination(res['pagination'])
+        }
+      })
+      .catch((error) => {
+        setError(error.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
       })
   }
+
   useEffect(() => {
-    handleinputItem()
-    handlePagiantion()
+    handleStoreInput()
   }, [])
 
-  const handlePagiantion = () => {
-    setPagination({ ...pagination, page: pagination['page'] + 1 })
+  const handlePage = (page) => {
+    setPagination({
+      ...pagination,
+      paginationParam: { ...pagination.paginationParam, page: page + 1 },
+    })
+    handleStoreInput(page)
   }
 
+  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+
   return (
-    <div className="h-screen bg-gray-100 p-6 py-16 sm:ml-48">
-      <CustomTable
-        data={inputItem}
-        header={[
-          { label: 'items', col_name: 'items' },
-          { label: '입고일', col_name: 'inputAt' },
-          { label: '검수', col_name: 'state' },
-        ]}
-      />
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
+      <div className="flex flex-col items-center">
+        {error ? (
+          <div className="text-red-500">{error}</div>
+        ) : (
+          <>
+            <CustomTable
+              data={storeInput}
+              pagination={pagination}
+              header={[
+                { label: 'No', col_name: 'storeInputId' },
+                { label: 'products', col_name: 'items' },
+                { label: 'input', col_name: 'inputAt' },
+                { label: 'state', col_name: 'state' },
+                { label: 'download', col_name: 'download' },
+              ]}
+            />
+            <div className="relative flex items-center justify-center pt-10">
+              <Pagination
+                currentPage={pagination.paginationParam.page}
+                totalPages={pagination.totalPageCount}
+                showIcons={true}
+                onPageChange={(page) => handlePage(page)}
+              />
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
