@@ -94,7 +94,7 @@ export default function OrderInsertPage() {
       brand: product.brand,
       name: product.name,
       image: product.image,
-      qty: 1, // 추천 목록에서 추가 시 qty를 무조건 1로 설정
+      qty: 1,
     }
 
     setOrderProducts((current) => {
@@ -122,8 +122,8 @@ export default function OrderInsertPage() {
         qty,
       }))
       alert('발주가 성공적으로 등록되었습니다 !')
-      router.push('/order')
       const result = await insertOrder(productsToOrder)
+      router.push('/order')
       console.log('발주 등록 결과:', result)
     } catch (error) {
       console.error('발주 등록 실패:', error)
