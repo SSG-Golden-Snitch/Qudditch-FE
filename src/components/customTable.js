@@ -2,10 +2,31 @@
 import { Table, TableHeadCell } from 'flowbite-react'
 import { AiOutlineDownload } from 'react-icons/ai'
 
+async function DownloadBtn(inputId) {
+  const downloadUrl = `http://localhost:8080/api/store/stock/input/download/${inputId}`
+
+  await fetch(downloadUrl, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      credentials: 'include',
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res['status'] === 'fail') {
+        throw new Error(res['message'])
+      } else {
+        alert(res['message'])
+      }
+    })
+}
+
 export function CustomTable({ data, header }) {
   return (
     <div className=" w-128 px-3">
-      <Table className="w-[calc(100vw-200px)] items-center justify-center text-center text-xs">
+      <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
         <Table.Head>
           {header.map((h, index) => (
             <TableHeadCell
@@ -29,14 +50,10 @@ export function CustomTable({ data, header }) {
                   style={{ position: 'relative' }} // 아이콘 위치 지정
                 >
                   {h.col_name === 'inputAt' ? d[h.col_name].split('T')[0] : d[h.col_name]}
-                  {h.col_name === 'download' && ( // 다운로드 컬럼에 대한 조건 추가
+                  {h.col_name === 'download' && (
                     <div
-                      style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                      }}
+                      onClick={() => DownloadBtn(d['storeInputId'])}
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-blue-700"
                     >
                       <AiOutlineDownload />
                     </div>
