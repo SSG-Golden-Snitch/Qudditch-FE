@@ -81,6 +81,14 @@ export default function OrderInsertPage() {
   const addToOrder = (product) => {
     const id = product.productId || product.id
 
+    // 이미 추가된 제품인지 확인
+    const existingProduct = orderProducts.find((p) => p.id === id)
+    if (existingProduct) {
+      // 이미 추가된 제품이 있으면 알림 표시
+      alert(`${existingProduct.name}은(는) 이미 발주 목록에 추가되었습니다.`)
+      return
+    }
+
     const newProduct = {
       id,
       brand: product.brand,
@@ -90,16 +98,8 @@ export default function OrderInsertPage() {
     }
 
     setOrderProducts((current) => {
-      const existingProductIndex = current.findIndex((p) => p.id === id)
-      if (existingProductIndex >= 0) {
-        // 이미 목록에 있는 상품의 경우 수량을 1 증가
-        const updatedProducts = [...current]
-        updatedProducts[existingProductIndex].qty += 1 // 수량 증가
-        return updatedProducts
-      } else {
-        // 새 상품 추가
-        return [...current, newProduct]
-      }
+      const updatedProducts = [...current, newProduct]
+      return updatedProducts
     })
   }
 
