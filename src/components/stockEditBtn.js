@@ -1,8 +1,8 @@
 'use client'
 
-import { Button, Modal, Table, Select, TextInput } from 'flowbite-react'
-import { useState, useEffect } from 'react'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
+import { Button, Modal, Select, Table, TextInput } from 'flowbite-react'
+import { useEffect, useState } from 'react'
 
 export function StockEditBtn({ item }) {
   const updateUrl = apiUrl + `/api/store/stock/update`
@@ -33,6 +33,7 @@ export function StockEditBtn({ item }) {
           alert(res['message'])
         }
         setOpenModal(false)
+        window.location.reload()
       })
       .catch((error) => {
         console.error('Error:', error)
