@@ -1,5 +1,6 @@
 'use client'
 
+import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/customTable'
 import { apiUrl } from '@/utils/fetchExtended'
 import { Pagination, Select } from 'flowbite-react'
@@ -78,7 +79,8 @@ export default function Stock() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
-      <div className="px-3 pb-5 text-right">
+      <CustomAlert type="info" message="재고관리" />
+      <div className="px-3 pb-5 pt-5 text-right">
         <Select
           className="w-32"
           id="categories"
@@ -98,6 +100,7 @@ export default function Stock() {
           <option value={9}>라면</option>
         </Select>
       </div>
+
       <div className="flex flex-col items-center">
         {error ? (
           <div className="text-red-500">{error}</div>
