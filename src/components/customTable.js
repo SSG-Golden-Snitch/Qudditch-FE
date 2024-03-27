@@ -4,6 +4,7 @@ import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AiOutlineDownload } from 'react-icons/ai'
+import { StockEditBtn } from './stockEditBtn'
 
 async function DownloadBtn(inputId, inputAt) {
   const downloadUrl = apiUrl + `/api/store/stock/input/download/${inputId}`
@@ -120,6 +121,9 @@ export function CustomTable({ data, header, params }) {
                       <AiOutlineDownload />
                     </div>
                   )}
+                  {/* {h.col_name === 'edit' ? <StockEditBtn item={item['productId']} /> : null} */}
+
+                  {h.col_name === 'edit' && <StockEditBtn item={item} />}
 
                   {h.col_name === 'position' && item['state'] !== '검수완료' ? (
                     <Select defaultValue={0} onChange={handlePositionChange}>
