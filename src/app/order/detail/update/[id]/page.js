@@ -8,7 +8,7 @@ export async function getData({ params: { id } }) {
   }
 }
 
-export default async function OrderUpdate({ params: { id } }) {
+export default function OrderUpdate({ params: { id } }) {
   return (
     <div className="flex flex-col bg-gray-100 py-16">
       <GetDetail id={id} />

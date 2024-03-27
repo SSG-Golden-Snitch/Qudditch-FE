@@ -50,7 +50,7 @@ export default function OrderListPage() {
   if (!orderData.pagination) return <div>No pagination data</div>
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-5 py-10">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
       <Table>
         <Table.Head>
           <Table.HeadCell>ID</Table.HeadCell>

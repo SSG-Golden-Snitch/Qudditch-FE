@@ -11,7 +11,10 @@ export default function OrderList({ id, state, orderedAt }) {
   }
 
   return (
-    <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" onClick={detailClick}>
+    <Table.Row
+      className="bg-white hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+      onClick={detailClick}
+    >
       <Table.Cell>{id}</Table.Cell>
       <Table.Cell>{state}</Table.Cell>
       <Table.Cell>{orderedAt}</Table.Cell>

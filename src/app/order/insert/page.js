@@ -1,7 +1,8 @@
 'use client'
-
+import { Table } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { RiDeleteBack2Line } from 'react-icons/ri'
 
 async function searchProductByName(productName) {
   const URL = `http://localhost:8080/api/product/find/${productName}`
@@ -130,88 +131,181 @@ export default function OrderInsertPage() {
     }
   }
 
+  const removeFromOrder = (id) => {
+    setOrderProducts((current) => current.filter((product) => product.id !== id))
+  }
+
   return (
-    <div>
-      <h1>발주 등록</h1>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="제품 이름 검색"
-      />
-      <button
-        className="rounded border border-blue-500 bg-transparent px-4 py-2 font-semibold text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white"
-        onClick={handleSearch}
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+      <form
+        className="relative mx-auto max-w-md"
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSearch()
+        }}
       >
-        검색
-      </button>
-      <ul>
-        {searchResults.map((product) => (
-          <li key={product.id}>
-            <div>{product.brand}</div>
-            <div>{product.name}</div>
-            <img src={product.image} alt={product.name} width="100" />
-            <button
-              className="rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-              onClick={() => addToOrder(product)}
-            >
-              추가
-            </button>
-          </li>
-        ))}
-      </ul>
-      <h2>발주 목록</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>브랜드</th>
-            <th>제품명</th>
-            <th>수량</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center pl-3">
+          <svg
+            className="h-4 w-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+        <input
+          type="search"
+          id="default-search"
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+          placeholder="제품 이름 검색"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          required
+        />
+        <button
+          type="submit"
+          className="absolute bottom-2.5 right-2.5 rounded-lg bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+        >
+          Search
+        </button>
+      </form>
+      <br />
+      <br />
+
+      <Table>
+        <Table.Head>
+          <Table.HeadCell>id</Table.HeadCell>
+          <Table.HeadCell>Brand</Table.HeadCell>
+          <Table.HeadCell>Name</Table.HeadCell>
+          <Table.HeadCell>Quantity</Table.HeadCell>
+          <Table.HeadCell></Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
           {orderProducts.map((product) => (
-            <tr key={product.id}>
-              <td>{product.brand}</td>
-              <td>{product.name}</td>
-              <td>
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={product.id}>
+              <Table.Cell>{product.id}</Table.Cell>
+              <Table.Cell>{product.brand}</Table.Cell>
+              <Table.Cell>{product.name}</Table.Cell>
+              <Table.Cell>
                 <input
                   type="number"
                   value={product.qty}
                   onChange={(e) => updateQty(product.id, parseInt(e.target.value, 10))}
                 />
-              </td>
-            </tr>
+              </Table.Cell>
+              <Table.Cell>
+                <button
+                  className=" p-5 text-xl hover:bg-gray-100"
+                  onClick={() => removeFromOrder(product.id)}
+                >
+                  <RiDeleteBack2Line />
+                </button>
+              </Table.Cell>
+            </Table.Row>
           ))}
-        </tbody>
-      </table>
-
-      <table>
-        <thead>
-          <tr>
-            <th>브랜드</th>
-            <th>제품명</th>
-            <th>수량</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recommend.map((product) => (
-            <tr key={product.id}>
-              <td>{product.brand}</td>
-              <td>{product.name}</td>
-              <td>
-                <button onClick={() => addToOrder(product)}>추가</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        </Table.Body>
+      </Table>
+      <br />
       <button
         className="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100"
         onClick={handleSubmit}
       >
-        발주 등록
+        발주등록
       </button>
+
+      <br />
+      <br />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="md:col-span-1">
+          <Table>
+            <Table.Body className="divide-y">
+              {searchResults.map((product) => (
+                <Table.Row
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                  key={product.id}
+                >
+                  <Table.Cell>
+                    <img src={product.image} alt={product.name} width="70" />
+                  </Table.Cell>
+                  <Table.Cell>{product.brand}</Table.Cell>
+                  <Table.Cell>{product.name}</Table.Cell>
+                  <Table.Cell>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                      onClick={() => addToOrder(product)}
+                    >
+                      <svg
+                        className="mr-2 h-3.5 w-3.5"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 18 21"
+                      >
+                        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                      </svg>
+                      +
+                    </button>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </div>
+        <div className="md:col-span-1">
+          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
+            Recommended{' '}
+            <span class="underline-offset-3 underline decoration-blue-200 decoration-8 dark:decoration-blue-600">
+              product’s for ordering
+            </span>
+          </h1>
+          <Table>
+            <Table.Head>
+              <Table.HeadCell>image</Table.HeadCell>
+              <Table.HeadCell>Brand</Table.HeadCell>
+              <Table.HeadCell>Name</Table.HeadCell>
+              <Table.HeadCell></Table.HeadCell>
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {recommend.map((product) => (
+                <Table.Row
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                  key={product.id}
+                >
+                  <Table.Cell>
+                    <img src={product.image} alt={product.name} width="60" />
+                  </Table.Cell>
+                  <Table.Cell>{product.brand}</Table.Cell>
+                  <Table.Cell>{product.name}</Table.Cell>
+                  <Table.Cell>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                      onClick={() => addToOrder(product)}
+                    >
+                      <svg
+                        className="mr-2 h-3.5 w-3.5"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        viewBox="0 0 18 21"
+                      >
+                        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                      </svg>
+                      +
+                    </button>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </div>
+      </div>
     </div>
   )
 }

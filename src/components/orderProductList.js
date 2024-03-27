@@ -9,21 +9,22 @@ export default async function OrderDetailPage({ id }) {
   return (
     <Table>
       <Table.Head>
-        <Table.HeadCell>A</Table.HeadCell>
-        <Table.HeadCell>B</Table.HeadCell>
-        <Table.HeadCell>C</Table.HeadCell>
+        <Table.HeadCell></Table.HeadCell>
+        <Table.HeadCell>Brand</Table.HeadCell>
+        <Table.HeadCell>Name</Table.HeadCell>
+        <Table.HeadCell>quantity</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y">
-        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-          {order.products.map((product) => (
-            <Table.Cell key={product.id}>
-              <img src={product.image} alt={product.name} width="50" />
-              <Table.Cell>{product.brand}</Table.Cell>
-              <Table.Cell>{product.name}</Table.Cell>
-              <Table.Cell>수량 : {product.qty}</Table.Cell>
+        {order.products.map((product) => (
+          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800" key={product.id}>
+            <Table.Cell>
+              <img src={product.image} alt={product.name} width="70" />
             </Table.Cell>
-          ))}
-        </Table.Row>
+            <Table.Cell>{product.brand}</Table.Cell>
+            <Table.Cell>{product.name}</Table.Cell>
+            <Table.Cell>{product.qty}개</Table.Cell>
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table>
   )
