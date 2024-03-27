@@ -1,11 +1,12 @@
 'use client'
 
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { AiOutlineDownload } from 'react-icons/ai'
 
 export async function DownloadBtn(inputId) {
-  const downloadUrl = `http://localhost:8080/api/store/stock/input/download/${inputId}`
+  const downloadUrl = apiUrl + `/api/store/stock/input/download/${inputId}`
 
-  await fetch(downloadUrl, {
+  await fetchExtended(downloadUrl, {
     method: 'GET',
     headers: {
       Accept: 'application/json',

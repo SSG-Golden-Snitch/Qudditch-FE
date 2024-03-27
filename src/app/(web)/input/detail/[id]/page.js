@@ -1,15 +1,16 @@
 'use client'
 
 import { CustomTable } from '@/components/customTable'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
   const [inputDetail, setInputDetail] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const inputDetailReqUrl = `http://localhost:8080/api/store/stock/input/${id}`
+  const inputDetailReqUrl = apiUrl + `/api/store/stock/input/${id}`
   const handleData = () => {
-    fetch(inputDetailReqUrl, {
+    fetchExtended(inputDetailReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

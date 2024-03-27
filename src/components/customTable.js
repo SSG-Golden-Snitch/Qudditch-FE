@@ -1,14 +1,14 @@
 'use client'
-import { apiUrl } from '@/utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AiOutlineDownload } from 'react-icons/ai'
 
 async function DownloadBtn(inputId, inputAt) {
-  const downloadUrl = `http://localhost:8080/api/store/stock/input/download/${inputId}`
+  const downloadUrl = apiUrl + `/api/store/stock/input/download/${inputId}`
 
-  await fetch(downloadUrl, {
+  await fetchExtended(downloadUrl, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -22,7 +22,7 @@ async function DownloadBtn(inputId, inputAt) {
         alert(res['message'])
         // throw new Error(res['message'])
       } else {
-        const blob = await fetch(downloadUrl).then((r) => r.blob())
+        const blob = await fetchExtended(downloadUrl).then((r) => r.blob())
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -44,7 +44,7 @@ async function handleInputClick(storeInputId, quantity, expirated, position, pro
     expiredAt: expirated,
   }
 
-  await fetch(inputCheckUrl, {
+  await fetchExtended(inputCheckUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
