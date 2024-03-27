@@ -20,8 +20,8 @@ const Sales = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const year = currentDate.getFullYear()
-      const month = currentDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
+      const year = selectedDate.year()
+      const month = selectedDate.month() + 1 // getMonth()는 0부터 시작하기 때문에 +1
       const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
       const params = {
         userCustomerId: 5, // 예시 사용자 ID
@@ -52,14 +52,10 @@ const Sales = () => {
     }
 
     fetchOrders()
-  }, [currentDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+  }, [selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
 
-  const formatDateYMD = (date, format = 'yyyy-mm-dd') => {
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = `0${d.getMonth() + 1}`.slice(-2) // 1월부터 시작 (+1), 8은 앞에 0을 붙여서 08, 10은 010이지만, slice를 통해 10으로 처리
-    const day = `0${d.getDate()}`.slice(-2)
-    return format === 'yyyy-mm' ? `${year}-${month}` : `${year}-${month}-${day}`
+  const formatDateYMD = (date) => {
+    return dayjs(date).format('YYYY-MM-DD')
   }
 
   // Helper 함수들
@@ -74,13 +70,13 @@ const Sales = () => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
   }
 
-  const handlePreviousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
-  }
+  // const handlePreviousMonth = () => {
+  //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
+  // }
 
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
-  }
+  // const handleNextMonth = () => {
+  //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
+  // }
 
   return (
     <div className="p-4 font-sbaggrol sm:ml-48">
@@ -89,20 +85,22 @@ const Sales = () => {
       <div className="mb-6 flex items-center">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            views={['year', 'month']}
-            label="년과 월을 선택하세요"
+            views={['month', 'year']}
+            label="날짜를 선택하세요"
             minDate={dayjs('2020-01')}
             maxDate={dayjs('2030-12')}
             value={selectedDate}
             onChange={(newValue) => {
               setSelectedDate(newValue)
+              // 새로 선택된 날짜(newValue)를 사용하여 현재 날짜 상태(currentDate)를 업데이트합니다.
+              setCurrentDate(new Date(newValue.$M, newValue.$Y))
             }}
             renderInput={(params) => <TextField {...params} helperText={null} />}
           />
         </LocalizationProvider>
-        <button onClick={handlePreviousMonth}>&lt;</button>
+        {/* <button onClick={handlePreviousMonth}>&lt;</button>
         <span> {formatDateYM(currentDate)} </span>
-        <button onClick={handleNextMonth}>&gt;</button>
+        <button onClick={handleNextMonth}>&gt;</button> */}
       </div>
 
       <span className="ml-auto mr-0">당월 판매액: {formatNumber(totalSales)}원</span>
