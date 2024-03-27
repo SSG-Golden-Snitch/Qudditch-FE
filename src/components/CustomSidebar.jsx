@@ -1,3 +1,5 @@
+'use client'
+
 import { Sidebar } from 'flowbite-react'
 import { HiChartPie, HiInbox, HiShoppingBag, HiUser, HiViewBoards } from 'react-icons/hi'
 import { usePathname, useRouter } from 'next/navigation'
