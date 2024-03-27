@@ -1,4 +1,10 @@
+'use client'
 import '@/app/globals.css'
+import { Amplify } from 'aws-amplify'
+import '@aws-amplify/ui-react/styles.css'
+import awsExports from '@/aws-exports'
+
+Amplify.configure(awsExports)
 
 export default function AppRootLayout({ children }) {
   return (

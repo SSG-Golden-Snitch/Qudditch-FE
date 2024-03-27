@@ -1,15 +1,20 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-qudditchfe-dev-102457-authRole",
-      "UnauthRoleArn": "arn:aws:iam::598524661852:role/amplify-qudditchfe-dev-102457-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::598524661852:role/amplify-qudditchfe-dev-102457-authRole",
+      "AuthRoleName": "amplify-qudditchfe-dev-192413-authRole",
+      "UnauthRoleArn": "arn:aws:iam::598524661852:role/amplify-qudditchfe-dev-192413-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::598524661852:role/amplify-qudditchfe-dev-192413-authRole",
       "Region": "ap-northeast-1",
-      "DeploymentBucketName": "amplify-qudditchfe-dev-102457-deployment",
-      "UnauthRoleName": "amplify-qudditchfe-dev-102457-unauthRole",
-      "StackName": "amplify-qudditchfe-dev-102457",
-      "StackId": "arn:aws:cloudformation:ap-northeast-1:598524661852:stack/amplify-qudditchfe-dev-102457/d38c61c0-ebd8-11ee-b985-0660fd423f65",
-      "AmplifyAppId": "d3er25v41am4am"
+      "DeploymentBucketName": "amplify-qudditchfe-dev-192413-deployment",
+      "UnauthRoleName": "amplify-qudditchfe-dev-192413-unauthRole",
+      "StackName": "amplify-qudditchfe-dev-192413",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:598524661852:stack/amplify-qudditchfe-dev-192413/29131bc0-ec24-11ee-97b9-0a1524dd6fbb",
+      "AmplifyAppId": "dldlb0q3gxvgu"
+    },
+    "categories": {
+      "auth": {
+        "qudditchfe3b4ee8a03b4ee8a0": {}
+      }
     }
   }
 }
