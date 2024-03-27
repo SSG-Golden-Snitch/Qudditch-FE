@@ -1,8 +1,9 @@
 'use client'
 
 import { CustomTable } from '@/components/customTable'
-import { useEffect, useState } from 'react'
+import { apiUrl } from '@/utils/fetchExtended'
 import { Pagination, Select } from 'flowbite-react'
+import { useEffect, useState } from 'react'
 
 export default function Stock() {
   const [pagination, setPagination] = useState({
@@ -25,7 +26,7 @@ export default function Stock() {
     setIsLoading(true)
 
     const storeStockReqUrl = new URL(
-      `http://localhost:8080/api/store/stock?page=${page}&categoryId=${categoryId}`,
+      apiUrl + `/api/store/stock?page=${page}&categoryId=${categoryId}`,
     )
 
     await fetch(storeStockReqUrl, {
@@ -111,7 +112,7 @@ export default function Stock() {
                 { label: 'name', col_name: 'productName' },
                 { label: 'price', col_name: 'productPrice' },
                 { label: 'quantity', col_name: 'qty' },
-                { label: 'position', col_name: 'position' },
+                { label: 'position', col_name: 'positioned' },
                 { label: 'expirated', col_name: 'expiredAt' },
                 { label: 'edit', col_name: 'edit' },
               ]}

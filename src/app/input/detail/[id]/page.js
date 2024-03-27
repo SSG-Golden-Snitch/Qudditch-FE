@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
   const [inputDetail, setInputDetail] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const inputDetailReqUrl = `http://localhost:8080/api/store/stock/input/${id}`
   const handleData = () => {
     fetch(inputDetailReqUrl, {
@@ -34,7 +34,7 @@ export default function InputDetail({ params: { id } }) {
   }
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(false)
     handleData()
   }, [])
 
@@ -46,9 +46,10 @@ export default function InputDetail({ params: { id } }) {
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <>
+          <div className="">
             <CustomTable
               data={inputDetail}
+              params={id}
               header={[
                 { label: 'productId', col_name: 'productId' },
                 { label: 'brand', col_name: 'brand' },
@@ -61,7 +62,7 @@ export default function InputDetail({ params: { id } }) {
                 { label: 'check', col_name: 'check' },
               ]}
             />
-          </>
+          </div>
         )}
       </div>
     </div>

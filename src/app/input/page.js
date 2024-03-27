@@ -1,8 +1,9 @@
 'use client'
 
 import { CustomTable } from '@/components/customTable'
-import { useEffect, useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
+import { useEffect, useState } from 'react'
 
 export default function Input() {
   const [pagination, setPagination] = useState({
@@ -25,7 +26,7 @@ export default function Input() {
 
     const storeInputReqUrl = new URL(`http://localhost:8080/api/store/stock/input?page=${page}`)
 
-    await fetch(storeInputReqUrl, {
+    await fetchExtended(storeInputReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
