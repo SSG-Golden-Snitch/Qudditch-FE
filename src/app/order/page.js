@@ -1,4 +1,5 @@
 'use client'
+import { Table } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import OrderList from '@/components/storeOrder'
 import { Pagination } from 'flowbite-react'
@@ -45,20 +46,18 @@ export default function OrderListPage() {
     router.push('order/insert')
   }
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
   if (!orderData.pagination) return <div>No pagination data</div>
 
   return (
-    <div className="flex flex-col bg-gray-100 py-16">
-      <table className="table-auto">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>State</th>
-            <th>Ordered At</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div className="h-screen overflow-x-auto bg-gray-100 px-5 py-10">
+      <Table>
+        <Table.Head>
+          <Table.HeadCell>ID</Table.HeadCell>
+          <Table.HeadCell>State</Table.HeadCell>
+          <Table.HeadCell>Ordered At</Table.HeadCell>
+        </Table.Head>
+        <Table.Body className="divide-y">
           {orderData.orderList.map((order) => (
             <OrderList
               key={order.id}
@@ -67,21 +66,22 @@ export default function OrderListPage() {
               orderedAt={order.orderedAt}
             />
           ))}
-        </tbody>
-      </table>
-      <div className="items-center justify-center">
+        </Table.Body>
+      </Table>
+      <br />
+      <button
+        className="rounded border border-gray-400 bg-white px-5 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100"
+        onClick={handleInsertClick}
+      >
+        발주등록
+      </button>
+      <div className="relative flex items-center justify-center pt-10">
         <Pagination
           currentPage={orderData.pagination.paginationParam.page}
           totalPages={orderData.pagination.totalPageCount || 1}
           onPageChange={handlePage}
         />
       </div>
-      <button
-        className="rounded border border-gray-400 bg-white px-4 py-2 font-semibold text-gray-800 shadow hover:bg-gray-100"
-        onClick={handleInsertClick}
-      >
-        발주등록
-      </button>
     </div>
   )
 }

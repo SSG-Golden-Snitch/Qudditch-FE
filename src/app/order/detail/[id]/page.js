@@ -36,7 +36,7 @@ export default async function OrderDetail({ params: { id } }) {
     }
   }
   return (
-    <div className="flex flex-col bg-gray-100 py-16">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-5 py-10">
       <OrderDetailPage id={id} />
       <button onClick={handleXlsxClick}>발주서다운로드</button>
       <button onClick={() => router.push(`update/${id}`)}>발주수정</button>

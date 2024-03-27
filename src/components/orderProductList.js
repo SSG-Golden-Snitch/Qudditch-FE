@@ -1,3 +1,4 @@
+import { Table } from 'flowbite-react'
 export async function getOrder(id) {
   const response = await fetch(`http://localhost:8080/api/store/order/detail/${id}`)
   return response.json()
@@ -6,20 +7,24 @@ export async function getOrder(id) {
 export default async function OrderDetailPage({ id }) {
   const order = await getOrder(id)
   return (
-    <div>
-      <h1>Order Detail: {order.storeOrder.id}</h1>
-      <div>State: {order.storeOrder.state}</div>
-      <div>Ordered At: {order.storeOrder.orderedAt}</div>
-      <ul>
-        {order.products.map((product) => (
-          <li key={product.id}>
-            <img src={product.image} alt={product.name} width="150" />
-            <div>{product.brand}</div>
-            <div>{product.name}</div>
-            <div>수량 : {product.qty}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Table>
+      <Table.Head>
+        <Table.HeadCell>A</Table.HeadCell>
+        <Table.HeadCell>B</Table.HeadCell>
+        <Table.HeadCell>C</Table.HeadCell>
+      </Table.Head>
+      <Table.Body className="divide-y">
+        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+          {order.products.map((product) => (
+            <Table.Cell key={product.id}>
+              <img src={product.image} alt={product.name} width="50" />
+              <Table.Cell>{product.brand}</Table.Cell>
+              <Table.Cell>{product.name}</Table.Cell>
+              <Table.Cell>수량 : {product.qty}</Table.Cell>
+            </Table.Cell>
+          ))}
+        </Table.Row>
+      </Table.Body>
+    </Table>
   )
 }
