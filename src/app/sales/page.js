@@ -1,6 +1,7 @@
 'use client'
 
 import '../globals.css'
+import styles from './Sales.module.css'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
@@ -47,9 +48,9 @@ const Sales = () => {
   }
 
   return (
-    <div className="p-4 sm:ml-48">
+    <div className={`${styles.cartMainSection} p-4 sm:ml-48`}>
       <h1 className="mb-4 text-xl font-bold">월별 주문 내역</h1>
-      <div>
+      <div className={`${styles.hiddenFrame}`}>
         <button onClick={handlePreviousMonth}>&lt;</button>
         <span> {formatDate(currentDate)} </span>
         <button onClick={handleNextMonth}>&gt;</button>
