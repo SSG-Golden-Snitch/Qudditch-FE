@@ -3,38 +3,8 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { AiOutlineDownload } from 'react-icons/ai'
+import { DownloadBtn } from './downloadBtn'
 import { StockEditBtn } from './stockEditBtn'
-
-async function DownloadBtn(inputId, inputAt) {
-  const downloadUrl = apiUrl + `/api/store/stock/input/download/${inputId}`
-
-  await fetchExtended(downloadUrl, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      credentials: 'include',
-    },
-  })
-    .then((res) => res.json())
-    .then(async (res) => {
-      if (res['status'] === 'fail') {
-        alert(res['message'])
-        // throw new Error(res['message'])
-      } else {
-        const blob = await fetchExtended(downloadUrl).then((r) => r.blob())
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `입고내역서-${inputAt}.xlsx`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        window.URL.revokeObjectURL(url)
-      }
-    })
-}
 
 async function handleInputClick(storeInputId, quantity, expirated, position, productId) {
   const inputCheckUrl = apiUrl + `/api/store/stock/input/${storeInputId}`
@@ -59,8 +29,7 @@ async function handleInputClick(storeInputId, quantity, expirated, position, pro
       if (res['status'] === 'fail') {
         throw new Error(res['message'])
       } else {
-        alert('검수가 완료되었습니다.')
-        // window.location.reload()
+        window.location.reload()
       }
     })
     .catch((error) => {
@@ -112,15 +81,14 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                   }`}
                 >
                   {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
+
                   {h.col_name === 'download' && (
-                    <div
-                      onClick={() =>
-                        DownloadBtn(item['storeInputId'], item['inputAt'].split('T')[0])
-                      }
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-blue-700"
-                    >
-                      <AiOutlineDownload />
-                    </div>
+                    <DownloadBtn
+                      inputId={item['storeInputId']}
+                      inputAt={item['inputAt'].split('T')[0]}
+                      handleAlert={handleAlert}
+                      handleData={handleData}
+                    />
                   )}
 
                   {h.col_name === 'edit' && (

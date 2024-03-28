@@ -1,5 +1,6 @@
 'use client'
 
+import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/customTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
@@ -19,6 +20,13 @@ export default function Input() {
   const [storeInput, setStoreInput] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
 
   const handleStoreInput = async (page = 1) => {
     setError(null)
@@ -67,12 +75,16 @@ export default function Input() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
-      <div className="flex flex-col items-center">
+      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+
+      <div className="flex flex-col items-center pt-16">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
           <>
             <CustomTable
+              handleData={handleStoreInput}
+              handleAlert={handleAlert}
               data={storeInput}
               pagination={pagination}
               header={[
