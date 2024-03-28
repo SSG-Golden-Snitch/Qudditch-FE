@@ -42,6 +42,7 @@ const Sales = () => {
 
         // 응답을 json 형태로 파싱
         const responseData = await response.json()
+        if (!responseData) throw new Error('데이터 로딩 실패')
 
         // 상태 업데이트
         setOrders(responseData)
@@ -70,6 +71,7 @@ const Sales = () => {
   // }
 
   const formatNumber = (number) => {
+    if (!number) return '0'
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
   }
 
@@ -109,27 +111,27 @@ const Sales = () => {
       <table className="table-sm w-5/6 text-left text-gray-500 dark:text-gray-400">
         <thead className="bg-gray-100 text-center text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="rounded-s-lg px-6 py-3">
+            <th scope="col" className="rounded-s-lg px-6 py-4">
               N o
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-4">
               일 자
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-4">
               품 목
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-4">
               수 량
             </th>
-            <th scope="col" className="px-6 py-3">
-              단 가
+            <th scope="col" className="px-6 py-4">
+              가 격
             </th>
-            <th scope="col" className="rounded-e-lg px-6 py-3">
+            <th scope="col" className="rounded-e-lg px-6 py-4">
               총 액
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-left">
           {orders.map((order, index) => (
             <Fragment key={index}>
               <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -155,17 +157,33 @@ const Sales = () => {
                 </td>
                 <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
                 <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
-                <td className="text-center">{formatNumber(order.customerOrder.totalAmount)}</td>
+                <td className="px-6 text-right">{formatNumber(order.customerOrder.totalAmount)}</td>
               </tr>
               {openDetails === index && (
-                <tr>
-                  <td colSpan="4">
-                    {/* 주문 상세 정보 표시 */}
-                    {order.customerOrderProducts.map((product) => (
-                      <div key={product.productId}>
-                        상품명: {product.productName}, 수량: {product.qty}, 가격: {product.price}
-                      </div>
-                    ))}
+                <tr className="bg-gray-50 dark:bg-gray-700">
+                  <td colSpan="6" className="px-6 py-4">
+                    <table className="w-full">
+                      <tbody>
+                        {order.customerOrderProducts.map((product, prodIndex) => {
+                          // 주문 상품의 총액 계산
+                          const productTotalAmount = product.qty * product.price
+                          return (
+                            <tr key={prodIndex} className="border-b">
+                              <td className="flex items-center px-6 py-4">{index + 1}</td>
+                              <td className="px-6 py-4">
+                                {formatDateYMD(order.customerOrder.orderedAt)}
+                              </td>
+                              <td className="px-6 py-4">{product.productName}</td>
+                              <td className="px-6 py-4">{product.qty}</td>
+                              <td className="px-6 py-4">{formatNumber(product.price)}</td>
+                              <td className="px-6 text-right">
+                                {formatNumber(productTotalAmount)}
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </td>
                 </tr>
               )}
