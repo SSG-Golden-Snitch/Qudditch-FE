@@ -1,4 +1,5 @@
 'use client'
+
 import { useCallback, useEffect, useState } from 'react'
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness'
 import { Button, Flex, Heading } from '@aws-amplify/ui-react'
@@ -9,12 +10,14 @@ import {
   hintDisplayText,
   instructionDisplayText,
   streamDisplayText,
-} from '@/app/(app)/access/face/registration/LivenessUtil'
+} from './LivenessUtil'
+import { useRouter } from 'next/navigation'
 
 export default function LivenessQuickStartReact() {
   const [loading, setLoading] = useState(true)
   const [sessionId, setSessionId] = useState('')
   const [error, setError] = useState(undefined)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchCreateLiveness = async () => {
@@ -23,7 +26,7 @@ export default function LivenessQuickStartReact() {
         .then((res) => setSessionId(res['sessionId']))
     }
 
-    fetchCreateLiveness().then((r) => setLoading(false))
+    fetchCreateLiveness().then(() => setLoading(false))
   }, [])
 
   const handleAnalysisComplete = async () => {
@@ -50,9 +53,9 @@ export default function LivenessQuickStartReact() {
         <FaceLivenessDetector
           sessionId={sessionId}
           region="ap-northeast-1"
-          disableStartScreen={true}
           onAnalysisComplete={handleAnalysisComplete}
           onError={setError}
+          onUserCancel={() => router.back()}
           displayText={{
             ...hintDisplayText,
             ...cameraDisplayText,
