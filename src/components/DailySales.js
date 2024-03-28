@@ -6,7 +6,7 @@ const DailySales = () => {
   const currentDate = new Date()
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth() + 1 // getMonth()는 0부터 시작하므로 1을 더합니다.
-  const day = currentDate.getDate() - 2
+  const day = currentDate.getDate() - 3
 
   const [orderAt, setOrderAt] = useState(`${year}-${month}-${day}`)
   const [userStoreId, setUserStoreId] = useState(2)
@@ -35,7 +35,7 @@ const DailySales = () => {
 
   return (
     <div>
-      <p>일 판매금액</p>
+      <p>당일 판매금액</p>
       {result && result.map((item, index) => <p key={index}>{formatCurrency(item.totalAmount)}</p>)}
     </div>
   )
