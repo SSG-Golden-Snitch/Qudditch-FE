@@ -1,14 +1,23 @@
 'use client'
 
-import { CustomTable } from '@/components/customTable'
+import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
+import { CustomAlert } from '@/components/CustomAlert'
 
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
   const [inputDetail, setInputDetail] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const inputDetailReqUrl = apiUrl + `/api/store/stock/input/${id}`
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
+
   const handleData = () => {
     fetchExtended(inputDetailReqUrl, {
       method: 'GET',
@@ -43,12 +52,16 @@ export default function InputDetail({ params: { id } }) {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
-      <div className="flex flex-col items-center">
+      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+
+      <div className="flex flex-col items-center pt-16">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
           <div className="">
             <CustomTable
+              handleAlert={handleAlert}
+              handleData={handleData}
               data={inputDetail}
               params={id}
               header={[
