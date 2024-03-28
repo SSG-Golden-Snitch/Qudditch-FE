@@ -60,7 +60,7 @@ async function handleInputClick(storeInputId, quantity, expirated, position, pro
         throw new Error(res['message'])
       } else {
         alert('검수가 완료되었습니다.')
-        window.location.reload()
+        // window.location.reload()
       }
     })
     .catch((error) => {
@@ -68,9 +68,10 @@ async function handleInputClick(storeInputId, quantity, expirated, position, pro
     })
 }
 
-export function CustomTable({ data, header, params }) {
+export function CustomTable({ data, header, params, handleAlert, handleData }) {
   const router = useRouter()
   const [position, setPosition] = useState(0)
+
   const handleDetailClick = (storeInputId) => {
     router.push(`input/detail/${storeInputId}`)
   }
@@ -121,9 +122,10 @@ export function CustomTable({ data, header, params }) {
                       <AiOutlineDownload />
                     </div>
                   )}
-                  {/* {h.col_name === 'edit' ? <StockEditBtn item={item['productId']} /> : null} */}
 
-                  {h.col_name === 'edit' && <StockEditBtn item={item} />}
+                  {h.col_name === 'edit' && (
+                    <StockEditBtn item={item} handleAlert={handleAlert} handleData={handleData} />
+                  )}
 
                   {h.col_name === 'position' && item['state'] !== '검수완료' ? (
                     <Select defaultValue={0} onChange={handlePositionChange}>

@@ -4,7 +4,7 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button, Modal, Select, Table, TextInput } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 
-export function StockEditBtn({ item }) {
+export function StockEditBtn({ item, handleAlert, handleData }) {
   const updateUrl = apiUrl + `/api/store/stock/update`
   const [openModal, setOpenModal] = useState(false)
   const [quantity, setQuantity] = useState(item['qty'])
@@ -33,13 +33,14 @@ export function StockEditBtn({ item }) {
           alert(res['message'])
         }
         setOpenModal(false)
-        window.location.reload()
+        handleAlert('success', '수정되었습니다.')
       })
       .catch((error) => {
         console.error('Error:', error)
+        handleAlert('error', '수정에 실패했습니다.')
       })
+      .finally(() => handleData())
   }
-
   useEffect(() => {
     if (!openModal) {
       setQuantity(originalQuantity)

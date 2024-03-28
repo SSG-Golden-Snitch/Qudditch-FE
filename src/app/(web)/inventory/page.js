@@ -21,7 +21,13 @@ export default function Stock() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [categoryId, setCategoryId] = useState(0)
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
 
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
   const handleStoreStock = async (page = 1, categoryId = 0) => {
     setError(null)
     setIsLoading(true)
@@ -62,24 +68,23 @@ export default function Stock() {
   const handlePage = (page) => {
     setPagination({
       ...pagination,
-      paginationParam: { ...pagination.paginationParam, page: page + 1 },
+      paginationParam: { ...pagination.paginationParam, page },
     })
-    handleStoreStock(page)
+    handleStoreStock(page, categoryId)
   }
 
   const handleCategoryChange = (event) => {
-    const selectedCategoryId = parseInt(event.target.value)
-    console.log(selectedCategoryId)
-    handleStoreStock(1, selectedCategoryId)
+    setCategoryId(event.target.value)
 
-    setCategoryId(selectedCategoryId)
+    handleStoreStock(1, event.target.value)
+
+    setCategoryId(event.target.value)
   }
 
   if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
-
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
-      <CustomAlert type="info" message="재고관리" />
+      <CustomAlert type={color} message={message} />
       <div className="px-3 pb-5 pt-5 text-right">
         <Select
           className="w-32"
@@ -107,6 +112,8 @@ export default function Stock() {
         ) : (
           <>
             <CustomTable
+              handleData={handleStoreStock}
+              handleAlert={handleAlert}
               data={storeStock}
               pagination={pagination}
               header={[
