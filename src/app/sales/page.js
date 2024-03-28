@@ -2,29 +2,33 @@
 
 import '../globals.css'
 import React, { useState, useEffect, Fragment } from 'react'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { fetchExtended, apiUrl } from '../../utils/fetchExtended'
-import { Menu, Transition } from '@headlessui/react'
+// import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import { TbCalendarSmile } from 'react-icons/tb'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 
 // date picker (mui)
 import { Button, TextField } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import dayjs from 'dayjs'
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+// import dayjs from 'dayjs'
 
 const Sales = () => {
   const [orders, setOrders] = useState([])
   // const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(dayjs())
+  const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   const [openDetails, setOpenDetails] = useState(null)
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const year = selectedDate.year()
-      const month = selectedDate.month() + 1 // getMonth()는 0부터 시작하기 때문에 +1
+      const year = selectedDate.getFullYear()
+      const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
       const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
       const params = {
         userCustomerId: 5, // 예시 사용자 ID
@@ -59,7 +63,14 @@ const Sales = () => {
   }, [selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
 
   const formatDateYMD = (date) => {
-    return dayjs(date).format('YYYY-MM-DD')
+    // date가 문자열인 경우 Date 객체로 변환
+    const dateObj = typeof date === 'string' ? new Date(date) : date
+
+    if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+      console.error('formatDateYMD called with invalid date')
+      return '' // 혹은 적절한 기본값 반환
+    }
+    return dateObj.toLocaleDateString('ko-KR')
   }
 
   // // Helper 함수들
@@ -85,28 +96,31 @@ const Sales = () => {
 
   return (
     <div className="p-4 font-sbaggrol sm:ml-48">
-      <div className="mb-6 flex justify-between">
-        <h1 className="font-sbaggrom text-2xl">월별 판매내역</h1>
-        {/* <div className="mb-6 flex items-center"> */}
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            views={['month', 'year']}
-            label="날짜를 선택하세요"
-            minDate={dayjs('2020-01')}
-            maxDate={dayjs('2030-12')}
-            value={selectedDate}
-            onChange={(newValue) => {
-              setSelectedDate(newValue)
-              // 새로 선택된 날짜(newValue)를 사용하여 현재 날짜 상태(currentDate)를 업데이트합니다.
-              setCurrentDate(new Date(newValue.$M, newValue.$Y))
-            }}
-            renderInput={(params) => <TextField {...params} helperText={null} size="small" />}
-          />
-        </LocalizationProvider>
-        {/* <button onClick={handlePreviousMonth}>&lt;</button>
-        <span> {formatDateYM(currentDate)} </span>
-        <button onClick={handleNextMonth}>&gt;</button> */}
+      <div className="relative">
+        <div className="flex items-center">
+          <h1 className="font-sbaggrom text-3xl">월별 판매내역</h1>
+          <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
+            <TbCalendarSmile size="30px" />
+          </button>
+        </div>
+        {isDatePickerOpen && (
+          <div className="absolute top-full mt-2">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy/MM"
+              showMonthYearPicker // 월과 년만 선택
+              className="input" // TailwindCSS를 적용하기 위한 클래스
+              inline
+            />
+          </div>
+        )}
+        {/* <p>선택된 날짜: {formatDateYMD(selectedDate)}</p> */}
       </div>
+
+      {/* <button onClick={handlePreviousMonth}>&lt;</button>
+      <span> {formatDateYM(currentDate)} </span>
+      <button onClick={handleNextMonth}>&gt;</button> */}
 
       <table className="table-sm w-5/6 text-left text-gray-500 dark:text-gray-400">
         <thead className="bg-gray-100 text-center text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -131,7 +145,7 @@ const Sales = () => {
             </th>
           </tr>
         </thead>
-        <tbody className="text-left">
+        <tbody>
           {orders.map((order, index) => (
             <Fragment key={index}>
               <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -174,8 +188,10 @@ const Sales = () => {
                                 {formatDateYMD(order.customerOrder.orderedAt)}
                               </td>
                               <td className="px-6 py-4">{product.productName}</td>
-                              <td className="px-6 py-4">{product.qty}</td>
-                              <td className="px-6 py-4">{formatNumber(product.price)}</td>
+                              <td className="px-6 py-4 text-right">{product.qty}</td>
+                              <td className="px-6 py-4 text-right">
+                                {formatNumber(product.price)}
+                              </td>
                               <td className="px-6 text-right">
                                 {formatNumber(productTotalAmount)}
                               </td>
@@ -190,7 +206,7 @@ const Sales = () => {
             </Fragment>
           ))}
           <tr className="bg-gray-50 dark:bg-gray-700">
-            <td colSpan="3" className="px-6 py-4 text-right">
+            <td colSpan="5" className="px-6 py-4 text-right">
               합계
             </td>
             <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
