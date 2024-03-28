@@ -1,41 +1,10 @@
 'use client'
-import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { DownloadBtn } from './DownloadBtn'
+import { InputConfirmBtn } from './InputConfirmBtn'
 import { StockEditBtn } from './StockEditBtn'
-
-async function handleInputClick(storeInputId, quantity, expirated, position, productId) {
-  const inputCheckUrl = apiUrl + `/api/store/stock/input/${storeInputId}`
-  const inputCheckBody = {
-    productId: productId,
-    positionId: position,
-    qty: quantity,
-    expiredAt: expirated,
-  }
-
-  await fetchExtended(inputCheckUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      credentials: 'include',
-    },
-    body: JSON.stringify(inputCheckBody),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res['status'] === 'fail') {
-        throw new Error(res['message'])
-      } else {
-        window.location.reload()
-      }
-    })
-    .catch((error) => {
-      alert(error.message)
-    })
-}
 
 export function CustomTable({ data, header, params, handleAlert, handleData }) {
   const router = useRouter()
@@ -118,31 +87,22 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                   ) : null}
 
                   {h.col_name !== 'check' ? null : item['state'] === '검수전' ? (
-                    <Button
-                      size="sm"
-                      color="gray"
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                      onClick={() => {
-                        position === 0
-                          ? alert('위치를 선택해주세요')
-                          : handleInputClick(
-                              params,
-                              item['qty'],
-                              item['expDate'],
-                              position,
-                              item['productId'],
-                            )
-                      }}
-                    >
-                      검수하기
-                    </Button>
+                    <InputConfirmBtn
+                      storeInputId={params}
+                      quantity={item['qty']}
+                      expirated={item['expDate']}
+                      position={position}
+                      productId={item['productId']}
+                      handleAlert={handleAlert}
+                      handleData={handleData}
+                    />
                   ) : (
                     <Button
                       disabled
                       size="sm"
                       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
                     >
-                      검수완료
+                      등록완료
                     </Button>
                   )}
                 </Table.Cell>
