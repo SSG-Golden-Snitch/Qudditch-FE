@@ -1,22 +1,25 @@
 'use client'
 
 import '../globals.css'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import Link from 'next/link'
 import { fetchExtended, apiUrl } from '../../utils/fetchExtended'
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 
 // date picker (mui)
+import { Button, TextField } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { TextField } from '@mui/material'
 import dayjs from 'dayjs'
 
 const Sales = () => {
   const [orders, setOrders] = useState([])
-  const [currentDate, setCurrentDate] = useState(new Date())
+  // const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(dayjs())
   const [totalSales, setTotalSales] = useState(0)
+  const [openDetails, setOpenDetails] = useState(null)
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -58,13 +61,13 @@ const Sales = () => {
     return dayjs(date).format('YYYY-MM-DD')
   }
 
-  // Helper 함수들
-  const formatDateYM = (date) => {
-    const d = new Date(date)
-    const year = d.getFullYear()
-    const month = `0${d.getMonth() + 1}`.slice(-2)
-    return `${year}-${month}`
-  }
+  // // Helper 함수들
+  // const formatDateYM = (date) => {
+  //   const d = new Date(date)
+  //   const year = d.getFullYear()
+  //   const month = `0${d.getMonth() + 1}`.slice(-2)
+  //   return `${year}-${month}`
+  // }
 
   const formatNumber = (number) => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
@@ -80,9 +83,9 @@ const Sales = () => {
 
   return (
     <div className="p-4 font-sbaggrol sm:ml-48">
-      <h1 className="mb-4 pb-8 font-sbaggrom text-2xl">월별 주문내역</h1>
-      {/* <div className="mb-6 flex items-center"> */}
-      <div className="mb-6 flex items-center">
+      <div className="mb-6 flex justify-between">
+        <h1 className="font-sbaggrom text-2xl">월별 판매내역</h1>
+        {/* <div className="mb-6 flex items-center"> */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             views={['month', 'year']}
@@ -95,7 +98,7 @@ const Sales = () => {
               // 새로 선택된 날짜(newValue)를 사용하여 현재 날짜 상태(currentDate)를 업데이트합니다.
               setCurrentDate(new Date(newValue.$M, newValue.$Y))
             }}
-            renderInput={(params) => <TextField {...params} helperText={null} />}
+            renderInput={(params) => <TextField {...params} helperText={null} size="small" />}
           />
         </LocalizationProvider>
         {/* <button onClick={handlePreviousMonth}>&lt;</button>
@@ -103,41 +106,85 @@ const Sales = () => {
         <button onClick={handleNextMonth}>&gt;</button> */}
       </div>
 
-      <span className="ml-auto mr-0">당월 판매액: {formatNumber(totalSales)}원</span>
-
-      <div className="relative overflow-x-auto">
-        <table className="table-sm w-full text-left text-gray-500 dark:text-gray-400 rtl:text-right">
-          <thead className="bg-gray-100 text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope="col" className="rounded-s-lg px-6 py-3">
-                N o
-              </th>
-              <th scope="col" className="px-6 py-3">
-                일 자
-              </th>
-              <th scope="col" className="px-6 py-3">
-                품 목
-              </th>
-              <th scope="col" className="rounded-e-lg px-6 py-3">
-                총 액
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order, index) => (
-              <tr key={index} className="bg-white dark:bg-gray-800">
-                <td className="px-6 py-4">{index + 1}</td>
+      <table className="table-sm w-5/6 text-left text-gray-500 dark:text-gray-400">
+        <thead className="bg-gray-100 text-center text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="rounded-s-lg px-6 py-3">
+              N o
+            </th>
+            <th scope="col" className="px-6 py-3">
+              일 자
+            </th>
+            <th scope="col" className="px-6 py-3">
+              품 목
+            </th>
+            <th scope="col" className="px-6 py-3">
+              수 량
+            </th>
+            <th scope="col" className="px-6 py-3">
+              단 가
+            </th>
+            <th scope="col" className="rounded-e-lg px-6 py-3">
+              총 액
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order, index) => (
+            <Fragment key={index}>
+              <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                <td className="flex items-center px-6 py-4">
+                  <button
+                    onClick={() => setOpenDetails(openDetails === index ? null : index)}
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    {openDetails === index ? (
+                      <ChevronUpIcon className="h-5 w-5" />
+                    ) : (
+                      <ChevronDownIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                  {index + 1}
+                </td>
+                {/* <td className="px-6 py-4">{index + 1}</td> */}
                 <td className="px-6 py-4">{formatDateYMD(order.customerOrder.orderedAt)}</td>
                 <td className="px-6 py-4">
-                  {order.customerOrderProducts.map((product) => product.productName).join(', ')}
+                  {order.customerOrderProducts && order.customerOrderProducts.length > 0
+                    ? `${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`
+                    : '상품 정보 없음'}
                 </td>
+                <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
+                <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
                 <td className="text-center">{formatNumber(order.customerOrder.totalAmount)}</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              {openDetails === index && (
+                <tr>
+                  <td colSpan="4">
+                    {/* 주문 상세 정보 표시 */}
+                    {order.customerOrderProducts.map((product) => (
+                      <div key={product.productId}>
+                        상품명: {product.productName}, 수량: {product.qty}, 가격: {product.price}
+                      </div>
+                    ))}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+          <tr className="bg-gray-50 dark:bg-gray-700">
+            <td colSpan="3" className="px-6 py-4 text-right">
+              합계
+            </td>
+            <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div classname="mt-6 text-center">
+        <Button variant="outlined" href="/">
+          HOME
+        </Button>
       </div>
-      <Link href="/">홈으로 돌아가기</Link>
     </div>
   )
 }
