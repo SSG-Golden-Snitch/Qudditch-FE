@@ -13,6 +13,10 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
   const handleDetailClick = (storeInputId) => {
     router.push(`input/detail/${storeInputId}`)
   }
+
+  const orderDetailClick = (storeOrderId) => {
+    router.push(`manager/detail/${storeOrderId}`)
+  }
   const handlePositionChange = (e) => {
     setPosition(e.target.value)
   }
@@ -42,11 +46,17 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       ? () => {
                           handleDetailClick(item['storeInputId'])
                         }
-                      : null
+                      : h.col_name === 'orderItems'
+                        ? () => {
+                            orderDetailClick(item['id'])
+                          }
+                        : null
                   }
                   key={subIndex}
                   className={`relative items-center whitespace-nowrap text-center font-medium text-gray-900 dark:text-white ${
-                    h.col_name === 'items' ? 'cursor-pointer hover:underline' : ''
+                    h.col_name === 'items' || h.col_name === 'orderItems'
+                      ? 'cursor-pointer hover:underline'
+                      : ''
                   }`}
                 >
                   {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
@@ -64,8 +74,13 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                     <StockEditBtn item={item} handleAlert={handleAlert} handleData={handleData} />
                   )}
 
-                  {h.col_name === 'position' && item['state'] !== '검수완료' ? (
-                    <Select defaultValue={0} onChange={handlePositionChange}>
+                  {h.col_name === 'position' && (
+                    <Select
+                      value={item['state'] === '검수완료' ? item['locate'] : undefined}
+                      defaultValue={item['state'] !== '검수완료' ? 0 : undefined}
+                      onChange={handlePositionChange}
+                      disabled={item['state'] === '검수완료'}
+                    >
                       <option value={0}>선택</option>
                       <option value={1}>A</option>
                       <option value={2}>B</option>
@@ -73,18 +88,7 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       <option value={4}>D</option>
                       <option value={5}>E</option>
                     </Select>
-                  ) : null}
-
-                  {h.col_name === 'position' && item['state'] === '검수완료' ? (
-                    <Select value={item['locate']} disabled>
-                      <option value={0}>선택</option>
-                      <option value={1}>A</option>
-                      <option value={2}>B</option>
-                      <option value={3}>C</option>
-                      <option value={4}>D</option>
-                      <option value={5}>E</option>
-                    </Select>
-                  ) : null}
+                  )}
 
                   {h.col_name !== 'check' ? null : item['state'] === '검수전' ? (
                     <InputConfirmBtn
