@@ -33,11 +33,11 @@ export function StockEditBtn({ item, handleAlert, handleData }) {
           alert(res['message'])
         }
         setOpenModal(false)
-        handleAlert('success', '수정되었습니다.')
+        handleAlert('success', '수정되었습니다')
       })
       .catch((error) => {
         console.error('Error:', error)
-        handleAlert('error', '수정에 실패했습니다.')
+        handleAlert('error', '수정에 실패했습니다')
       })
       .finally(() => handleData())
   }
