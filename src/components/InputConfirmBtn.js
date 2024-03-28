@@ -1,8 +1,7 @@
 'use client'
 
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { Button, Modal, Select, Table, TextInput } from 'flowbite-react'
-import { useEffect, useState } from 'react'
+import { Button } from 'flowbite-react'
 
 export function inputConfirmBtn(storeInputId, quantity, expirated, position, productId) {
   const inputCheckUrl = apiUrl + `/api/store/stock/input/${storeInputId}`

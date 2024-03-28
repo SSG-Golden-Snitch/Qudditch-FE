@@ -3,8 +3,8 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { DownloadBtn } from './downloadBtn'
-import { StockEditBtn } from './stockEditBtn'
+import { DownloadBtn } from './DownloadBtn'
+import { StockEditBtn } from './StockEditBtn'
 
 async function handleInputClick(storeInputId, quantity, expirated, position, productId) {
   const inputCheckUrl = apiUrl + `/api/store/stock/input/${storeInputId}`
