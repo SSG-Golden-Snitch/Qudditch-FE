@@ -6,20 +6,14 @@ import React, { useState, useEffect, Fragment } from 'react'
 import { fetchExtended, apiUrl } from '../../utils/fetchExtended'
 // import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import { HiOutlineTag } from 'react-icons/hi'
 import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
-
-// date picker (mui)
-import { Button, TextField } from '@mui/material'
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-// import dayjs from 'dayjs'
+import { Button } from 'flowbite-react'
 
 const Sales = () => {
   const [orders, setOrders] = useState([])
-  // const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
   const [isDatePickerOpen, setDatePickerOpen] = useState(false)
@@ -95,10 +89,10 @@ const Sales = () => {
   // }
 
   return (
-    <div className="p-4 font-sbaggrol sm:ml-48">
-      <div className="relative">
+    <div className="item-center flex flex-col  justify-center p-4 font-sbaggrol sm:ml-48">
+      <div className="relative w-full max-w-4xl">
         <div className="flex items-center">
-          <h1 className="font-sbaggrom text-3xl">월별 판매내역</h1>
+          <h1 className="text-3xl font-bold">주문조회</h1>
           <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
             <TbCalendarSmile size="30px" />
           </button>
@@ -110,7 +104,7 @@ const Sales = () => {
               onChange={(date) => setSelectedDate(date)}
               dateFormat="yyyy/MM"
               showMonthYearPicker // 월과 년만 선택
-              className="input" // TailwindCSS를 적용하기 위한 클래스
+              className="input font-sbaggrol" // TailwindCSS를 적용하기 위한 클래스
               inline
             />
           </div>
@@ -122,8 +116,8 @@ const Sales = () => {
       <span> {formatDateYM(currentDate)} </span>
       <button onClick={handleNextMonth}>&gt;</button> */}
 
-      <table className="table-sm w-5/6 text-left text-gray-500 dark:text-gray-400">
-        <thead className="bg-gray-100 text-center text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <table className="table-sm w-5/6 text-center text-gray-500 dark:text-gray-400">
+        <thead className="bg-gray-100 text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="rounded-s-lg px-6 py-4">
               N o
@@ -163,7 +157,10 @@ const Sales = () => {
                   {index + 1}
                 </td>
                 {/* <td className="px-6 py-4">{index + 1}</td> */}
-                <td className="px-6 py-4">{formatDateYMD(order.customerOrder.orderedAt)}</td>
+                <td className="px-6 py-4">
+                  <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
+                  <div>{order.customerOrder.partnerOrderId}</div>
+                </td>
                 <td className="px-6 py-4">
                   {order.customerOrderProducts && order.customerOrderProducts.length > 0
                     ? `${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`
@@ -183,11 +180,13 @@ const Sales = () => {
                           const productTotalAmount = product.qty * product.price
                           return (
                             <tr key={prodIndex} className="border-b">
-                              <td className="flex items-center px-6 py-4">{index + 1}</td>
+                              <td className="flex items-center px-6 py-4">
+                                <HiOutlineTag />
+                              </td>
                               <td className="px-6 py-4">
                                 {formatDateYMD(order.customerOrder.orderedAt)}
                               </td>
-                              <td className="px-6 py-4">{product.productName}</td>
+                              <td className="px-6 py-4 text-left">{product.productName}</td>
                               <td className="px-6 py-4 text-right">{product.qty}</td>
                               <td className="px-6 py-4 text-right">
                                 {formatNumber(product.price)}
@@ -215,7 +214,10 @@ const Sales = () => {
       </table>
 
       <div classname="mt-6 text-center">
-        <Button variant="outlined" href="/">
+        <Button
+          onClick={() => (window.location.href = '/')}
+          className="mb-2 me-2 rounded-lg border border-gray-200 bg-slate-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-zinc-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+        >
           HOME
         </Button>
       </div>
