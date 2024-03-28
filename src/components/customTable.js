@@ -21,7 +21,6 @@ async function DownloadBtn(inputId, inputAt) {
     .then(async (res) => {
       if (res['status'] === 'fail') {
         alert(res['message'])
-        // throw new Error(res['message'])
       } else {
         const blob = await fetchExtended(downloadUrl).then((r) => r.blob())
         const url = window.URL.createObjectURL(blob)
@@ -111,7 +110,9 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                     h.col_name === 'items' ? 'cursor-pointer hover:underline' : ''
                   }`}
                 >
-                  {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
+                  {h.col_name === 'inputAt' || h.col_name === 'orderedAt'
+                    ? item[h.col_name].split('T')[0]
+                    : item[h.col_name]}
                   {h.col_name === 'download' && (
                     <div
                       onClick={() =>
