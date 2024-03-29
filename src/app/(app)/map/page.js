@@ -44,7 +44,7 @@ const HomePage = () => {
 
   const fetchLocationData = async ({ latitude, longitude }) => {
     try {
-      const limit = 10
+      const limit = 30
       const response = await fetch(
         `http://localhost:8080/api/store/location?currentWgs84X=${longitude}&currentWgs84Y=${latitude}&limit=${limit}`,
       )
