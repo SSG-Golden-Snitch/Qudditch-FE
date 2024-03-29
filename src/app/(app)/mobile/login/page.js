@@ -12,7 +12,7 @@ function Component() {
       email: loginRef.current?.elements.email.value,
       password: loginRef.current?.elements.password.value,
     }
-    await fetchExtended('/store/login', {
+    await fetchExtended('/login', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
