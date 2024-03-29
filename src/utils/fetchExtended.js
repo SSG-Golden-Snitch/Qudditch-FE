@@ -2,9 +2,15 @@ import returnFetch from 'return-fetch'
 
 export const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
+const getUserToken = () => {
+  if (typeof window !== 'undefined') {
+    return 'Bearer ' + sessionStorage.getItem('token')
+  }
+}
+
 export const fetchExtended = returnFetch({
   baseUrl: apiUrl,
-  headers: { Accept: 'application/json' },
+  headers: { Accept: 'application/json', Authorization: getUserToken() },
   interceptors: {
     request: async (args) => {
       console.log('********* before sending request *********')
