@@ -2,7 +2,7 @@
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/CustomTable'
-import { apiUrl } from '@/utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination, Select } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 
@@ -36,7 +36,7 @@ export default function Stock() {
       apiUrl + `/api/store/stock?page=${page}&categoryId=${categoryId}`,
     )
 
-    await fetch(storeStockReqUrl, {
+    await fetchExtended(storeStockReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
