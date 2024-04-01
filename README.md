@@ -30,7 +30,8 @@ ref
 https://mui.com/x/react-date-pickers/date-calendar/
 
 모듈 설치
-npm i @mui/material @mui/x-date-pickers @date-io/dayjs dayjs @emotion/react @emotion/styled @heroicons/react/20/solid
+npm i @mui/material @mui/x-date-pickers @date-io/dayjs dayjs @emotion/react @emotion/styled
+@heroicons/react/20/solid
 
 페이지 임포트
 // date picker (mui)

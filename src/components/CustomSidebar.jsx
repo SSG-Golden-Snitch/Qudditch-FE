@@ -45,7 +45,7 @@ const CustomSidebar = () => {
     {
       title: '판매',
       icon: HiCreditCard,
-      path: '/sales',
+      path: '/payment',
     },
   ]
 

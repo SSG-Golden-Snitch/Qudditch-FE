@@ -1,9 +1,9 @@
 'use client'
 
-import '../globals.css'
+import '../../globals.css'
 import React, { useState, useEffect, Fragment } from 'react'
-// import Link from 'next/link'
-import { fetchExtended, apiUrl } from '../../utils/fetchExtended'
+import Link from 'next/link'
+import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
 // import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
@@ -12,7 +12,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 
-const Sales = () => {
+const Payment = () => {
   const [orders, setOrders] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
@@ -25,7 +25,7 @@ const Sales = () => {
       const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
       const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
       const params = {
-        userCustomerId: 5, // 예시 사용자 ID
+        // userCustomerId: 20, // 예시 사용자 ID
         monthYear: formattedDate,
       }
 
@@ -36,6 +36,7 @@ const Sales = () => {
       try {
         const response = await fetchExtended(apiUrl + endpoint, {
           method: 'GET', // HTTP 요청 메서드 지정
+          // credentials: 'include', // 인증 정보(쿠키, 인증 헤더 등) 포함 옵션
         })
 
         // 응답을 json 형태로 파싱
@@ -92,7 +93,7 @@ const Sales = () => {
     <div className="item-center flex flex-col  justify-center p-4 font-sbaggrol sm:ml-48">
       <div className="relative w-full max-w-4xl">
         <div className="flex items-center">
-          <h1 className="text-3xl font-bold">주문조회</h1>
+          <h1 className="text-3xl font-bold">판매내역 조회</h1>
           <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
             <TbCalendarSmile size="30px" />
           </button>
@@ -123,10 +124,10 @@ const Sales = () => {
               N o
             </th>
             <th scope="col" className="px-6 py-4">
-              일 자
+              결 제 일 자
             </th>
             <th scope="col" className="px-6 py-4">
-              품 목
+              상 품 정 보
             </th>
             <th scope="col" className="px-6 py-4">
               수 량
@@ -135,7 +136,7 @@ const Sales = () => {
               가 격
             </th>
             <th scope="col" className="rounded-e-lg px-6 py-4">
-              총 액
+              결 제 금 액
             </th>
           </tr>
         </thead>
@@ -159,7 +160,15 @@ const Sales = () => {
                 {/* <td className="px-6 py-4">{index + 1}</td> */}
                 <td className="px-6 py-4">
                   <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-                  <div>{order.customerOrder.partnerOrderId}</div>
+                  {/* 수정된 부분: URL 쿼리 스트링을 사용한 링크 */}
+                  <Link
+                    href={{
+                      pathname: '/partnerOrder',
+                      query: { partnerOrderId: order.customerOrder.partnerOrderId },
+                    }}
+                  >
+                    [{order.customerOrder.partnerOrderId}]
+                  </Link>
                 </td>
                 <td className="px-6 py-4">
                   {order.customerOrderProducts && order.customerOrderProducts.length > 0
@@ -225,4 +234,4 @@ const Sales = () => {
   )
 }
 
-export default Sales
+export default Payment
