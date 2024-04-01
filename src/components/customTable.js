@@ -14,9 +14,6 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
     router.push(`input/detail/${storeInputId}`)
   }
 
-  const orderDetailClick = (storeOrderId) => {
-    router.push(`manager/detail/${storeOrderId}`)
-  }
   const handlePositionChange = (e) => {
     setPosition(e.target.value)
   }
@@ -46,11 +43,7 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       ? () => {
                           handleDetailClick(item['storeInputId'])
                         }
-                      : h.col_name === 'orderItems'
-                        ? () => {
-                            orderDetailClick(item['id'])
-                          }
-                        : null
+                      : null
                   }
                   key={subIndex}
                   className={`relative items-center whitespace-nowrap text-center font-medium text-gray-900 dark:text-white ${
@@ -59,9 +52,7 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       : ''
                   }`}
                 >
-                  {h.col_name === 'inputAt' || h.col_name === 'orderedAt'
-                    ? item[h.col_name].split('T')[0]
-                    : item[h.col_name]}
+                  {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
 
                   {h.col_name === 'download' && (
                     <DownloadBtn
