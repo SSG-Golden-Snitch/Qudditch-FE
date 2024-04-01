@@ -13,11 +13,12 @@ import {
 } from './LivenessUtil'
 import { useRouter } from 'next/navigation'
 
-export default function LivenessQuickStartReact() {
+const FaceRegistrationPage = () => {
   const [loading, setLoading] = useState(true)
   const [sessionId, setSessionId] = useState('')
   const [error, setError] = useState(undefined)
   const router = useRouter()
+  const ANALYSIS_SUCCESS_MSG = 'SUCCEEDED'
 
   useEffect(() => {
     const fetchCreateLiveness = async () => {
@@ -30,7 +31,18 @@ export default function LivenessQuickStartReact() {
   }, [])
 
   const handleAnalysisComplete = async () => {
-    // await fetchExtended(`/api/rekognition/liveness-session/${sessionId}`).then((res) => res.json())
+    await fetchExtended(`/api/rekognition/liveness-session/${sessionId}`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res['result']['status'] === ANALYSIS_SUCCESS_MSG) {
+          router.replace('/access/face-registration/success')
+          return
+        }
+        throw new Error(res['error'])
+      })
+      .catch((err) => {
+        router.push(`/access/face-registration/failed?msg=${err.message}`)
+      })
   }
 
   const CustomError = useCallback(() => {
@@ -48,7 +60,9 @@ export default function LivenessQuickStartReact() {
   return (
     <>
       {loading ? (
-        <></>
+        <div className="flex h-screen items-center justify-center">
+          <div className="h-20 w-20 animate-ping rounded-full bg-violet-800"></div>
+        </div>
       ) : (
         <FaceLivenessDetector
           sessionId={sessionId}
@@ -56,6 +70,7 @@ export default function LivenessQuickStartReact() {
           onAnalysisComplete={handleAnalysisComplete}
           onError={setError}
           onUserCancel={() => router.back()}
+          disableStartScreen={true}
           displayText={{
             ...hintDisplayText,
             ...cameraDisplayText,
@@ -71,3 +86,5 @@ export default function LivenessQuickStartReact() {
     </>
   )
 }
+
+export default FaceRegistrationPage
