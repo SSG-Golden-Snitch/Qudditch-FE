@@ -18,6 +18,7 @@ const Payment = () => {
   const [totalSales, setTotalSales] = useState(0)
   const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   const [openDetails, setOpenDetails] = useState(null)
+  const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -27,6 +28,7 @@ const Payment = () => {
       const params = {
         // userCustomerId: 20, // 예시 사용자 ID
         monthYear: formattedDate,
+        status: viewType, // 상태 추가
       }
 
       // 요청할 URL의 queryString 생성
@@ -55,7 +57,12 @@ const Payment = () => {
     }
 
     fetchOrders()
-  }, [selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+  }, [selectedDate, viewType]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+
+  // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
+  const handleViewTypeChange = (type) => {
+    setViewType(type)
+  }
 
   const formatDateYMD = (date) => {
     // date가 문자열인 경우 Date 객체로 변환
@@ -93,7 +100,7 @@ const Payment = () => {
     <div className="item-center flex flex-col  justify-center p-4 font-sbaggrol sm:ml-48">
       <div className="relative w-full max-w-4xl">
         <div className="flex items-center">
-          <h1 className="text-3xl font-bold">판매내역 조회</h1>
+          <h1 className="text-3xl font-bold">판매</h1>
           <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
             <TbCalendarSmile size="30px" />
           </button>
@@ -116,6 +123,21 @@ const Payment = () => {
       {/* <button onClick={handlePreviousMonth}>&lt;</button>
       <span> {formatDateYM(currentDate)} </span>
       <button onClick={handleNextMonth}>&gt;</button> */}
+
+      <div className="mb-4 flex justify-end">
+        <Button
+          onClick={() => handleViewTypeChange(1)}
+          className={`mr-2 ${viewType === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+        >
+          판매내역 조회
+        </Button>
+        <Button
+          onClick={() => handleViewTypeChange(2)}
+          className={`mr-2 ${viewType === 2 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+        >
+          환불내역 조회
+        </Button>
+      </div>
 
       <table className="table-sm w-5/6 text-center text-gray-500 dark:text-gray-400">
         <thead className="bg-gray-100 text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -163,9 +185,10 @@ const Payment = () => {
                   {/* 수정된 부분: URL 쿼리 스트링을 사용한 링크 */}
                   <Link
                     href={{
-                      pathname: '/partnerOrder',
+                      pathname: '/payment/receipt',
                       query: { partnerOrderId: order.customerOrder.partnerOrderId },
                     }}
+                    as="/receipt"
                   >
                     [{order.customerOrder.partnerOrderId}]
                   </Link>
