@@ -3,21 +3,14 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import { useState, useEffect } from 'react'
 
 const DailySales = () => {
-  const currentDate = new Date()
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth() + 1 // getMonth()는 0부터 시작하므로 1을 더합니다.
-  const day = currentDate.getDate() - 3
-
-  const [orderAt, setOrderAt] = useState(`${year}-${month}-${day}`)
-  const [userStoreId, setUserStoreId] = useState(2)
+  const yearMonthDay = '2024-03-24'
+  const [orderAt, setOrderAt] = useState(yearMonthDay)
   const [result, setResult] = useState(null)
 
   useEffect(() => {
     const daily = async () => {
       try {
-        const response = await fetchExtended(
-          `/api/sales/DailySales?orderedAt=${orderAt}&userStoreId=${userStoreId}`,
-        )
+        const response = await fetchExtended(`/api/sales/DailySales?orderedAt=${orderAt}`)
         const data = await response.json()
         setResult(data)
       } catch (error) {
@@ -26,7 +19,7 @@ const DailySales = () => {
     }
 
     daily()
-  }, [orderAt, userStoreId])
+  }, [orderAt])
 
   // 판매금액을 통화 형식으로 변환하는 함수
   const formatCurrency = (amount) => {
@@ -35,8 +28,10 @@ const DailySales = () => {
 
   return (
     <div>
-      <p>당일 판매금액</p>
-      {result && result.map((item, index) => <p key={index}>{formatCurrency(item.totalAmount)}</p>)}
+      <h4 className="text-2xl font-bold text-gray-500">당일 판매금액</h4>
+      <h3 className="text-3xl font-bold text-gray-800">
+        {result && formatCurrency(result[0].totalAmount)}
+      </h3>
     </div>
   )
 }
