@@ -25,7 +25,7 @@ const MonthlyVisitor = () => {
   return (
     <div>
       <h4 className="text-2xl font-bold text-gray-500">총 방문자수</h4>
-      <h3 className="text-3xl font-bold text-gray-800">{result && result + '명'}</h3>
+      <h3 className="text-3xl font-bold text-gray-800">{result ? result + '명' : '0명'}</h3>
     </div>
   )
 }
