@@ -1,41 +1,21 @@
 'use client'
-import { Table, TableHeadCell, Button } from 'flowbite-react'
-import { AiOutlineDownload } from 'react-icons/ai'
+import { Button, Select, Table, TableHeadCell } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { DownloadBtn } from './DownloadBtn'
+import { InputConfirmBtn } from './InputConfirmBtn'
+import { StockEditBtn } from './StockEditBtn'
 
-async function DownloadBtn(inputId, inputAt) {
-  const downloadUrl = `http://localhost:8080/api/store/stock/input/download/${inputId}`
-
-  await fetch(downloadUrl, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Access-Control-Allow-Origin': '*',
-      credentials: 'include',
-    },
-  })
-    .then((res) => res.json())
-    .then(async (res) => {
-      if (res['status'] === 'fail') {
-        throw new Error(res['message'])
-      } else {
-        const blob = await fetch(downloadUrl).then((r) => r.blob())
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `입고내역서-${inputAt}.xlsx`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        window.URL.revokeObjectURL(url)
-      }
-    })
-}
-
-export function CustomTable({ data, header }) {
+export function CustomTable({ data, header, params, handleAlert, handleData }) {
   const router = useRouter()
+  const [position, setPosition] = useState(0)
+
   const handleDetailClick = (storeInputId) => {
     router.push(`input/detail/${storeInputId}`)
+  }
+
+  const handlePositionChange = (e) => {
+    setPosition(e.target.value)
   }
   return (
     <div className=" w-128 px-3">
@@ -51,7 +31,7 @@ export function CustomTable({ data, header }) {
           ))}
         </Table.Head>
         <Table.Body className="divide-y">
-          {data.map((d, index) => (
+          {data.map((item, index) => (
             <Table.Row
               key={index}
               className="items-center bg-white dark:border-gray-700 dark:bg-gray-800"
@@ -61,40 +41,66 @@ export function CustomTable({ data, header }) {
                   onClick={
                     h.col_name === 'items'
                       ? () => {
-                          handleDetailClick(d['storeInputId'])
+                          handleDetailClick(item['storeInputId'])
                         }
                       : null
                   }
                   key={subIndex}
-                  className={`items-center whitespace-nowrap text-center font-medium text-gray-900 dark:text-white ${
-                    h.col_name === 'items' ? 'cursor-pointer hover:underline' : ''
+                  className={`relative items-center whitespace-nowrap text-center font-medium text-gray-900 dark:text-white ${
+                    h.col_name === 'items' || h.col_name === 'orderItems'
+                      ? 'cursor-pointer hover:underline'
+                      : ''
                   }`}
-                  style={{ position: 'relative' }}
                 >
-                  {h.col_name === 'inputAt' ? d[h.col_name].split('T')[0] : d[h.col_name]}
+                  {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
+
                   {h.col_name === 'download' && (
-                    <div
-                      onClick={() => DownloadBtn(d['storeInputId'], d['inputAt'].split('T')[0])}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform cursor-pointer text-gray-500 hover:text-blue-700"
-                    >
-                      <AiOutlineDownload />
-                    </div>
+                    <DownloadBtn
+                      inputId={item['storeInputId']}
+                      inputAt={item['inputAt'].split('T')[0]}
+                      handleAlert={handleAlert}
+                      handleData={handleData}
+                    />
                   )}
+
+                  {h.col_name === 'edit' && (
+                    <StockEditBtn item={item} handleAlert={handleAlert} handleData={handleData} />
+                  )}
+
                   {h.col_name === 'position' && (
-                    <select>
-                      <option value="1">A</option>
-                      <option value="2">B</option>
-                      <option value="3">C</option>
-                      <option value="4">D</option>
-                      <option value="5">E</option>
-                    </select>
+                    <Select
+                      value={item['state'] === '검수완료' ? item['locate'] : undefined}
+                      defaultValue={item['state'] !== '검수완료' ? 0 : undefined}
+                      onChange={handlePositionChange}
+                      disabled={item['state'] === '검수완료'}
+                    >
+                      <option value={0}>선택</option>
+                      <option value={1}>A</option>
+                      <option value={2}>B</option>
+                      <option value={3}>C</option>
+                      <option value={4}>D</option>
+                      <option value={5}>E</option>
+                    </Select>
                   )}
-                  {h.col_name !== 'check' ? null : d['state'] === '검수전' ? (
-                    <Button size="sm" variant="primary">
-                      검수하기
-                    </Button>
+
+                  {h.col_name !== 'check' ? null : item['state'] === '검수전' ? (
+                    <InputConfirmBtn
+                      storeInputId={params}
+                      quantity={item['qty']}
+                      expirated={item['expDate']}
+                      position={position}
+                      productId={item['productId']}
+                      handleAlert={handleAlert}
+                      handleData={handleData}
+                    />
                   ) : (
-                    <Button disabled>검수완료</Button>
+                    <Button
+                      disabled
+                      size="sm"
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                    >
+                      등록완료
+                    </Button>
                   )}
                 </Table.Cell>
               ))}
