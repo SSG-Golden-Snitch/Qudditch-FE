@@ -45,6 +45,7 @@ export default function Input() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
+          setError(res['message'])
           throw new Error(res['message'])
         } else {
           setStoreInput(res['data'])
