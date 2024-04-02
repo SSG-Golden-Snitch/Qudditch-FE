@@ -10,7 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
+    "dayjs": "^1.11.10",
     "chart.js": "^4.4.2",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.5",
