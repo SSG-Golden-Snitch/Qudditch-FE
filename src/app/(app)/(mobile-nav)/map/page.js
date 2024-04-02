@@ -2,19 +2,10 @@
 
 import MapComponent from '@/components/map'
 import { useEffect, useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
-const CurrentLocationComponent = ({ currentPosition }) => {
-  return (
-    <div>
-      <h2>Current Location</h2>
-      {currentPosition && (
-        <div>
-          <p>Y: {currentPosition.latitude}</p>
-          <p>X: {currentPosition.longitude}</p>
-        </div>
-      )}
-    </div>
-  )
+const CurrentLocationComponent = () => {
+  return <div></div>
 }
 
 const HomePage = () => {
@@ -45,8 +36,8 @@ const HomePage = () => {
   const fetchLocationData = async ({ latitude, longitude }) => {
     try {
       const limit = 30
-      const response = await fetch(
-        `http://localhost:8080/api/store/location?currentWgs84X=${longitude}&currentWgs84Y=${latitude}&limit=${limit}`,
+      const response = await fetchExtended(
+        `/api/store/location?currentWgs84X=${longitude}&currentWgs84Y=${latitude}&limit=${limit}`,
       )
       if (!response.ok) {
         throw new Error('데이터를 불러오지 못했습니다')

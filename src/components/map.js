@@ -1,19 +1,58 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
+import { useEffect, useRef, useState } from 'react'
+import { Table } from 'flowbite-react'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const mapRef = useRef(null)
-  const markersRef = useRef([])
-  const iconRef = [
-    '<div>',
-    `       <img src="/marker2.png" width="30" height="30" alt="현재 위치"/>`,
-    '</div>',
-  ].join('')
+  const [bookmarks, setBookmarks] = useState([])
+  const [inventoryVisible, setInventoryVisible] = useState(false)
+  const [selectedInventory, setSelectedInventory] = useState([])
+  const [selectedStoreId, setSelectedStoreId] = useState(null)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
+
+  // 선택된 상점의 재고를 가져오는 함수
+  const fetchInventory = async (storeId) => {
+    try {
+      const response = await fetchExtended(`/api/store/location/stock?userStoreId=${storeId}`)
+      if (response.ok) {
+        const { list } = await response.json()
+        setSelectedInventory(list || [])
+      } else {
+        console.error('재고 데이터를 가져오는 데 실패했습니다.')
+        setSelectedInventory([])
+      }
+    } catch (error) {
+      console.error('재고 데이터를 가져오는 중 오류 발생:', error)
+      setSelectedInventory([])
+    }
+  }
+
+  useEffect(() => {
+    const loadBookmarks = async () => {
+      try {
+        const response = await fetchExtended('/api/store/bookmark')
+        if (response.ok) {
+          const { bookmarks } = await response.json() // 응답 구조가 { bookmarks: [...] } 형태라고 가정
+          setBookmarks(bookmarks || []) // bookmarks가 undefined인 경우 빈 배열로 설정
+        } else {
+          console.error('북마크 데이터를 로드하는 데 실패했습니다.')
+          setBookmarks([]) // 에러 발생 시 bookmarks를 빈 배열로 초기화
+        }
+      } catch (error) {
+        console.error('북마크 데이터 로드 중 오류 발생:', error)
+        setBookmarks([]) // 예외 처리 시 bookmarks를 빈 배열로 초기화
+      }
+    }
+
+    loadBookmarks()
+  }, [])
 
   useEffect(() => {
     const loadMap = async () => {
-      if (!defaultPosition) return
+      if (!defaultPosition || !window.naver || !stores || stores.length === 0) return
 
       const mapOptions = {
         center: new window.naver.maps.LatLng(defaultPosition.latitude, defaultPosition.longitude),
@@ -21,30 +60,27 @@ const MapComponent = ({ defaultPosition, stores }) => {
       }
       mapRef.current = new window.naver.maps.Map('map', mapOptions)
 
-      if (stores && stores.length > 0) {
-        stores.forEach((store) => {
-          console.log('store', store)
-          const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
-          const marker = new window.naver.maps.Marker({
-            position: markerPosition,
-            map: mapRef.current,
-            icon: {
-              content: iconRef,
-              anchor: new naver.maps.Point(12, 30),
-            },
-            // animation: naver.maps.Animation.BOUNCE,
-          })
-          markersRef.current.push(marker)
+      stores.forEach((store) => {
+        const isBookmarked = bookmarks.some((bookmark) => bookmark.storeId === store.id)
 
-          // 정보창 내용 생성
-          const contentString = `
-            <div class="p-3 text-sm text-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
+        const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
+        const marker = new window.naver.maps.Marker({
+          position: markerPosition,
+          map: mapRef.current,
+          icon: {
+            content: iconRef,
+            anchor: new window.naver.maps.Point(12, 30),
+          },
+          //animation: window.naver.maps.Animation.BOUNCE,
+        })
+
+        const heartIcon = isBookmarked ? '❤️' : '🖤'
+
+        // 정보창 내용 생성
+        const contentString = `
+            <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
               <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
-            <label class="inline-flex items-center mb-5 cursor-pointer">
-              <input type="checkbox" value="" class="sr-only peer" onClick="toggleBookmark(${store.id})">
-              <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-              <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Small toggle</span>
-            </label>
+            <div onclick="window.toggleBookmark(${store.id})">${heartIcon}</div>
               <br />
               </form>
               <form class="max-w-sm mx-auto">
@@ -68,74 +104,31 @@ const MapComponent = ({ defaultPosition, stores }) => {
                 </div>
               </form>
             </div>`
-          // 정보창 생성
-          const infowindow = new window.naver.maps.InfoWindow({
-            content: contentString,
-          })
 
-          // 마커 클릭 시 정보창 열고 닫기
-          window.naver.maps.Event.addListener(marker, 'click', function () {
-            if (infowindow.getMap()) {
-              infowindow.close()
+        const infowindow = new window.naver.maps.InfoWindow({
+          content: contentString,
+        })
+
+        window.naver.maps.Event.addListener(marker, 'click', () => {
+          if (infowindow.getMap()) {
+            if (selectedStoreId === store.id) {
+              setSelectedStoreId(null) // 선택된 상점이 현재 클릭한 마커의 상점이면 선택 해제
+              setInventoryVisible(false) // 재고 섹션 숨기기
+              setDrawerOpen(false) // 드로어 닫기
             } else {
-              infowindow.open(mapRef.current, marker)
+              setSelectedStoreId(store.id) // 선택된 상점의 ID 설정
+              setInventoryVisible(true) // 재고 섹션 표시
+              fetchInventory(store.id) // 선택된 상점의 재고 가져오기
+              setDrawerOpen(true)
             }
-          })
-        })
-      }
-      // 북마크 상태를 가져오는 함수
-      const loadBookmarkStatus = async (storeId) => {
-        const response = await fetch(`http://localhost:8080/api/store/bookmark`)
-        if (response.ok) {
-          const { isBookmarked } = await response.json()
-
-          // 북마크 상태에 따라 토글 설정
-          const toggleElement = document.querySelector(`input[data-store-id="${storeId}"]`)
-          if (toggleElement) {
-            toggleElement.checked = isBookmarked
+            infowindow.close()
+          } else {
+            infowindow.open(mapRef.current, marker)
           }
-        } else {
-          console.error('북마크 상태를 가져오는데 실패했습니다.')
-        }
-      }
-
-      window.toggleBookmark = async function (storeId) {
-        const userCustomerId = 2 // 사용자 ID
-
-        // POST 요청을 위한 데이터 준비
-        const response = await fetch('http://localhost:8080/api/store/bookmark/toggle', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userCustomerId,
-            storeId,
-          }),
         })
-        if (response.ok) {
-          const result = await response.text()
-          console.log(result) // 백엔드 응답 처리
-
-          // 토글 상태 업데이트
-          loadBookmarkStatus(storeId)
-        } else {
-          console.error('북마크 토글 실패')
-        }
-      }
-      // 북마크 토글 요소 클릭 시 호출되도록 이벤트 리스너 등록
-      document.addEventListener('click', function (event) {
-        const clickedElement = event.target
-        // 클릭된 요소가 토글 요소인지 확인
-        if (clickedElement.classList.contains('peer')) {
-          // storeId를 데이터 속성으로 가져와서 북마크 상태 업데이트
-          const storeId = clickedElement.getAttribute('data-store-id')
-          if (storeId) {
-            loadBookmarkStatus(storeId)
-          }
-        }
       })
     }
+
     const script = document.createElement('script')
     script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5vhz6jovug'
     script.async = true
@@ -144,14 +137,74 @@ const MapComponent = ({ defaultPosition, stores }) => {
 
     return () => {
       document.body.removeChild(script)
-      markersRef.current.forEach((marker) => {
-        marker.setMap(null)
-      })
-      markersRef.current = []
     }
-  }, [defaultPosition, stores])
+  }, [defaultPosition, stores, bookmarks])
 
-  return <div id="map" style={{ width: '100%', height: '500px' }}></div>
+  useEffect(() => {
+    const toggleBookmark = async (storeId) => {
+      try {
+        const response = await fetchExtended(`/api/store/bookmark/toggle/${storeId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+
+        if (response.ok) {
+          setBookmarks(response) // 북마크 상태 업데이트
+        } else {
+          console.error('북마크 토글에 실패했습니다.')
+        }
+      } catch (error) {
+        console.error('북마크 토글 중 오류 발생:', error)
+      }
+    }
+
+    // 함수를 전역 객체에 할당하여 외부에서 접근 가능하게 합니다.
+    window.toggleBookmark = toggleBookmark
+
+    return () => {
+      // 컴포넌트가 언마운트될 때 window 객체에서 함수를 제거합니다.
+      delete window.toggleBookmark
+    }
+  }, [defaultPosition, stores, bookmarks]) // `bookmarks` 상태가 변경될 때마다 useEffect 훅을 재실행
+
+  return (
+    <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
+      <div id="map" style={{ flex: '1', minWidth: '50%' }}></div>
+      {drawerOpen && ( // 드로어 열린 상태에서만 표시
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.6)',
+            overflowY: 'auto',
+          }}
+        >
+          {selectedInventory.length > 0 && (
+            <div style={{ margin: '20px' }}>
+              <Table>
+                <Table.Head>
+                  <td>Brand</td>
+                  <td>Name</td>
+                  <td>Price</td>
+                  <td>Quantity</td>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {selectedInventory.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.brand}</td>
+                      <td>{item.productName}</td>
+                      <td>{item.productPrice}원</td>
+                      <td>{item.qty}개</td>
+                    </tr>
+                  ))}
+                </Table.Body>
+              </Table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
-
 export default MapComponent
