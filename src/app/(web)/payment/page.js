@@ -183,14 +183,10 @@ const Payment = () => {
                 <td className="px-6 py-4">
                   <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
                   {/* 수정된 부분: URL 쿼리 스트링을 사용한 링크 */}
-                  <Link
-                    href={{
-                      pathname: '/payment/receipt',
-                      query: { partnerOrderId: order.customerOrder.partnerOrderId },
-                    }}
-                    as="/receipt"
+                  <Link 
+                  href={`/payment/receipt/${order.customerOrder.partnerOrderId}`}
                   >
-                    [{order.customerOrder.partnerOrderId}]
+                    {order.customerOrder.partnerOrderId}
                   </Link>
                 </td>
                 <td className="px-6 py-4">
