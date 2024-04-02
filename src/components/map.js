@@ -2,33 +2,13 @@
 
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useRef, useState } from 'react'
-import { Table } from 'flowbite-react'
+import { useRouter } from 'next/navigation'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const mapRef = useRef(null)
   const [bookmarks, setBookmarks] = useState([])
-  const [inventoryVisible, setInventoryVisible] = useState(false)
-  const [selectedInventory, setSelectedInventory] = useState([])
-  const [selectedStoreId, setSelectedStoreId] = useState(null)
-  const [drawerOpen, setDrawerOpen] = useState(false)
+  const router = useRouter()
   const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
-
-  // 선택된 상점의 재고를 가져오는 함수
-  const fetchInventory = async (storeId) => {
-    try {
-      const response = await fetchExtended(`/api/store/location/stock?userStoreId=${storeId}`)
-      if (response.ok) {
-        const { list } = await response.json()
-        setSelectedInventory(list || [])
-      } else {
-        console.error('재고 데이터를 가져오는 데 실패했습니다.')
-        setSelectedInventory([])
-      }
-    } catch (error) {
-      console.error('재고 데이터를 가져오는 중 오류 발생:', error)
-      setSelectedInventory([])
-    }
-  }
 
   useEffect(() => {
     const loadBookmarks = async () => {
@@ -81,6 +61,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
             <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
               <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
             <div onclick="window.toggleBookmark(${store.id})">${heartIcon}</div>
+            <button onClick="goInventory(${store.id})">재고현황</button>
               <br />
               </form>
               <form class="max-w-sm mx-auto">
@@ -109,18 +90,12 @@ const MapComponent = ({ defaultPosition, stores }) => {
           content: contentString,
         })
 
+        window.goInventory = (storeId) => {
+          router.push(`map/inventory/${storeId}`)
+        }
+
         window.naver.maps.Event.addListener(marker, 'click', () => {
           if (infowindow.getMap()) {
-            if (selectedStoreId === store.id) {
-              setSelectedStoreId(null) // 선택된 상점이 현재 클릭한 마커의 상점이면 선택 해제
-              setInventoryVisible(false) // 재고 섹션 숨기기
-              setDrawerOpen(false) // 드로어 닫기
-            } else {
-              setSelectedStoreId(store.id) // 선택된 상점의 ID 설정
-              setInventoryVisible(true) // 재고 섹션 표시
-              fetchInventory(store.id) // 선택된 상점의 재고 가져오기
-              setDrawerOpen(true)
-            }
             infowindow.close()
           } else {
             infowindow.open(mapRef.current, marker)
@@ -170,41 +145,8 @@ const MapComponent = ({ defaultPosition, stores }) => {
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
       <div id="map" style={{ flex: '1', minWidth: '50%' }}></div>
-      {drawerOpen && ( // 드로어 열린 상태에서만 표시
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            width: '100%',
-            backgroundColor: 'rgba(255, 255, 255, 0.6)',
-            overflowY: 'auto',
-          }}
-        >
-          {selectedInventory.length > 0 && (
-            <div style={{ margin: '20px' }}>
-              <Table>
-                <Table.Head>
-                  <td>Brand</td>
-                  <td>Name</td>
-                  <td>Price</td>
-                  <td>Quantity</td>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {selectedInventory.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.brand}</td>
-                      <td>{item.productName}</td>
-                      <td>{item.productPrice}원</td>
-                      <td>{item.qty}개</td>
-                    </tr>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-          )}
-        </div>
-      )}
     </div>
   )
 }
+
 export default MapComponent
