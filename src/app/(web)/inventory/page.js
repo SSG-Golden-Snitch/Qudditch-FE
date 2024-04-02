@@ -56,6 +56,7 @@ export default function Stock() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
+          setError(res['message'])
           throw new Error(res['message'])
         } else {
           setStoreStock(res['data'])

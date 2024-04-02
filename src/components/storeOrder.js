@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { Table } from 'flowbite-react'
 
 export default function OrderList({ id, state, orderedAt }) {
   const router = useRouter()
@@ -10,10 +11,13 @@ export default function OrderList({ id, state, orderedAt }) {
   }
 
   return (
-    <tr className="cursor-pointer" onClick={detailClick}>
-      <td>{id}</td>
-      <td>{state}</td>
-      <td>{orderedAt}</td>
-    </tr>
+    <Table.Row
+      className="bg-white hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+      onClick={detailClick}
+    >
+      <Table.Cell>{id}</Table.Cell>
+      <Table.Cell>{state}</Table.Cell>
+      <Table.Cell>{orderedAt}</Table.Cell>
+    </Table.Row>
   )
 }
