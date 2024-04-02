@@ -3,22 +3,52 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import React, { useEffect, useRef, useState } from 'react'
 import Chart from 'chart.js/auto'
 
-const BestProduct = () => {
+const RANK_VIEW = 4
+
+const CategoryGraph = () => {
+  const yearMonth = '2024-03'
   const [labels, setLabels] = useState([])
   const [productDataSet, setProductDataSet] = useState([])
 
   useEffect(() => {
-    const best = async () => {
+    const getCategorys = async () => {
       try {
-        const response = await fetchExtended(`/api/product/BestProduct`)
+        const response = await fetchExtended(`/api/graph/category?yearMonth=${yearMonth}`)
         const data = await response.json()
-        setLabels(data['bestProducts'].map((product) => product['name']))
-        setProductDataSet(data['bestProducts'].map((product) => product.outQty))
+
+        let currentList = data.currentList
+        let list = []
+
+        let etcData = null
+        for (let i = 0; i < currentList.length; i++) {
+          if (i < RANK_VIEW) {
+            list[i] = {
+              categoryName: currentList[i].categoryName,
+              sales: currentList[i].sales,
+            }
+          } else {
+            if (etcData === null) {
+              etcData = {
+                categoryName: '기타',
+                sales: currentList[i].sales,
+              }
+            } else {
+              etcData.sales += currentList[i].sales
+            }
+          }
+        }
+
+        if (etcData) {
+          list[list.length] = etcData
+        }
+
+        setLabels(list.map((category) => category.categoryName))
+        setProductDataSet(list.map((category) => category.sales))
       } catch (error) {
         console.error('error', error)
       }
     }
-    best()
+    getCategorys()
   }, [])
 
   const chartRef = useRef(null)
@@ -51,7 +81,7 @@ const BestProduct = () => {
         title: {
           display: true,
           position: 'top',
-          text: 'Best 5 제품',
+          text: 'Top 5 카테고리',
           font: {
             size: 30,
           },
@@ -62,7 +92,7 @@ const BestProduct = () => {
       labels,
       datasets: [
         {
-          label: '인기 제품',
+          label: '카테고리',
           data: productDataSet,
           backgroundColor: [
             'rgb(232, 232, 232)',
@@ -84,4 +114,4 @@ const BestProduct = () => {
   )
 }
 
-export default BestProduct
+export default CategoryGraph

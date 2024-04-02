@@ -11,7 +11,6 @@ import { BsStopCircle } from 'react-icons/bs'
 function Chatbot() {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
-  const [result, setResult] = useState(null)
   const [transcript, setTranscript] = useState('')
   const [listening, setListening] = useState(false)
   const messagesEndRef = useRef(null)
