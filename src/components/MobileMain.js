@@ -25,13 +25,13 @@ const MobileMain = () => {
             <div className="text-6xl">
               <LuScanFace />
             </div>
-            <p>매장찾기</p>
+            <p>매장출입</p>
           </div>
           <div className="flex items-center text-center">
             <div className="text-6xl">
               <BsShop />
             </div>
-            <p>매장주기</p>
+            <p>매장찾기</p>
           </div>
           <div className="flex items-center text-center">
             <div className="text-6xl">
