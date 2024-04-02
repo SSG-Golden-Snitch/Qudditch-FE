@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 // import Chart from 'chart.js/auto'
 import { Chart, registerables } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { graphColors } from './graphColors'
 
 const RANK_VIEW = 4
 const categoryColor = [
@@ -47,8 +48,8 @@ const SalesGraph = () => {
         {
           label: '매출',
           data: currentList.map((itm) => itm.sales),
-          backgroundColor: 'rgba(23, 54, 321, 0.2)',
-          borderColor: 'rgba(23, 54, 321, 1)',
+          borderColor: graphColors[3],
+          backgroundColor: graphColors[5],
           fill: true,
         },
       ],
@@ -66,7 +67,7 @@ const SalesGraph = () => {
               display: false,
               align: 200,
               formatter: function (value, context) {
-                return value.toLocaleString().replace('$', '')
+                return value
               },
             },
             title: {

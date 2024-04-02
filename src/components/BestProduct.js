@@ -4,14 +4,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import Chart from 'chart.js/auto'
 
 const BestProduct = () => {
-  const [storeId, setStoreId] = useState(6)
   const [labels, setLabels] = useState([])
   const [productDataSet, setProductDataSet] = useState([])
 
   useEffect(() => {
     const best = async () => {
       try {
-        const response = await fetchExtended(`/api/product/BestProduct?storeId=${storeId}`)
+        const response = await fetchExtended(`/api/product/BestProduct`)
         const data = await response.json()
         setLabels(data['bestProducts'].map((product) => product['name']))
         setProductDataSet(data['bestProducts'].map((product) => product.outQty))
@@ -20,7 +19,7 @@ const BestProduct = () => {
       }
     }
     best()
-  }, [storeId])
+  }, [])
 
   const chartRef = useRef(null)
   const [chartInstance, setChartInstance] = useState(null)
@@ -42,6 +41,23 @@ const BestProduct = () => {
 
   const config = {
     type: 'doughnut',
+    options: {
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+          align: 'center',
+        },
+        title: {
+          display: true,
+          position: 'top',
+          text: 'Best 5 제품',
+          font: {
+            size: 30,
+          },
+        },
+      },
+    },
     data: {
       labels,
       datasets: [
@@ -63,7 +79,7 @@ const BestProduct = () => {
 
   return (
     <div>
-      <canvas ref={chartRef} />
+      <canvas style={{ maxHeight: '100%' }} ref={chartRef} />
     </div>
   )
 }

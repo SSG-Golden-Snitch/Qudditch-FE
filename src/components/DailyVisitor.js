@@ -69,10 +69,8 @@ const DailyVisitor = () => {
 
   return (
     <div>
-      <div>
-        <span>일 방문자수</span>
-      </div>
-      <span>{result + '명'}</span>
+      <h4 className="text-2xl font-bold text-gray-500">일 방문자수</h4>
+      <h3 className="text-3xl font-bold text-gray-800">{result + '명'}</h3>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 // import Chart from 'chart.js/auto'
 import { Chart, registerables } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { graphColors } from './graphColors'
 
 const colors = [
   'rgba(200, 200, 200, 0.5)', // 연한 회색
@@ -76,7 +77,7 @@ export const VisitorGraph = () => {
 
     const data = {
       labels: currentList.map((itm) => Number(itm.date.split('-')[2]) + '일'),
-      datasets: Object.entries(bindingObj).map(([key, value, index]) => {
+      datasets: Object.entries(bindingObj).map(([key, value], index) => {
         let finalDatas = currentList.map((list) => {
           let day = list.date.split('-')[2]
 
@@ -92,8 +93,8 @@ export const VisitorGraph = () => {
         return {
           label: key,
           data: finalDatas,
-          backgroundColor: colors[index],
           borderWidth: 3,
+          borderColor: graphColors[index],
         }
       }),
     }
