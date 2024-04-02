@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@date-io/dayjs": "^3.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -19,6 +20,11 @@
     "@mui/x-date-pickers": "^7.0.0",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",
+=======
+    "dayjs": "^1.11.10",
+    "chart.js": "^4.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
+>>>>>>> ba828f4c7cf1afaf0d5451c8314676ad40681f13
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.5",
     "next": "14.1.4",
@@ -26,6 +32,7 @@
     "react-datepicker": "^6.6.0",
     "react-dom": "^18",
     "react-icons": "^5.0.1",
+    "react-router-dom": "^6.22.3",
     "return-fetch": "^0.4.5"
   },
   "devDependencies": {
