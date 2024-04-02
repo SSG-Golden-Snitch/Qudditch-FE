@@ -1,8 +1,10 @@
 'use client'
 
-import { CustomTable } from '@/components/customTable'
-import { useEffect, useState } from 'react'
+import { CustomAlert } from '@/components/CustomAlert'
+import { CustomTable } from '@/components/CustomTable'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
+import { useEffect, useState } from 'react'
 
 export default function Input() {
   const [pagination, setPagination] = useState({
@@ -18,14 +20,21 @@ export default function Input() {
   const [storeInput, setStoreInput] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
 
   const handleStoreInput = async (page = 1) => {
     setError(null)
     setIsLoading(true)
 
-    const storeInputReqUrl = new URL(`http://localhost:8080/api/store/stock/input?page=${page}`)
+    const storeInputReqUrl = new URL(apiUrl + `/api/store/stock/input?page=${page}`)
 
-    await fetch(storeInputReqUrl, {
+    await fetchExtended(storeInputReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -66,12 +75,16 @@ export default function Input() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
-      <div className="flex flex-col items-center">
+      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+
+      <div className="flex flex-col items-center pt-16">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
           <>
             <CustomTable
+              handleData={handleStoreInput}
+              handleAlert={handleAlert}
               data={storeInput}
               pagination={pagination}
               header={[
