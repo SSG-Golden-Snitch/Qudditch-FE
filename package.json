@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "dayjs": "^1.11.10",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.5",
     "next": "14.1.4",
