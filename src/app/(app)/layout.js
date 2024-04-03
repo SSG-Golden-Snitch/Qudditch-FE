@@ -1,5 +1,4 @@
 import '@/app/globals.css'
-
 export default function AppRootLayout({ children }) {
   return (
     <html lang="ko">
