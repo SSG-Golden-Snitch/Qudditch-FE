@@ -2,15 +2,14 @@
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useState, useEffect } from 'react'
 
-const DailySales = () => {
-  const yearMonthDay = '2024-03-24'
-  const [orderAt, setOrderAt] = useState(yearMonthDay)
+const DailySales = ({ dateInput }) => {
+  const yearMonthDay = dateInput
   const [result, setResult] = useState(null)
 
   useEffect(() => {
     const daily = async () => {
       try {
-        const response = await fetchExtended(`/api/sales/DailySales?orderedAt=${orderAt}`)
+        const response = await fetchExtended(`/api/sales/DailySales?orderedAt=${yearMonthDay}`)
         const data = await response.json()
         setResult(data)
       } catch (error) {
@@ -19,7 +18,7 @@ const DailySales = () => {
     }
 
     daily()
-  }, [orderAt])
+  }, [yearMonthDay])
 
   // 판매금액을 통화 형식으로 변환하는 함수
   const formatCurrency = (amount) => {
