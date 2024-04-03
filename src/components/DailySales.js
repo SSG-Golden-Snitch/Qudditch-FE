@@ -30,7 +30,9 @@ const DailySales = () => {
     <div>
       <h4 className="text-2xl font-bold text-gray-500">당일 판매금액</h4>
       <h3 className="text-3xl font-bold text-gray-800">
-        {result && formatCurrency(result[0].totalAmount)}
+        {result && result.length > 0 && result[0]
+          ? formatCurrency(result[0].totalAmount)
+          : formatCurrency(0)}
       </h3>
     </div>
   )

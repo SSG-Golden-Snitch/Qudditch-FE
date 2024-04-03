@@ -34,8 +34,12 @@ const MonthlySales = () => {
 
   return (
     <div>
-      <p>당월 판매금액</p>
-      {result && result.map((item, index) => <p key={index}>{formatCurrency(item.price)}</p>)}
+      <h4 className="text-2xl font-bold text-gray-500">당월 판매금액</h4>
+      <h3 className="text-3xl font-bold text-gray-800">
+        {result && result.length > 0 && result[0]
+          ? formatCurrency(result[0].price)
+          : formatCurrency(0)}
+      </h3>
     </div>
   )
 }
