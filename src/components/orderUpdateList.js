@@ -3,10 +3,11 @@ import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import { Table } from 'flowbite-react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 async function searchProductByName(productName) {
-  const URL = `http://localhost:8080/api/product/find/${productName}`
-  const response = await fetch(URL)
+  const URL = `/api/product/find/${productName}`
+  const response = await fetchExtended(URL)
   if (!response.ok) {
     throw new Error('제품 검색에 실패했습니다.')
   }
@@ -22,7 +23,7 @@ export default function GetDetail({ id }) {
 
   useEffect(() => {
     const getOrder = async () => {
-      const response = await fetch(`http://localhost:8080/api/store/order/detail/${id}`)
+      const response = await fetchExtended(`/api/store/order/detail/${id}`)
       const data = await response.json()
       setOrder(data)
     }
@@ -65,7 +66,7 @@ export default function GetDetail({ id }) {
       qty: qty,
     }))
 
-    const response = await fetch(`http://localhost:8080/api/store/order/detail/update/${id}`, {
+    const response = await fetchExtended(`/api/store/order/detail/update/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ export default function GetDetail({ id }) {
     const removedProduct = updatedOrder.products.splice(index, 1)[0]
     setOrder(updatedOrder)
 
-    const response = await fetch(`http://localhost:8080/api/store/order/detail/update/${id}`, {
+    const response = await fetchExtended(`/api/store/order/detail/update/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
