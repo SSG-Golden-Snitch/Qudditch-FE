@@ -43,7 +43,7 @@ const Sales = () => {
       const endpoint = `/api/order/history?${queryString}`
 
       try {
-        const response = await fetchExtended(apiUrl + endpoint, {
+        const response = await fetchExtended(endpoint, {
           method: 'GET', // HTTP 요청 메서드 지정
           // credentials: 'include', // 인증 정보(쿠키, 인증 헤더 등) 포함 옵션
         })
@@ -104,8 +104,8 @@ const Sales = () => {
   // }
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <div className="relative w-full max-w-4xl">
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+      <div className="flex justify-between">
         <div className="flex items-center">
           <h1 className="mb-4 text-3xl font-bold">판매</h1>
 
@@ -115,6 +115,7 @@ const Sales = () => {
             dateFormat="yyyy/MM"
             showMonthYearPicker
             customInput={<CustomInput />}
+            className="ml-4"
           />
         </div>
       </div>
