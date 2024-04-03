@@ -1,7 +1,7 @@
 'use client'
 
 import { CustomAlert } from '@/components/CustomAlert'
-import { CustomTable } from '@/components/CustomTable'
+import { CustomTable } from '@/components/customTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
 import { useEffect, useState } from 'react'

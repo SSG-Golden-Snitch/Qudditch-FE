@@ -4,7 +4,6 @@ import '../../globals.css'
 import React, { useState, useEffect, Fragment } from 'react'
 import Link from 'next/link'
 import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
-// import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
 import { TbCalendarSmile } from 'react-icons/tb'
@@ -12,7 +11,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 
-const Payment = () => {
+const Sales = () => {
   const [orders, setOrders] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
@@ -182,11 +181,9 @@ const Payment = () => {
                 {/* <td className="px-6 py-4">{index + 1}</td> */}
                 <td className="px-6 py-4">
                   <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-                  {/* 수정된 부분: URL 쿼리 스트링을 사용한 링크 */}
-                  <Link 
-                  href={`/payment/receipt/${order.customerOrder.partnerOrderId}`}
-                  >
-                    {order.customerOrder.partnerOrderId}
+
+                  <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                    [{order.customerOrder.partnerOrderId}]
                   </Link>
                 </td>
                 <td className="px-6 py-4">
@@ -253,4 +250,92 @@ const Payment = () => {
   )
 }
 
-export default Payment
+export default Sales
+
+// 변경 코드
+// 'use client'
+
+// import React, { useState, useEffect } from 'react'
+// import Link from 'next/link'
+// import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+// import DatePicker from 'react-datepicker'
+// import 'react-datepicker/dist/react-datepicker.css'
+// import { Button } from 'flowbite-react'
+// import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
+
+// const Payment = () => {
+//   const [orders, setOrders] = useState([])
+//   const [selectedDate, setSelectedDate] = useState(new Date())
+//   const [totalSales, setTotalSales] = useState(0)
+//   const [viewType, setViewType] = useState(1) // 1: 판매내역, 2: 환불내역
+
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       const year = selectedDate.getFullYear()
+//       const month = selectedDate.getMonth() + 1
+//       const formattedDate = `${year}-${month.toString().padStart(2, '0')}`
+//       const params = { monthYear: formattedDate, status: viewType }
+//       const queryString = new URLSearchParams(params).toString()
+//       const endpoint = `/api/order/history?${queryString}`
+
+//       try {
+//         const response = await fetchExtended(apiUrl + endpoint, { method: 'GET' })
+//         const responseData = await response.json()
+//         if (!responseData) throw new Error('데이터 로딩 실패')
+//         setOrders(responseData)
+//         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
+//         setTotalSales(total)
+//       } catch (error) {
+//         console.error('Error fetching order history:', error)
+//       }
+//     }
+//     fetchOrders()
+//   }, [selectedDate, viewType])
+
+//   return (
+//     <div className="flex flex-col items-center justify-center p-4">
+//       <h1 className="text-3xl font-bold mb-4">판매내역 조회</h1>
+//       <div className="mb-4 flex justify-end w-full">
+//         <Button onClick={() => setViewType(1)} color={viewType === 1 ? "blue" : "gray"}>판매내역 조회</Button>
+//         <Button onClick={() => setViewType(2)} color={viewType === 2 ? "blue" : "gray"}>환불내역 조회</Button>
+//       </div>
+//       <DatePicker
+//         selected={selectedDate}
+//         onChange={(date) => setSelectedDate(date)}
+//         dateFormat="yyyy/MM"
+//         showMonthYearPicker
+//         className="input font-sbaggrol mb-4"
+//       />
+//       <div className="w-full overflow-x-auto">
+//         <table className="min-w-full divide-y divide-gray-200">
+//           <thead className="bg-gray-100">
+//             <tr>
+//               {["No", "결제 일자", "상품 정보", "수량", "가격", "결제 금액"].map((header) => (
+//                 <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+//                   {header}
+//                 </th>
+//               ))}
+//             </tr>
+//           </thead>
+//           <tbody className="bg-white divide-y divide-gray-200">
+//             {orders.map((order, index) => (
+//               <tr key={index}>
+//                 <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+//                 <td className="px-6 py-4 whitespace-nowrap">{new Date(order.customerOrder.orderedAt).toLocaleDateString()}</td>
+//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts[0]?.productName || '상품 정보 없음'}</td>
+//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts.reduce((acc, curr) => acc + curr.qty, 0)}</td>
+//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts.reduce((acc, curr) => acc + curr.price, 0)}</td>
+//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrder.totalAmount}</td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//       <div className="mt-4">
+//         총 판매액: {totalSales}
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default Payment
