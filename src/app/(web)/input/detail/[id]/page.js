@@ -1,15 +1,25 @@
 'use client'
 
-import { CustomTable } from '@/components/customTable'
+import { CustomTable } from '@/components/CustomTable'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
+import { CustomAlert } from '@/components/CustomAlert'
 
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
   const [inputDetail, setInputDetail] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const inputDetailReqUrl = `http://localhost:8080/api/store/stock/input/${id}`
+  const [isLoading, setIsLoading] = useState(true)
+  const inputDetailReqUrl = apiUrl + `/api/store/stock/input/${id}`
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
+
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
+
   const handleData = () => {
-    fetch(inputDetailReqUrl, {
+    fetchExtended(inputDetailReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -34,7 +44,7 @@ export default function InputDetail({ params: { id } }) {
   }
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(false)
     handleData()
   }, [])
 
@@ -42,13 +52,18 @@ export default function InputDetail({ params: { id } }) {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
-      <div className="flex flex-col items-center">
+      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+
+      <div className="flex flex-col items-center pt-16">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <>
+          <div className="">
             <CustomTable
+              handleAlert={handleAlert}
+              handleData={handleData}
               data={inputDetail}
+              params={id}
               header={[
                 { label: 'productId', col_name: 'productId' },
                 { label: 'brand', col_name: 'brand' },
@@ -61,7 +76,7 @@ export default function InputDetail({ params: { id } }) {
                 { label: 'check', col_name: 'check' },
               ]}
             />
-          </>
+          </div>
         )}
       </div>
     </div>
