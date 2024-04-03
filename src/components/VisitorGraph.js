@@ -13,19 +13,13 @@ const colors = [
   'rgba(200, 200, 255, 0.5)', // 연한 파란색
 ]
 
-export const VisitorGraph = () => {
-  const yearMonth = '2024-03'
-  const [year, month] = yearMonth.split('-').map(Number)
-  const daysInMonth = new Date(year, month, 0).getDate()
-  const days = []
-  for (let i = 0; i < 31; i++) {
-    days[i] = i + 1 + '일'
-  }
+export const VisitorGraph = ({ dateInput }) => {
+  const yearMonth = dateInput
 
   const chartRef = useRef(null)
   const [currentList, setCurrentList] = useState([])
   // dataset, 시간대별 날짜 데이터
-  const [bindingObj, setBindingList] = useState({
+  const [bindingObj, setBindingObj] = useState({
     '0-6': {},
     '6-12': {},
     '12-18': {},
@@ -46,34 +40,49 @@ export const VisitorGraph = () => {
       }
     }
     getVisitor()
-  }, [])
+  }, [yearMonth])
 
   useEffect(() => {
+    if (currentList == null) {
+      return
+    }
+
     currentList.forEach((dateEle) => {
       bindingObj['0-6'][dateEle.date.split('-')[2]] = 0
+      bindingObj['6-12'][dateEle.date.split('-')[2]] = 0
+      bindingObj['12-18'][dateEle.date.split('-')[2]] = 0
+      bindingObj['18-24'][dateEle.date.split('-')[2]] = 0
     })
 
     currentList.forEach((dateEle) => {
       dateEle.list.forEach((hours) => {
         if (0 <= hours.hour && hours.hour < 6) {
-          bindingObj['0-6'][dateEle.date.split('-')[2]] = hours.count
+          bindingObj['0-6'][dateEle.date.split('-')[2]] += hours.count
         } else if (6 <= hours.hour && hours.hour < 12) {
-          bindingObj['6-12'][dateEle.date.split('-')[2]] = hours.count
+          bindingObj['6-12'][dateEle.date.split('-')[2]] += hours.count
         } else if (12 <= hours.hour && hours.hour < 18) {
-          bindingObj['12-18'][dateEle.date.split('-')[2]] = hours.count
+          bindingObj['12-18'][dateEle.date.split('-')[2]] += hours.count
         } else if (18 <= hours.hour && hours.hour < 24) {
-          bindingObj['18-24'][dateEle.date.split('-')[2]] = hours.count
+          bindingObj['18-24'][dateEle.date.split('-')[2]] += hours.count
         }
       })
     })
 
-    setBindingList({ ...bindingObj })
+    setBindingObj({ ...bindingObj })
   }, [currentList])
 
   // 차트 그리기
   useEffect(() => {
+    const destroyChart = () => {
+      if (chartInstance) {
+        chartInstance.destroy()
+        chartInstance = null
+      }
+    }
+
+    destroyChart() // 기존 차트 파괴
+
     const ctx = chartRef.current.getContext('2d')
-    console.log(Object.values(bindingObj)[0])
 
     const data = {
       labels: currentList.map((itm) => Number(itm.date.split('-')[2]) + '일'),
@@ -118,14 +127,6 @@ export const VisitorGraph = () => {
       })
     }
 
-    const destroyChart = () => {
-      if (chartInstance) {
-        chartInstance.destroy()
-        chartInstance = null
-      }
-    }
-
-    destroyChart() // 기존 차트 파괴
     createChart() // 새로운 차트 생성
 
     return () => {
