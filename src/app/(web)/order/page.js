@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react'
 import OrderList from '@/components/storeOrder'
 import { Pagination } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
+import { fetchExtended } from '@/utils/fetchExtended'
 
-const URL = 'http://localhost:8080/api/store/order'
+// const URL = 'http://localhost:8080/api/store/order'
 
 async function getorderList(page = 1, recordSize = 10) {
-  const response = await fetch(`${URL}?page=${page}&recordSize=${recordSize}`)
+  const response = await fetchExtended(`/api/store/order?page=${page}&recordSize=${recordSize}`)
   const data = await response.json()
   return data
 }
