@@ -1,6 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from 'flowbite-react'
+import { Suspense } from 'react'
 
 const RegistrationFailedPage = () => {
   const router = useRouter()
@@ -19,4 +20,12 @@ const RegistrationFailedPage = () => {
   )
 }
 
-export default RegistrationFailedPage
+const WrappedRegistrationFailedPage = () => {
+  return (
+    <Suspense fallback={<></>}>
+      <RegistrationFailedPage />
+    </Suspense>
+  )
+}
+
+export default WrappedRegistrationFailedPage
