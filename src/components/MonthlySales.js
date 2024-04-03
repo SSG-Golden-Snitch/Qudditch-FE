@@ -26,7 +26,7 @@ const MonthlySales = ({ dateInput }) => {
   }
 
   return (
-    <div>
+    <div className="text-center">
       <h4 className="text-2xl font-bold text-gray-500">당월 판매금액</h4>
       <h3 className="text-3xl font-bold text-gray-800">
         {result && result.length > 0 && result[0]
