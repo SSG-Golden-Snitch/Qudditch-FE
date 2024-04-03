@@ -2,21 +2,14 @@
 import { useState, useEffect } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 
-const MonthlySales = () => {
-  const currentDate = new Date()
-  const year = currentDate.getFullYear()
-  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0') // getMonth()는 0부터 시작하므로 1을 더합니다.
-
-  const [yearMonth, setYearMonth] = useState(`${year}-${month}`)
-  const [userStoreId, setUserStoreId] = useState(2)
+const MonthlySales = ({ dateInput }) => {
+  const yearMonth = dateInput
   const [result, setResult] = useState(null)
 
   useEffect(() => {
     const Monthly = async () => {
       try {
-        const response = await fetchExtended(
-          `/api/sales/MonthlySales?yearMonth=${yearMonth}&userStoreId=${userStoreId}`,
-        )
+        const response = await fetchExtended(`/api/sales/MonthlySales?yearMonth=${yearMonth}`)
         const data = await response.json()
         setResult(data)
       } catch (error) {
@@ -25,7 +18,7 @@ const MonthlySales = () => {
     }
 
     Monthly()
-  }, [yearMonth, userStoreId])
+  }, [yearMonth])
 
   // 판매금액을 통화 형식으로 변환하는 함수
   const formatCurrency = (amount) => {
