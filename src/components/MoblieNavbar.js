@@ -27,7 +27,7 @@ const MobileNavbar = () => {
 
   const NavPayment = (path) => {
     return (
-      <Link href={path} passHref>
+      <Link href={path}>
         <div className={'z-20 flex cursor-pointer flex-col items-center'}>
           {/* Link 컴포넌트를 사용하여 /pay로의 링크를 생성 */}
 
