@@ -5,8 +5,8 @@ import Chart from 'chart.js/auto'
 
 const RANK_VIEW = 4
 
-const CategoryGraph = () => {
-  const yearMonth = '2024-03'
+const CategoryGraph = ({ dateInput }) => {
+  const yearMonth = dateInput
   const [labels, setLabels] = useState([])
   const [productDataSet, setProductDataSet] = useState([])
 
@@ -42,6 +42,7 @@ const CategoryGraph = () => {
           list[list.length] = etcData
         }
 
+        list = list.filter((category) => category['sales'] !== 0)
         setLabels(list.map((category) => category.categoryName))
         setProductDataSet(list.map((category) => category.sales))
       } catch (error) {
@@ -49,7 +50,7 @@ const CategoryGraph = () => {
       }
     }
     getCategorys()
-  }, [])
+  }, [yearMonth])
 
   const chartRef = useRef(null)
   const [chartInstance, setChartInstance] = useState(null)
@@ -81,7 +82,7 @@ const CategoryGraph = () => {
         title: {
           display: true,
           position: 'top',
-          text: 'Top 5 카테고리',
+          text: 'Top 5 카테고리(월)',
           font: {
             size: 30,
           },
