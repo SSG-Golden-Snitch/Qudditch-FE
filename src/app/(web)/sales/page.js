@@ -15,7 +15,7 @@ const Sales = () => {
   const [orders, setOrders] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
-  const [isDatePickerOpen, setDatePickerOpen] = useState(false)
+  // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
@@ -96,26 +96,24 @@ const Sales = () => {
   // }
 
   return (
-    <div className="item-center flex flex-col  justify-center p-4 font-sbaggrol sm:ml-48">
+    <div className="flex flex-col items-center justify-center p-4">
       <div className="relative w-full max-w-4xl">
         <div className="flex items-center">
-          <h1 className="text-3xl font-bold">판매</h1>
-          <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
+          <h1 className="mb-4 text-3xl font-bold">판매</h1>
+          {/* <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
             <TbCalendarSmile size="30px" />
-          </button>
+          </button> */}
         </div>
-        {isDatePickerOpen && (
+        {/* {isDatePickerOpen && (
           <div className="absolute top-full mt-2">
             <DatePicker
               selected={selectedDate}
               onChange={(date) => setSelectedDate(date)}
               dateFormat="yyyy/MM"
-              showMonthYearPicker // 월과 년만 선택
-              className="input font-sbaggrol" // TailwindCSS를 적용하기 위한 클래스
-              inline
+              customInput={<CustomInput />}
             />
           </div>
-        )}
+        )} */}
         {/* <p>선택된 날짜: {formatDateYMD(selectedDate)}</p> */}
       </div>
 
@@ -123,45 +121,29 @@ const Sales = () => {
       <span> {formatDateYM(currentDate)} </span>
       <button onClick={handleNextMonth}>&gt;</button> */}
 
-      <div className="mb-4 flex justify-end">
-        <Button
-          onClick={() => handleViewTypeChange(1)}
-          className={`mr-2 ${viewType === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-        >
+      <div className="mb-4 flex w-full justify-center">
+        <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
           판매내역 조회
         </Button>
-        <Button
-          onClick={() => handleViewTypeChange(2)}
-          className={`mr-2 ${viewType === 2 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-        >
+        <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
           환불내역 조회
         </Button>
       </div>
 
-      <table className="table-sm w-5/6 text-center text-gray-500 dark:text-gray-400">
-        <thead className="bg-gray-100 text-xl uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full max-w-4xl divide-y divide-gray-200">
+        <thead className="bg-gray-100">
           <tr>
-            <th scope="col" className="rounded-s-lg px-6 py-4">
-              N o
-            </th>
-            <th scope="col" className="px-6 py-4">
-              결 제 일 자
-            </th>
-            <th scope="col" className="px-6 py-4">
-              상 품 정 보
-            </th>
-            <th scope="col" className="px-6 py-4">
-              수 량
-            </th>
-            <th scope="col" className="px-6 py-4">
-              가 격
-            </th>
-            <th scope="col" className="rounded-e-lg px-6 py-4">
-              결 제 금 액
-            </th>
+            {['No', '결제 일자', '상품 정보', '수량', '가격', '결제 금액'].map((header) => (
+              <th
+                key={header}
+                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-200 bg-white">
           {orders.map((order, index) => (
             <Fragment key={index}>
               <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -237,105 +219,8 @@ const Sales = () => {
           </tr>
         </tbody>
       </table>
-
-      <div classname="mt-6 text-center">
-        <Button
-          onClick={() => (window.location.href = '/')}
-          className="mb-2 me-2 rounded-lg border border-gray-200 bg-slate-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-zinc-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-        >
-          HOME
-        </Button>
-      </div>
     </div>
   )
 }
 
 export default Sales
-
-// 변경 코드
-// 'use client'
-
-// import React, { useState, useEffect } from 'react'
-// import Link from 'next/link'
-// import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
-// import DatePicker from 'react-datepicker'
-// import 'react-datepicker/dist/react-datepicker.css'
-// import { Button } from 'flowbite-react'
-// import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
-
-// const Payment = () => {
-//   const [orders, setOrders] = useState([])
-//   const [selectedDate, setSelectedDate] = useState(new Date())
-//   const [totalSales, setTotalSales] = useState(0)
-//   const [viewType, setViewType] = useState(1) // 1: 판매내역, 2: 환불내역
-
-//   useEffect(() => {
-//     const fetchOrders = async () => {
-//       const year = selectedDate.getFullYear()
-//       const month = selectedDate.getMonth() + 1
-//       const formattedDate = `${year}-${month.toString().padStart(2, '0')}`
-//       const params = { monthYear: formattedDate, status: viewType }
-//       const queryString = new URLSearchParams(params).toString()
-//       const endpoint = `/api/order/history?${queryString}`
-
-//       try {
-//         const response = await fetchExtended(apiUrl + endpoint, { method: 'GET' })
-//         const responseData = await response.json()
-//         if (!responseData) throw new Error('데이터 로딩 실패')
-//         setOrders(responseData)
-//         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
-//         setTotalSales(total)
-//       } catch (error) {
-//         console.error('Error fetching order history:', error)
-//       }
-//     }
-//     fetchOrders()
-//   }, [selectedDate, viewType])
-
-//   return (
-//     <div className="flex flex-col items-center justify-center p-4">
-//       <h1 className="text-3xl font-bold mb-4">판매내역 조회</h1>
-//       <div className="mb-4 flex justify-end w-full">
-//         <Button onClick={() => setViewType(1)} color={viewType === 1 ? "blue" : "gray"}>판매내역 조회</Button>
-//         <Button onClick={() => setViewType(2)} color={viewType === 2 ? "blue" : "gray"}>환불내역 조회</Button>
-//       </div>
-//       <DatePicker
-//         selected={selectedDate}
-//         onChange={(date) => setSelectedDate(date)}
-//         dateFormat="yyyy/MM"
-//         showMonthYearPicker
-//         className="input font-sbaggrol mb-4"
-//       />
-//       <div className="w-full overflow-x-auto">
-//         <table className="min-w-full divide-y divide-gray-200">
-//           <thead className="bg-gray-100">
-//             <tr>
-//               {["No", "결제 일자", "상품 정보", "수량", "가격", "결제 금액"].map((header) => (
-//                 <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                   {header}
-//                 </th>
-//               ))}
-//             </tr>
-//           </thead>
-//           <tbody className="bg-white divide-y divide-gray-200">
-//             {orders.map((order, index) => (
-//               <tr key={index}>
-//                 <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-//                 <td className="px-6 py-4 whitespace-nowrap">{new Date(order.customerOrder.orderedAt).toLocaleDateString()}</td>
-//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts[0]?.productName || '상품 정보 없음'}</td>
-//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts.reduce((acc, curr) => acc + curr.qty, 0)}</td>
-//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrderProducts.reduce((acc, curr) => acc + curr.price, 0)}</td>
-//                 <td className="px-6 py-4 whitespace-nowrap">{order.customerOrder.totalAmount}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-//       <div className="mt-4">
-//         총 판매액: {totalSales}
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default Payment
