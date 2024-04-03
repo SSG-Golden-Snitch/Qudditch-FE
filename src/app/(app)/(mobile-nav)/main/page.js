@@ -1,7 +1,10 @@
+
+import MobileMain from '@/components/MobileMain'
+
 const Main = () => {
   return (
     <div>
-      <h1>main</h1>
+      <MobileMain />
     </div>
   )
 }
