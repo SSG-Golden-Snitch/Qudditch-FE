@@ -1,15 +1,23 @@
 'use client'
 
 import '../../globals.css'
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, forwardRef, Fragment } from 'react'
 import Link from 'next/link'
-import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
 import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
+
+// 커스텀 입력 컴포넌트
+const CustomInput = forwardRef(({ value, onClick }, ref) => (
+  <button onClick={onClick} ref={ref} className="datepicker-button">
+    {/* <CalendarIcon className="calendar-icon" /> */}
+    {value}
+  </button>
+))
 
 const Sales = () => {
   const [orders, setOrders] = useState([])
@@ -45,7 +53,7 @@ const Sales = () => {
         if (!responseData) throw new Error('데이터 로딩 실패')
 
         // 상태 업데이트
-        setOrders(responseData)
+        setOrders(responseData.orders || [])
 
         // 총 판매액 계산
         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
@@ -100,21 +108,15 @@ const Sales = () => {
       <div className="relative w-full max-w-4xl">
         <div className="flex items-center">
           <h1 className="mb-4 text-3xl font-bold">판매</h1>
-          {/* <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
-            <TbCalendarSmile size="30px" />
-          </button> */}
+
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM"
+            showMonthYearPicker
+            customInput={<CustomInput />}
+          />
         </div>
-        {/* {isDatePickerOpen && (
-          <div className="absolute top-full mt-2">
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              dateFormat="yyyy/MM"
-              customInput={<CustomInput />}
-            />
-          </div>
-        )} */}
-        {/* <p>선택된 날짜: {formatDateYMD(selectedDate)}</p> */}
       </div>
 
       {/* <button onClick={handlePreviousMonth}>&lt;</button>
@@ -143,6 +145,7 @@ const Sales = () => {
             ))}
           </tr>
         </thead>
+
         <tbody className="divide-y divide-gray-200 bg-white">
           {orders.map((order, index) => (
             <Fragment key={index}>
