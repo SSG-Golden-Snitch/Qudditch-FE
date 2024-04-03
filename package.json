@@ -4,12 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0",
-    "build": "next build",
+    "build": "node ./src/utils/createAwsExports.mjs && next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky"
   },
   "dependencies": {
+    "@aws-amplify/adapter-nextjs": "^1.0.23",
+    "@aws-amplify/ui-react": "^6.1.6",
+    "@aws-amplify/ui-react-liveness": "^3.0.16",
+    "aws-amplify": "^6.0.23",
     "dayjs": "^1.11.10",
     "chart.js": "^4.4.2",
     "chartjs-plugin-datalabels": "^2.2.0",
