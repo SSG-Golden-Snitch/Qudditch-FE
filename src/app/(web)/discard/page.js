@@ -6,6 +6,8 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination, Button, Modal } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { MdOutlineQrCodeScanner } from 'react-icons/md'
+import BarcodeScanner from '@/components/BarcodeScanner'
+import { BrowserQRCodeReader } from '@zxing/library'
 
 export default function Input() {
   const [pagination, setPagination] = useState({
@@ -24,9 +26,27 @@ export default function Input() {
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
   const [openModal, setOpenModal] = useState(false)
+  const [result, setResult] = useState('')
+  const codeReader = new BrowserQRCodeReader()
+
+  const handleResult = (result) => {
+    setResult(result)
+    if (result === '') {
+      handleAlert('failure', '유효하지 않은 바코드입니다.')
+      setOpenModal(false)
+      codeReader.reset()
+      return
+    } else {
+      handleDisposal(result)
+      setOpenModal(false)
+      codeReader.reset()
+    }
+  }
 
   const handleCloseModal = () => {
     setOpenModal(false)
+    codeRender.stopCountinousDecode()
+    console.log('stop')
   }
 
   const handleAlert = (type, message) => {
@@ -34,8 +54,32 @@ export default function Input() {
     setMessage(message)
   }
 
-  const handleDisposal = () => {
-    console.log('disposal')
+  const handleDisposal = async (result) => {
+    const disposalItemReqUrl = new URL(apiUrl + '/api/store/stock/dispose')
+    await fetchExtended(disposalItemReqUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        credentials: 'include',
+      },
+      body: JSON.stringify({
+        productId: result,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res['status'] === 'fail') {
+          handleAlert('failure', res['message'])
+        } else {
+          handleAlert('success', res['message'])
+          handlsDisposalItems()
+        }
+      })
+      .catch((error) => {
+        handleAlert('failure', error.message)
+      })
   }
 
   const handlsDisposalItems = async (page = 1) => {
@@ -88,17 +132,17 @@ export default function Input() {
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
-      <div className="flex flex-col items-center pt-10">
-        <div className="pb-5">
-          <Button color="gray" onClick={() => setOpenModal(true)}>
-            <div className="flex items-center gap-2 text-center align-middle text-xs ">
+      <div>
+        <div className="flex justify-end pb-5 pr-3">
+          <Button className="" color="gray" onClick={() => setOpenModal(true)}>
+            <div className="flex items-center gap-2 text-center align-middle text-xs">
               폐기등록
               <MdOutlineQrCodeScanner />
             </div>
           </Button>
         </div>
         {error ? (
-          <div className="text-red-500">{error}</div>
+          <div className="flex flex-col items-center text-red-500">{error}</div>
         ) : (
           <>
             <CustomTable
@@ -126,10 +170,32 @@ export default function Input() {
           </>
         )}
       </div>
-      <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
+      {/* <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
         <Modal.Header></Modal.Header>
         <Modal.Body>
-          <div>카메라 들어갈거임</div>
+          <BarcodeScanner handleResult={handleResult} handleCloseModal={handleCloseModal} />
+        </Modal.Body>
+      </Modal> */}
+
+      <Modal
+        show={openModal}
+        size="md"
+        onClose={() => {
+          setOpenModal(false)
+          codeReader.reset()
+        }}
+        dismissible
+        popup
+      >
+        <Modal.Header> </Modal.Header>
+        <Modal.Body className="items-center justify-center justify-items-center">
+          <div className="text-center">
+            <BarcodeScanner
+              handleResult={handleResult}
+              handleCloseModal={handleCloseModal}
+              render={codeReader}
+            />
+          </div>
         </Modal.Body>
       </Modal>
     </div>
