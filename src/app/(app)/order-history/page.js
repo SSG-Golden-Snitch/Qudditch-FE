@@ -3,7 +3,7 @@
 import '../../globals.css'
 import React, { useState, useEffect, Fragment } from 'react'
 import Link from 'next/link'
-import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
+import { fetchExtended, apiUrl } from '@/utils/fetchExtended'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
 import { TbCalendarSmile } from 'react-icons/tb'
