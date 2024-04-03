@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { fetchExtended } from '@/utils/fetchExtended'
-import { Await } from 'react-router-dom'
+import { fetchExtended } from '@/utils/fetchExtended' // fetchExtended 함수의 정확한 경로를 확인하세요.
 
 const StoreSelectPage = () => {
   const [stores, setStores] = useState([])
@@ -11,12 +10,11 @@ const StoreSelectPage = () => {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    // 사용자 위치가 설정 -> 가까운 매장 목록
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         setCurrentLocation({
-          x: position.coords.latitude,
-          y: position.coords.longitude,
+          x: position.coords.longitude, // 경도
+          y: position.coords.latitude, // 위도
         })
       })
     }
@@ -28,26 +26,37 @@ const StoreSelectPage = () => {
     }
   }, [currentLocation])
 
+  const params = {
+    currentWgs84X: currentLocation.x,
+    currentWgs84Y: currentLocation.y,
+    limit: 5,
+  }
+
   const fetchStores = async () => {
-    const response = await fetchExtended('/api/store/location', {
+    // 쿼리 파라미터를 생성합니다.
+    const queryString = new URLSearchParams(params).toString()
+    const endpoint = `/api/store/location?${queryString}`
+
+    const response = await fetchExtended(endpoint, {
       method: 'GET',
-      params: {
-        currentWgs84X: currentLocation.x,
-        currentWgs84Y: currentLocation.y,
-        limit: 5,
-      },
     })
+
     if (response.ok) {
       const data = await response.json()
       setStores(data)
+    } else {
+      setMessage('매장 목록을 불러오는 데 실패하였습니다.')
     }
   }
 
   const handleStoreSelect = async (storeId) => {
+    // 매장 선택 API 경로와 메소드를 확인하고 필요에 따라 수정하세요.
     const response = await fetchExtended('/api/userstore', {
-      method: 'GET',
-      params: {
-        storeId: storeId,
+      // API 경로와 메소드가 가정된 예시입니다.
+      method: 'POST', // POST 메소드 사용을 가정함
+      body: JSON.stringify({ storeId }), // 요청 본문에 storeId를 JSON 형식으로 전달
+      headers: {
+        'Content-Type': 'application/json',
       },
     })
     if (response.ok) {

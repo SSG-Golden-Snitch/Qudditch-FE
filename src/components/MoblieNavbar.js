@@ -25,7 +25,6 @@ const MobileNavbar = () => {
     )
   }
 
-
   const NavPayment = (path) => {
     return (
       <Link href={path}>
@@ -44,10 +43,8 @@ const MobileNavbar = () => {
 
   const navItems = [
     NavItem({ name: '홈', icon: <HiOutlineHome size={40} />, path: '/main' }),
-    NavItem({ name: '쿠폰함', icon: <CiHeart size={40} />, path: '/coupon' }),
-    NavPayment(),
     NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/point' }),
-    NavPayment({ path: '/pay' }), // link로 감싸기
+    NavPayment({ path: '/store-select' }), // link로 감싸기
     NavItem({
       name: '주문내역',
       icon: <CiReceipt size={40} />,
