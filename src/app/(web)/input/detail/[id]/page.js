@@ -1,6 +1,6 @@
 'use client'
 
-import { CustomTable } from '@/components/customTable'
+import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 import { CustomAlert } from '@/components/CustomAlert'
