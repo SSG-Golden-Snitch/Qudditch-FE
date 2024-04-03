@@ -1,6 +1,7 @@
+import { fetchExtended } from '@/utils/fetchExtended'
 import { Table } from 'flowbite-react'
 export async function getOrder(id) {
-  const response = await fetch(`http://localhost:8080/api/store/order/detail/${id}`)
+  const response = await fetchExtended(`/api/store/order/detail/${id}`)
   return response.json()
 }
 

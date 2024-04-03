@@ -1,12 +1,13 @@
 'use client'
+import { fetchExtended } from '@/utils/fetchExtended'
 import { Table } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
 
 async function searchProductByName(productName) {
-  const URL = `http://localhost:8080/api/product/find/${productName}`
-  const response = await fetch(URL)
+  const URL = `/api/product/find/${productName}`
+  const response = await fetchExtended(URL)
   if (!response.ok) {
     throw new Error('제품 검색에 실패했습니다.')
   }
@@ -15,8 +16,8 @@ async function searchProductByName(productName) {
 }
 
 async function insertOrder(products) {
-  const URL = 'http://localhost:8080/api/store/order'
-  const response = await fetch(URL, {
+  const URL = '/api/store/order'
+  const response = await fetchExtended(URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,8 +43,8 @@ async function insertOrder(products) {
 }
 
 async function recommendOrder() {
-  const URL = 'http://localhost:8080/api/store/recommend'
-  const response = await fetch(URL)
+  const URL = '/api/store/recommend'
+  const response = await fetchExtended(URL)
   if (!response.ok) {
     throw new Error('추천목록 불러오기 실패')
   }
