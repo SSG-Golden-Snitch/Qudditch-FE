@@ -1,48 +1,27 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const mapRef = useRef(null)
-  const [bookmarks, setBookmarks] = useState([])
   const router = useRouter()
   const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
-
-  useEffect(() => {
-    const loadBookmarks = async () => {
-      try {
-        const response = await fetchExtended('/api/store/bookmark')
-        if (response.ok) {
-          const { bookmarks } = await response.json() // 응답 구조가 { bookmarks: [...] } 형태라고 가정
-          setBookmarks(bookmarks || []) // bookmarks가 undefined인 경우 빈 배열로 설정
-        } else {
-          console.error('북마크 데이터를 로드하는 데 실패했습니다.')
-          setBookmarks([]) // 에러 발생 시 bookmarks를 빈 배열로 초기화
-        }
-      } catch (error) {
-        console.error('북마크 데이터 로드 중 오류 발생:', error)
-        setBookmarks([]) // 예외 처리 시 bookmarks를 빈 배열로 초기화
-      }
-    }
-
-    loadBookmarks()
-  }, [])
 
   useEffect(() => {
     const loadMap = async () => {
       if (!defaultPosition || !window.naver || !stores || stores.length === 0) return
 
-      const mapOptions = {
-        center: new window.naver.maps.LatLng(defaultPosition.latitude, defaultPosition.longitude),
-        zoom: 14,
+      if (!mapRef.current) {
+        const mapOptions = {
+          center: new window.naver.maps.LatLng(defaultPosition.latitude, defaultPosition.longitude),
+          zoom: 14,
+        }
+        mapRef.current = new window.naver.maps.Map('map', mapOptions)
       }
-      mapRef.current = new window.naver.maps.Map('map', mapOptions)
 
       stores.forEach((store) => {
-        const isBookmarked = bookmarks.some((bookmark) => bookmark.storeId === store.id)
-
         const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
         const marker = new window.naver.maps.Marker({
           position: markerPosition,
@@ -51,16 +30,13 @@ const MapComponent = ({ defaultPosition, stores }) => {
             content: iconRef,
             anchor: new window.naver.maps.Point(12, 30),
           },
-          //animation: window.naver.maps.Animation.BOUNCE,
         })
-
-        const heartIcon = isBookmarked ? '❤️' : '🖤'
 
         // 정보창 내용 생성
         const contentString = `
             <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
               <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
-            <div onclick="window.toggleBookmark(${store.id})">${heartIcon}</div>
+            <div onclick="window.updateBookmark(${store.id})" style="cursor: pointer;">Bookmark</div>
             <button onClick="goInventory(${store.id})">재고현황</button>
               <br />
               </form>
@@ -90,10 +66,6 @@ const MapComponent = ({ defaultPosition, stores }) => {
           content: contentString,
         })
 
-        window.goInventory = (storeId) => {
-          router.push(`map/inventory/${storeId}`)
-        }
-
         window.naver.maps.Event.addListener(marker, 'click', () => {
           if (infowindow.getMap()) {
             infowindow.close()
@@ -113,38 +85,41 @@ const MapComponent = ({ defaultPosition, stores }) => {
     return () => {
       document.body.removeChild(script)
     }
-  }, [defaultPosition, stores, bookmarks])
+  }, [defaultPosition, stores])
 
   useEffect(() => {
-    const toggleBookmark = async (storeId) => {
+    window.updateBookmark = async (storeId) => {
       try {
-        const response = await fetchExtended(`/api/store/bookmark/toggle/${storeId}`, {
+        const response = await fetchExtended(`/api/store/bookmark/update/${storeId}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         })
 
         if (response.ok) {
-          setBookmarks(response) // 북마크 상태 업데이트
+          console.log('북마크 업데이트 성공')
         } else {
-          console.error('북마크 토글에 실패했습니다.')
+          console.error('북마크 업데이트 실패')
         }
       } catch (error) {
-        console.error('북마크 토글 중 오류 발생:', error)
+        console.error('북마크 업데이트 중 오류 발생:', error)
       }
     }
 
-    // 함수를 전역 객체에 할당하여 외부에서 접근 가능하게 합니다.
-    window.toggleBookmark = toggleBookmark
+    window.goInventory = (storeId) => {
+      router.push(`/map/inventory/${storeId}`)
+    }
 
     return () => {
-      // 컴포넌트가 언마운트될 때 window 객체에서 함수를 제거합니다.
-      delete window.toggleBookmark
+      delete window.updateBookmark
+      delete window.goInventory
     }
-  }, [defaultPosition, stores, bookmarks]) // `bookmarks` 상태가 변경될 때마다 useEffect 훅을 재실행
+  }, [router])
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
-      <div id="map" style={{ flex: '1', minWidth: '50%' }}></div>
+    <div>
+      <div id="map" style={{ width: '100vw', height: '92vh' }}></div>
+      {/* <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
+       <div id="map" style={{ flex: '1', minWidth: '40%' }}></div> */}
     </div>
   )
 }

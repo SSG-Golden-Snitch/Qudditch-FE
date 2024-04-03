@@ -11,6 +11,7 @@ const CurrentLocationComponent = () => {
 const HomePage = () => {
   const [currentPosition, setCurrentPosition] = useState(null)
   const [data, setData] = useState(null)
+  const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
     const onSuccessGeolocation = (position) => {
@@ -48,11 +49,36 @@ const HomePage = () => {
       console.error(error)
     }
   }
+  useEffect(() => {
+    const handleScroll = () => {
+      // 여기에서 스크롤 위치에 따른 조건을 정의하여 정보 창을 표시하거나 숨깁니다.
+      const threshold = 100 // 스크롤 시작 위치에 따라 조정 가능
+      setShowDetails(window.scrollY > threshold)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  // 상세 정보 창 렌더링
+  const renderDetails = () => {
+    if (!showDetails) return null
+
+    return (
+      <div className="details">
+        <h1>123</h1>
+      </div>
+    )
+  }
 
   return (
     <div>
       <MapComponent defaultPosition={currentPosition} stores={data} />
       <CurrentLocationComponent currentPosition={currentPosition} />
+      {renderDetails()}
     </div>
   )
 }
