@@ -12,8 +12,9 @@ const BestProduct = () => {
       try {
         const response = await fetchExtended(`/api/product/BestProduct`)
         const data = await response.json()
-        setLabels(data['bestProducts'].map((product) => product['name']))
-        setProductDataSet(data['bestProducts'].map((product) => product.outQty))
+        const bindingData = data['bestProducts'].filter((product) => product['outQty'] !== 0)
+        setLabels(bindingData.map((product) => product['name']))
+        setProductDataSet(bindingData.map((product) => product.outQty))
       } catch (error) {
         console.error('error', error)
       }
