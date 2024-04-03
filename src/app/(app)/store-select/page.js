@@ -33,7 +33,6 @@ const StoreSelectPage = () => {
   }
 
   const fetchStores = async () => {
-    // 쿼리 파라미터를 생성합니다.
     const queryString = new URLSearchParams(params).toString()
     const endpoint = `/api/store/location?${queryString}`
 
@@ -50,15 +49,13 @@ const StoreSelectPage = () => {
   }
 
   const handleStoreSelect = async (storeId) => {
-    // 매장 선택 API 경로와 메소드를 확인하고 필요에 따라 수정하세요.
-    const response = await fetchExtended('/api/userstore', {
-      // API 경로와 메소드가 가정된 예시입니다.
-      method: 'POST', // POST 메소드 사용을 가정함
-      body: JSON.stringify({ storeId }), // 요청 본문에 storeId를 JSON 형식으로 전달
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const queryParams = new URLSearchParams({ storeId }).toString()
+    const url = `/api/userstore?${queryParams}`
+
+    const response = await fetchExtended(url, {
+      method: 'GET',
     })
+
     if (response.ok) {
       const data = await response.text()
       setMessage('매장이 성공적으로 선택되었습니다. ' + data)
