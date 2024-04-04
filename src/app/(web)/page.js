@@ -1,262 +1,73 @@
+'use client'
+
+import BestProduct from '@/components/BestProduct'
+import CategoryGraph from '@/components/CategoryGraph'
+import DailySales from '@/components/DailySales'
+import DailyVisitor from '@/components/DailyVisitor'
+import MonthlySales from '@/components/MonthlySales'
+import MonthlyVisitor from '@/components/MonthlyVisitor'
+import SalesGraph from '@/components/SalesGraph'
+import VisitorGraph from '@/components/VisitorGraph'
+import { useState } from 'react'
+
+import Datepicker from 'tailwind-datepicker-react'
+
 export default function Home() {
+  const [show, setShow] = useState(false)
+  const [date, setDate] = useState(dateToYYYYMMDD(new Date()))
+
+  const handleChange = (selectedDate) => {
+    setDate(dateToYYYYMMDD(selectedDate))
+  }
+  const handleClose = (state) => {
+    setShow(state)
+  }
+
   return (
-    <div className="h-screen bg-gray-100 p-4 dark:border-gray-700">
-      <div className="flex-row-2 flex">
+    <div className="flex h-full flex-col bg-gray-100 p-4 dark:border-gray-700">
+      <div className="flex h-20 justify-between">
         <p className="m-2 text-2xl font-bold">Dashboard</p>
-      </div>
-      <div className="mb-4 grid grid-cols-3 gap-4">
-        <div className="flex h-24 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
-        </div>
-        <div className="flex h-24 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
-        </div>
-        <div className="flex h-24 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="mr-20">
+          <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
         </div>
       </div>
-      <div className="mb-4 flex h-48 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-        <p className="text-2xl text-gray-400 dark:text-gray-500">
-          <svg
-            className="h-3.5 w-3.5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 18 18"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 1v16M1 9h16"
-            />
-          </svg>
-        </p>
-      </div>
-      <div className="mb-4 grid grid-cols-2 gap-4">
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+      <div className="mb-4 grid h-24 grid-cols-4 gap-4">
+        <div className="flex items-center justify-center rounded bg-gray-50">
+          <MonthlyVisitor dateInput={date.substring(0, 7)} />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="flex items-center justify-center rounded bg-gray-50">
+          <DailyVisitor dateInput={date} />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="flex items-center justify-center rounded bg-gray-50">
+          <MonthlySales dateInput={date.substring(0, 7)} />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="flex items-center justify-center rounded bg-gray-50">
+          <DailySales dateInput={date} />
         </div>
       </div>
-      <div className="mb-4 flex h-48 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-        <p className="text-2xl text-gray-400 dark:text-gray-500">
-          <svg
-            className="h-3.5 w-3.5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 18 18"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 1v16M1 9h16"
-            />
-          </svg>
-        </p>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+      <div className="mb-4 grid h-full grid-cols-2 gap-4">
+        <div className="bg-gray-50 px-6">
+          <VisitorGraph dateInput={date.substring(0, 7)} />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="bg-gray-50 px-6">
+          <SalesGraph dateInput={date.substring(0, 7)} />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="bg-gray-50 px-6">
+          <BestProduct />
         </div>
-        <div className="flex h-28 items-center justify-center rounded bg-gray-50 dark:bg-gray-800">
-          <p className="text-2xl text-gray-400 dark:text-gray-500">
-            <svg
-              className="h-3.5 w-3.5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 18"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 1v16M1 9h16"
-              />
-            </svg>
-          </p>
+        <div className="bg-gray-50 px-6">
+          <CategoryGraph dateInput={date.substring(0, 7)} />
         </div>
       </div>
     </div>
   )
+}
+
+function dateToYYYYMMDD(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const dateString = `${year}-${month}-${day}`
+
+  return dateString
 }
