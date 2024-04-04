@@ -4,20 +4,21 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 
-const Receipt = () => {
+const Receipt = ({ params }) => {
   // const pathname = usePathname();
-  const [searchParams, setSearchParams] = useSearchParams()
-  const partnerOrderId = searchParams.get('partnerOrderId')
+  // const [searchParams, setSearchParams] = useSearchParams()
+  // const partnerOrderId = searchParams.get('partnerOrderId')
   const [receiptData, setReceiptData] = useState(null)
+  console.log(params.partnerOrderId)
 
   useEffect(() => {
-    if (!partnerOrderId) return
+    if (!params.partnerOrderId) return
 
     async function fetchData() {
-      const endpoint = `/api/order/receipt?partnerOrderId=${partnerOrderId}` // 쿼리 스트링 직접 포함
+      const endpoint = `/api/order/receipt?partnerOrderId=${params}` // 쿼리 스트링 직접 포함
       try {
         // fetchExtended 사용 시 baseUrl과 headers가 자동으로 처리됨
-        const response = await fetchExtended(apiUrl + endpoint, {
+        const response = await fetchExtended(endpoint, {
           method: 'GET',
         })
 
@@ -30,7 +31,7 @@ const Receipt = () => {
     }
 
     fetchData()
-  }, [partnerOrderId])
+  }, [])
 
   if (!receiptData) {
     return <div>로딩 중...</div>
@@ -38,7 +39,7 @@ const Receipt = () => {
 
   return (
     <div>
-      <h1>Receipt for Order ID: {partnerOrderId}</h1>
+      <h1>Receipt for Order ID: {params.partnerOrderId}</h1>
       <div>Date: {receiptData.customerOrder.orderedAt}</div>
       <div>Total Amount: {receiptData.customerOrder.totalAmount}</div>
     </div>
