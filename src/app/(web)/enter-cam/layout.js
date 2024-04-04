@@ -1,7 +1,7 @@
-'use client'
+import CameraDevicesProvider from '@/providers/CameraDevicesProvider'
 
 const EnterCamLayout = ({ children }) => {
-  return <div>{children}</div>
+  return <CameraDevicesProvider>{children}</CameraDevicesProvider>
 }
 
 export default EnterCamLayout

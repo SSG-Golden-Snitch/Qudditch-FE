@@ -1,87 +1,209 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import useInterval from '@/components/hooks/useInterval'
+import Drawing3d from '@/lib/Drawing3d'
+import FaceDetection from '@/mediapipe/face-detection'
+import initMediaPipVision from '@/mediapipe/mediapipe-vision'
+import { CameraDevicesContext } from '@/providers/CameraDevicesProvider'
+import {
+  CAMERA_LOAD_STATUS_ERROR,
+  CAMERA_LOAD_STATUS_NO_DEVICES,
+  CAMERA_LOAD_STATUS_SUCCESS,
+  ERROR_ENABLE_CAMERA_PERMISSION_MSG,
+  ERROR_NO_CAMERA_DEVICE_AVAILABLE_MSG,
+  FACE_DETECTION_MODE,
+  NO_MODE,
+} from '@/utils/definitions'
+import '@mediapipe/tasks-vision'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import Webcam from 'react-webcam'
+import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { SignalingClient } from 'amazon-kinesis-video-streams-webrtc'
 
-const EnterCamPage = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const region = process.env.AWS_REGION
-  const accessKeyId = process.env.AWS_ACCESS_KEY_ID
-  const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
-  const videoRef = useRef()
-  const [channelARN, setChannelARN] = useState('')
-  const [endpointsByProtocol, setEndpointsByProtocol] = useState({})
-  const [iceServers, setIceServers] = useState([
-    { urls: `stun:stun.kinesisvideo.${region}.amazonaws.com:443` },
-  ])
+const Home = () => {
+  const cameraDeviceProvider = useContext(CameraDevicesContext)
+  const webcamRef = useRef(null)
+  const canvas3dRef = useRef(null)
+  const canvas2dRef = useRef(null)
+  const [mirrored, setMirrored] = useState(false)
+  const [modelLoadResult, setModelLoadResult] = useState()
+  const [loading, setLoading] = useState(false)
+  const [currentMode, setCurrentMode] = useState(NO_MODE)
+  const [animateDelay, setAnimateDelay] = useState(1500)
+  const [enteredCustomers, setEnteredCustomers] = useState([])
 
-  useEffect(() => {
-    const handleWebRTC = async () =>
-      await fetchExtended('/api/kinesis/web-rtc')
+  const initModels = async () => {
+    const vision = await initMediaPipVision()
+
+    if (vision) {
+      const models = [await FaceDetection.initModel(vision)]
+
+      const results = await Promise.all(models)
+      const enabledModels = results.filter((result) => result.loadResult)
+
+      if (enabledModels.length > 0) {
+        setCurrentMode(enabledModels[0].mode)
+      }
+      setModelLoadResult(enabledModels)
+    }
+  }
+
+  const handleCustomerEntered = async () => {
+    const formData = new FormData()
+    await new Promise((resolve) => {
+      canvas2dRef.current.toBlob((blob) => {
+        resolve(blob)
+      })
+    }).then(async (blob) => {
+      formData.append('file', blob)
+      await fetchExtended('/api/rekognition/check-face', {
+        method: 'POST',
+        body: formData,
+      })
         .then((response) => response.json())
         .then((data) => {
-          setEndpointsByProtocol(
-            data['signalingChannelEndpoints'].reduce((endpoints, endpoint) => {
-              endpoints[endpoint['protocol']] = endpoint['resourceEndpoint']
-              return endpoints
-            }, {}),
-          )
-          setIceServers(
-            data['iceServers'].map((iceServer) => {
-              return {
-                urls: iceServer['urls'],
-                username: iceServer['username'],
-                credential: iceServer['credential'],
-              }
-            }),
-          )
+          if (data['userIds'].length > 0) {
+            const now = new Date()
+            const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+            setEnteredCustomers([...enteredCustomers, time])
+          }
         })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    })
+  }
 
-    handleWebRTC().then(() => setIsLoading(false))
+  const runPrediction = async () => {
+    if (webcamRef.current && webcamRef.current.video && webcamRef.current.video.readyState === 4) {
+      if (currentMode === FACE_DETECTION_MODE && !FaceDetection.isModelUpdating()) {
+        const facePredictions = FaceDetection.detectFace(webcamRef.current.video)
+
+        if (facePredictions?.detections) {
+          const canvas = canvas3dRef.current
+          const video = webcamRef.current?.video
+
+          if (canvas && video) {
+            const { videoWidth, videoHeight } = video
+            if (facePredictions?.detections.length > 0) {
+              canvas2dRef.current.width = videoWidth
+              canvas2dRef.current.height = videoHeight
+              const ctx = canvas2dRef.current.getContext('2d')
+              ctx.drawImage(video, 0, 0, videoWidth, videoHeight)
+
+              await handleCustomerEntered()
+            }
+
+            Drawing3d.resizeCamera(videoWidth, videoHeight)
+            FaceDetection.draw(mirrored, facePredictions.detections, videoWidth, videoHeight)
+          }
+        }
+      }
+    }
+  }
+
+  const canvas3dRefCallback = useCallback((element) => {
+    if (element !== null && !Drawing3d.isRendererInitialized()) {
+      canvas3dRef.current = element
+      Drawing3d.initRenderer(element)
+      console.log('init three renderer')
+    }
   }, [])
 
-  const peerConnection = new RTCPeerConnection({
-    iceServers: iceServers,
-  })
+  const canvas2dRefCallback = useCallback((element) => {
+    if (element !== null) {
+      canvas2dRef.current = element
+    }
+  }, [])
 
-  const signalingClient = new SignalingClient({
-    channelARN,
-    channelEndpoint: endpointsByProtocol['WSS'],
-    role: 'MASTER',
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  })
+  const webcamRefCallback = useCallback((element) => {
+    if (element != null) {
+      webcamRef.current = element
+    }
+  }, [])
 
   useEffect(() => {
-    console.log(endpointsByProtocol, iceServers)
-    if (!videoRef.current) return
-    signalingClient.on('open', async () => {
-      try {
-        const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        localStream.getTracks().forEach((track) => peerConnection.addTrack(track, localStream))
-        videoRef.current.srcObject = localStream
-      } catch (e) {
-        console.log(e)
-      }
-    })
+    setLoading(true)
+    Drawing3d.initScene(window.innerWidth, window.innerHeight)
+    initModels()
   }, [])
 
+  useEffect(() => {
+    if (modelLoadResult) {
+      setLoading(false)
+    }
+  }, [modelLoadResult])
+
+  useEffect(() => {
+    if (!loading) {
+      if (cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_ERROR) {
+        alert(ERROR_ENABLE_CAMERA_PERMISSION_MSG)
+      } else if (cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_NO_DEVICES) {
+        alert(ERROR_NO_CAMERA_DEVICE_AVAILABLE_MSG)
+      }
+    }
+  }, [loading, cameraDeviceProvider?.status.status])
+
+  useEffect(() => {
+    const cleanup = () => {
+      setAnimateDelay(null)
+      webcamRef.current = null
+      canvas3dRef.current = null
+    }
+
+    window.addEventListener('beforeunload', cleanup)
+    return () => {
+      window.removeEventListener('beforeunload', cleanup)
+    }
+  }, [])
+
+  useInterval({ callback: runPrediction, delay: animateDelay })
+
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      {isLoading && (
-        <div
-          className={
-            'absolute h-12 w-12 animate-spin rounded-md border-4 border-t-4 border-gray-500'
-          }
-        />
-      )}
-      {!isLoading && <video ref={videoRef} autoPlay playsInline muted className="h-96 w-96" />}
+    <div className="flex h-screen flex-row items-center justify-between pt-6">
+      {/* Camera area */}
+      <div className={'flex h-full max-w-[80%] shrink grow flex-col px-4'}>
+        <CameraSelect />
+        <div className="relative flex">
+          {cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_SUCCESS &&
+          cameraDeviceProvider?.webcamId ? (
+            <>
+              <Webcam
+                ref={webcamRefCallback}
+                mirrored={mirrored}
+                className="h-full w-full object-contain p-2"
+                videoConstraints={{
+                  deviceId: cameraDeviceProvider.webcamId,
+                }}
+              />
+              <canvas
+                id="3d canvas"
+                ref={canvas3dRefCallback}
+                className="absolute left-0 top-0 h-full w-full object-contain"
+              ></canvas>
+              {/* 보이지 않는 켄바스 */}
+              <canvas ref={canvas2dRef} className={'hidden'}></canvas>
+            </>
+          ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_ERROR ? (
+            <div className="flex h-full w-full items-center justify-center">
+              Please Enable Camera Permission
+            </div>
+          ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_NO_DEVICES ? (
+            <div className="flex h-full w-full items-center justify-center">
+              No Camera Device Available
+            </div>
+          ) : null}
+        </div>
+      </div>
+      <div className={'mr-4 h-full max-w-[18%] grow overflow-auto border p-4 text-center'}>
+        <ul>
+          {enteredCustomers.map((customer, idx) => (
+            <li key={idx}>{customer}: 출입문 열림</li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
 
-export default EnterCamPage
+export default Home
