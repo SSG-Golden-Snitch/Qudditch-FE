@@ -1,12 +1,6 @@
 'use client'
-import GetDetail from '@/components/orderUpdateList'
 
-export async function getData({ params: { id } }) {
-  const storeOrder = await getStoreOrder(id)
-  return {
-    id: storeOrder.id,
-  }
-}
+import GetDetail from '@/components/orderUpdateList'
 
 export default function OrderUpdate({ params: { id } }) {
   return (
