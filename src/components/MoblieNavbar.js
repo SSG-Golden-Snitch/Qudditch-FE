@@ -46,7 +46,7 @@ const MobileNavbar = () => {
     NavItem({ name: '쿠폰함', icon: <CiHeart size={40} />, path: '/coupon' }),
     // NavPayment(),
     NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/point' }),
-    NavPayment({ path: '/pay' }), // link로 감싸기
+    NavPayment({ path: '/store-select' }),
     NavItem({
       name: '주문내역',
       icon: <CiReceipt size={40} />,
