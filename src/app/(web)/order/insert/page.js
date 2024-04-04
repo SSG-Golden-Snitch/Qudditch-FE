@@ -4,6 +4,7 @@ import { Table } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import Image from 'next/image'
 
 async function searchProductByName(productName) {
   const URL = `/api/product/find/${productName}`
@@ -259,53 +260,55 @@ export default function OrderInsertPage() {
             </Table.Body>
           </Table>
         </div>
-        <div className="md:col-span-1">
-          <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
-            Recommended{' '}
-            <span class="underline-offset-3 underline decoration-blue-200 decoration-8 dark:decoration-blue-600">
-              product’s for ordering
-            </span>
-          </h1>
-          <Table>
-            <Table.Head>
-              <Table.HeadCell>image</Table.HeadCell>
-              <Table.HeadCell>Brand</Table.HeadCell>
-              <Table.HeadCell>Name</Table.HeadCell>
-              <Table.HeadCell></Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {recommend.map((product) => (
-                <Table.Row
-                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                  key={product.id}
-                >
-                  <Table.Cell>
-                    <img src={product.image} alt={product.name} width="60" />
-                  </Table.Cell>
-                  <Table.Cell>{product.brand}</Table.Cell>
-                  <Table.Cell>{product.name}</Table.Cell>
-                  <Table.Cell>
-                    <button
-                      type="button"
-                      className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-                      onClick={() => addToOrder(product)}
-                    >
-                      <svg
-                        className="mr-2 h-3.5 w-3.5"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        viewBox="0 0 18 21"
+        {recommend.length > 0 && (
+          <div className="md:col-span-1">
+            <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
+              Recommended{' '}
+              <span className="underline-offset-3 underline decoration-blue-200 decoration-8 dark:decoration-blue-600">
+                product’s for ordering
+              </span>
+            </h1>
+            <Table>
+              <Table.Head>
+                <Table.HeadCell>image</Table.HeadCell>
+                <Table.HeadCell>Brand</Table.HeadCell>
+                <Table.HeadCell>Name</Table.HeadCell>
+                <Table.HeadCell></Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {recommend.map((product) => (
+                  <Table.Row
+                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                    key={product.id}
+                  >
+                    <Table.Cell>
+                      <Image src={product.image} alt={product.name} width="60" />
+                    </Table.Cell>
+                    <Table.Cell>{product.brand}</Table.Cell>
+                    <Table.Cell>{product.name}</Table.Cell>
+                    <Table.Cell>
+                      <button
+                        type="button"
+                        className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                        onClick={() => addToOrder(product)}
                       >
-                        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
-                      </svg>
-                      +
-                    </button>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-        </div>
+                        <svg
+                          className="mr-2 h-3.5 w-3.5"
+                          aria-hidden="true"
+                          fill="currentColor"
+                          viewBox="0 0 18 21"
+                        >
+                          <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                        </svg>
+                        +
+                      </button>
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          </div>
+        )}
       </div>
     </div>
   )

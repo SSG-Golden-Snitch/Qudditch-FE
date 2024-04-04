@@ -3,13 +3,6 @@ import OrderDetailPage from '@/components/orderProductList'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter } from 'next/navigation'
 
-export async function getData({ params: { id } }) {
-  const storeOrder = await getStoreOrder(id)
-  return {
-    id: storeOrder.id,
-  }
-}
-
 async function getXlsx(id) {
   const URL = `/api/store/order/download/${id}`
   const response = await fetchExtended(URL)
@@ -27,7 +20,7 @@ async function getXlsx(id) {
   window.URL.revokeObjectURL(url)
 }
 
-export default async function OrderDetail({ params: { id } }) {
+export default function OrderDetail({ params: { id } }) {
   const router = useRouter()
   const handleXlsxClick = async () => {
     try {
