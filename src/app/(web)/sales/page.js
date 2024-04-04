@@ -12,6 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 
 // 커스텀 입력 컴포넌트
+// eslint-disable-next-line react/display-name
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
   <button onClick={onClick} ref={ref} className="datepicker-button">
     {/* <CalendarIcon className="calendar-icon" /> */}
