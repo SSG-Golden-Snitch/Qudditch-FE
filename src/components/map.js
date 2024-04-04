@@ -20,7 +20,6 @@ const MapComponent = ({ defaultPosition, stores }) => {
         }
         mapRef.current = new window.naver.maps.Map('map', mapOptions)
       }
-
       stores.forEach((store) => {
         const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
         const marker = new window.naver.maps.Marker({
@@ -112,7 +111,11 @@ const MapComponent = ({ defaultPosition, stores }) => {
     }
 
     window.goInventory = (storeId) => {
-      router.push(`/map/inventory/${storeId}`)
+      if (!storeId) {
+        alert('스토어 정보가 없습니다.')
+      } else {
+        router.push(`/map/inventory/${storeId}`)
+      }
     }
 
     return () => {
