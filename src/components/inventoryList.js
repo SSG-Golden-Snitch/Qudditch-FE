@@ -1,13 +1,35 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { Table } from 'flowbite-react'
+import { useEffect, useState } from 'react'
 export async function getData(id) {
   const response = await fetchExtended(`/api/store/location/stock?userStoreId=${id}`)
   return response.json()
 }
 
-export default async function LocationStockPage({ id }) {
-  const data = await getData(id)
+export default function LocationStockPage({ id }) {
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getData(id)
+        setData(result)
+        if (!result || !result.list || result.list.length === 0) {
+          alert('선택한 스토어에 재고가 없습니다.')
+        }
+      } catch (error) {
+        console.error('데이터 로딩 중 오류 발생:', error)
+        alert('데이터 로딩 중 오류가 발생했습니다.')
+      }
+    }
+
+    fetchData()
+  }, [id])
+
+  if (!data || !data.list || data.list.length === 0) {
+    return <div>데이터가 없습니다.</div>
+  }
+
   return (
     <div className="bg-white p-4">
       <h2 className="mb-4 text-lg font-semibold">재고현황</h2>
