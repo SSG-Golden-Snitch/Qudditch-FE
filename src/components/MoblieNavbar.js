@@ -25,9 +25,9 @@ const MobileNavbar = () => {
     )
   }
 
-  const NavPayment = (path) => {
+  const NavPayment = ({ path }) => {
     return (
-      <Link href={path} passHref>
+      <Link href={path}>
         <div className={'z-20 flex cursor-pointer flex-col items-center'}>
           {/* Link 컴포넌트를 사용하여 /pay로의 링크를 생성 */}
 
@@ -43,10 +43,8 @@ const MobileNavbar = () => {
 
   const navItems = [
     NavItem({ name: '홈', icon: <HiOutlineHome size={40} />, path: '/main' }),
-    NavItem({ name: '쿠폰함', icon: <CiHeart size={40} />, path: '/coupon' }),
-    // NavPayment(),
     NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/point' }),
-    NavPayment({ path: '/pay' }), // link로 감싸기
+    NavPayment({ path: '/store-select' }),
     NavItem({
       name: '주문내역',
       icon: <CiReceipt size={40} />,
