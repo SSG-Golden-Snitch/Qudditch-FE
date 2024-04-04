@@ -1,33 +1,67 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useEffect, useState } from 'react'
-export async function getData(id) {
-  const response = await fetchExtended(`/api/store/location/stock?userStoreId=${id}`)
+import { useRouter } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+export async function getData(id, page = 1, recordSize = 5) {
+  const response = await fetchExtended(
+    `/api/store/location/stock?userStoreId=${id}&page=${page}&recordSize=${recordSize}`,
+  )
   return response.json()
 }
 
 export default function LocationStockPage({ id }) {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState([])
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const loader = useRef(null)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
+      if (loading || !hasMore) return
+      setLoading(true)
+
       try {
-        const result = await getData(id)
-        setData(result)
-        if (!result || !result.list || result.list.length === 0) {
-          alert('선택한 스토어에 재고가 없습니다.')
-        }
+        const result = await getData(id, page)
+        setData((prevData) => [...prevData, ...result.list])
+        setHasMore(result.pagination.totalPageCount > page)
+        setPage((prevPage) => prevPage + 1)
       } catch (error) {
         console.error('데이터 로딩 중 오류 발생:', error)
-        alert('데이터 로딩 중 오류가 발생했습니다.')
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchData()
-  }, [id])
+  }, [id, page, hasMore, loading])
 
-  if (!data || !data.list || data.list.length === 0) {
-    return <div>데이터가 없습니다.</div>
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 1.0,
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore && !loading) {
+        setPage((prevPage) => prevPage + 1)
+      }
+    }, options)
+
+    if (loader.current) {
+      observer.observe(loader.current)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [loading, hasMore])
+
+  if (data.length === 0 && !loading) {
+    alert('선택한 스토어에 재고가 없습니다.')
+    router.push('/map')
   }
 
   return (
@@ -57,7 +91,9 @@ export default function LocationStockPage({ id }) {
             <div className="text-sm font-semibold">{product.qty}개</div>
           </div>
         ))}
+        {loading && <div>Loading more items...</div>}
       </div>
+      <div ref={loader} />
     </div>
   )
 }
