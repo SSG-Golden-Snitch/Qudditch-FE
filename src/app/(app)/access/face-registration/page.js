@@ -10,13 +10,12 @@ import {
   hintDisplayText,
   instructionDisplayText,
   streamDisplayText,
-} from './LivenessUtil'
+} from '@/components/LivenessUtil'
 import { useRouter } from 'next/navigation'
 
 const FaceRegistrationPage = () => {
   const [loading, setLoading] = useState(true)
   const [sessionId, setSessionId] = useState('')
-  const [error, setError] = useState(undefined)
   const router = useRouter()
   const ANALYSIS_SUCCESS_MSG = 'SUCCEEDED'
 
@@ -45,18 +44,6 @@ const FaceRegistrationPage = () => {
       })
   }
 
-  const CustomError = useCallback(() => {
-    return (
-      <Flex justifyContent="center" alignItems="center" width="100%" height="100%">
-        <Flex backgroundColor="white" direction="column" justifyContent="center" padding="32px">
-          <Heading color="black">{error?.state}</Heading>
-          <p>{error?.error.message}</p>
-          <Button>Try again?</Button>
-        </Flex>
-      </Flex>
-    )
-  }, [error])
-
   return (
     <>
       {loading ? (
@@ -68,7 +55,6 @@ const FaceRegistrationPage = () => {
           sessionId={sessionId}
           region="ap-northeast-1"
           onAnalysisComplete={handleAnalysisComplete}
-          onError={setError}
           onUserCancel={() => router.back()}
           disableStartScreen={true}
           displayText={{
@@ -77,9 +63,6 @@ const FaceRegistrationPage = () => {
             ...instructionDisplayText,
             ...streamDisplayText,
             ...customDefaultErrorDisplayText,
-          }}
-          components={{
-            ErrorView: CustomError,
           }}
         />
       )}
