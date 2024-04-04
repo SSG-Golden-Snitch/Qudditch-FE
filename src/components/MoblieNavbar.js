@@ -24,10 +24,13 @@ const MobileNavbar = () => {
       </Link>
     )
   }
+
   const NavPayment = ({ path }) => {
     return (
       <Link href={path}>
         <div className={'z-20 flex cursor-pointer flex-col items-center'}>
+          {/* Link 컴포넌트를 사용하여 /pay로의 링크를 생성 */}
+
           <div className="absolute bottom-5 left-1/2 flex h-16 w-16 -translate-x-1/2 transform items-center justify-center rounded-full border border-amber-300 bg-amber-400 p-3 text-white">
             <div className={'text-4xl'}>
               <CiBarcode size={50} />
