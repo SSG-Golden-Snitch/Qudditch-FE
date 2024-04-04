@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { Button } from 'flowbite-react'
+import Link from 'next/link'
+import MobileNavbar from '@/components/MobileNavbar'
 
 const StoreSelectPage = () => {
   const [stores, setStores] = useState([])
@@ -33,7 +35,7 @@ const StoreSelectPage = () => {
     const params = {
       currentWgs84X: currentLocation.x,
       currentWgs84Y: currentLocation.y,
-      limit: 10,
+      limit: 8,
     }
 
     const queryString = new URLSearchParams(params).toString()
@@ -94,7 +96,7 @@ const StoreSelectPage = () => {
       <h1 className="mb-6 text-center text-2xl font-bold">매장 설정</h1>
       {message && <div className="mb-4 rounded bg-blue-100 p-3 text-blue-800">{message}</div>}
 
-      <h3 className="mb-4 border-b-2">가까운 매장</h3>
+      <h3 className="mb-4 border-b-2">거리순</h3>
 
       <div className="mb-4 flex w-full justify-start">
         <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
@@ -118,11 +120,15 @@ const StoreSelectPage = () => {
             className="mb-2 cursor-pointer rounded-md border border-gray-200 p-2"
             onClick={() => handleStoreSelect(store.id)}
           >
-            <p className="font-medium">{store.name}</p>
-            <p>{store.address}</p>
+            <Link href={`/camera`}>
+              <p className="font-medium">{store.name}</p>
+              <p>{store.address}</p>
+            </Link>
           </div>
         ))}
       </div>
+
+      <MobileNavbar />
     </div>
   )
 }
