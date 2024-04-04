@@ -19,6 +19,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
+import Loading from '@/components/ui/Loaing'
 
 const Home = () => {
   const cameraDeviceProvider = useContext(CameraDevicesContext)
@@ -27,7 +28,7 @@ const Home = () => {
   const canvas2dRef = useRef(null)
   const [mirrored, setMirrored] = useState(false)
   const [modelLoadResult, setModelLoadResult] = useState()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [currentMode, setCurrentMode] = useState(NO_MODE)
   const [animateDelay, setAnimateDelay] = useState(1500)
   const [enteredCustomers, setEnteredCustomers] = useState([])
@@ -110,12 +111,6 @@ const Home = () => {
     }
   }, [])
 
-  const canvas2dRefCallback = useCallback((element) => {
-    if (element !== null) {
-      canvas2dRef.current = element
-    }
-  }, [])
-
   const webcamRefCallback = useCallback((element) => {
     if (element != null) {
       webcamRef.current = element
@@ -160,49 +155,55 @@ const Home = () => {
   useInterval({ callback: runPrediction, delay: animateDelay })
 
   return (
-    <div className="flex h-screen flex-row items-center justify-between pt-6">
-      {/* Camera area */}
-      <div className={'flex h-full max-w-[80%] shrink grow flex-col px-4'}>
-        <CameraSelect />
-        <div className="relative flex">
-          {cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_SUCCESS &&
-          cameraDeviceProvider?.webcamId ? (
-            <>
-              <Webcam
-                ref={webcamRefCallback}
-                mirrored={mirrored}
-                className="h-full w-full object-contain p-2"
-                videoConstraints={{
-                  deviceId: cameraDeviceProvider.webcamId,
-                }}
-              />
-              <canvas
-                id="3d canvas"
-                ref={canvas3dRefCallback}
-                className="absolute left-0 top-0 h-full w-full object-contain"
-              ></canvas>
-              {/* 보이지 않는 켄바스 */}
-              <canvas ref={canvas2dRef} className={'hidden'}></canvas>
-            </>
-          ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_ERROR ? (
-            <div className="flex h-full w-full items-center justify-center">
-              Please Enable Camera Permission
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="flex h-screen flex-row items-center justify-between pt-6">
+          {/* Camera area */}
+          <div className={'flex h-full max-w-[80%] shrink grow flex-col px-4'}>
+            <CameraSelect />
+            <div className="relative flex">
+              {cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_SUCCESS &&
+              cameraDeviceProvider?.webcamId ? (
+                <>
+                  <Webcam
+                    ref={webcamRefCallback}
+                    mirrored={mirrored}
+                    className="h-full w-full object-contain p-2"
+                    videoConstraints={{
+                      deviceId: cameraDeviceProvider.webcamId,
+                    }}
+                  />
+                  <canvas
+                    id="3d canvas"
+                    ref={canvas3dRefCallback}
+                    className="absolute left-0 top-0 h-full w-full object-contain"
+                  ></canvas>
+                  {/* 보이지 않는 켄바스 */}
+                  <canvas ref={canvas2dRef} className={'hidden'}></canvas>
+                </>
+              ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_ERROR ? (
+                <div className="flex h-full w-full items-center justify-center">
+                  Please Enable Camera Permission
+                </div>
+              ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_NO_DEVICES ? (
+                <div className="flex h-full w-full items-center justify-center">
+                  No Camera Device Available
+                </div>
+              ) : null}
             </div>
-          ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_NO_DEVICES ? (
-            <div className="flex h-full w-full items-center justify-center">
-              No Camera Device Available
-            </div>
-          ) : null}
+          </div>
+          <div className={'mr-4 h-full max-w-[18%] grow overflow-auto border p-4 text-center'}>
+            <ul>
+              {enteredCustomers.map((customer, idx) => (
+                <li key={idx}>{customer}: 출입문 열림</li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </div>
-      <div className={'mr-4 h-full max-w-[18%] grow overflow-auto border p-4 text-center'}>
-        <ul>
-          {enteredCustomers.map((customer, idx) => (
-            <li key={idx}>{customer}: 출입문 열림</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
 
