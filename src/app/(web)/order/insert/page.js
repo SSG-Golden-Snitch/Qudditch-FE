@@ -234,7 +234,7 @@ export default function OrderInsertPage() {
                   key={product.id}
                 >
                   <Table.Cell>
-                    <img src={product.image} alt={product.name} width="70" />
+                    <Image src={product.image} alt={product.name} width="70" height="70" />
                   </Table.Cell>
                   <Table.Cell>{product.brand}</Table.Cell>
                   <Table.Cell>{product.name}</Table.Cell>
@@ -282,7 +282,7 @@ export default function OrderInsertPage() {
                     key={product.id}
                   >
                     <Table.Cell>
-                      <Image src={product.image} alt={product.name} width="60" />
+                      <Image src={product.image} alt={product.name} width="70" height="70" />
                     </Table.Cell>
                     <Table.Cell>{product.brand}</Table.Cell>
                     <Table.Cell>{product.name}</Table.Cell>
