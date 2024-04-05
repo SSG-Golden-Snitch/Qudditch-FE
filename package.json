@@ -13,6 +13,7 @@
     "@aws-amplify/adapter-nextjs": "^1.0.23",
     "@aws-amplify/ui-react": "^6.1.6",
     "@aws-amplify/ui-react-liveness": "^3.0.16",
+    "@ducanh2912/next-pwa": "^10.2.5",
     "@date-io/dayjs": "^3.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -47,7 +48,8 @@
     "postcss": "^8.4.38",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.12",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "webpack": "^5.91.0"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
