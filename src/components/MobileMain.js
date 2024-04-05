@@ -1,12 +1,96 @@
 'use client'
 import Link from 'next/link'
-import React, { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { LuScanFace } from 'react-icons/lu'
 import { BsShop } from 'react-icons/bs'
 import { TbMessageCircleSearch } from 'react-icons/tb'
 import { AiFillBell } from 'react-icons/ai'
+import { Autocomplete, Flex, Loader, useTheme, View } from '@aws-amplify/ui-react'
+import { fetchExtended } from '@/utils/fetchExtended'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
+
+const ProductSearchBar = () => {
+  const router = useRouter()
+  const { tokens } = useTheme()
+  const [isLoading, setIsLoading] = useState(false)
+  const [products, setProducts] = useState([])
+
+  const searchProduct = async (keyword) =>
+    fetchExtended('/api/product/find/' + keyword.trim())
+      .then((res) => res.json())
+      .then((data) => {
+        if (data['status'] === 'success') {
+          return data['data'].reduce((acc, item) => {
+            acc.push({
+              label: item.name,
+              id: item.id,
+              brand: item.brand,
+              name: item.name,
+              image: item.image,
+            })
+            return acc
+          }, [])
+        } else return []
+      })
+      .catch((err) => {
+        setProducts(['검색 결과가 없습니다.'])
+        setIsLoading(false)
+      })
+
+  const onChange = (event) => {
+    setIsLoading(true)
+    searchProduct(event.target.value)
+      .then((items) => {
+        setProducts(items)
+        console.log(products)
+      })
+      .then(() => setIsLoading(false))
+  }
+
+  const onSelect = (option) => {
+    router.push(`/product/${option['id']}`)
+  }
+
+  const onClear = () => {
+    setProducts([])
+  }
+
+  const renderOption = (option, value) => {
+    const { id, brand, name, image } = option
+    return (
+      <Flex alignItems="center">
+        <Image src={image} alt={name} width="60" height="60" />
+        <p>{name}</p>
+      </Flex>
+    )
+  }
+
+  return (
+    <Autocomplete
+      label="상품 검색"
+      options={products}
+      placeholder="상품명을 입력해주세요"
+      size="medium"
+      isLoading={isLoading}
+      onChange={onChange}
+      onClear={onClear}
+      onSelect={onSelect}
+      renderOption={renderOption}
+      menuSlots={{
+        Empty: <View>찾으시는 상품이 존재하지 않습니다</View>,
+        LoadingIndicator: (
+          <Flex alignItems="center" gap="0.25rem">
+            <Loader emptyColor={tokens.colors.black} filledColor={tokens.colors.orange[40]} />
+            잠시만 기다려주세요...
+          </Flex>
+        ),
+      }}
+    />
+  )
+}
 
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -41,47 +125,10 @@ const MobileMain = () => {
   return (
     <div className="mx-4">
       <br />
-      <form className="relative mx-auto max-w-md">
-        <label
-          htmlFor="default-search"
-          className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
-        >
-          Search
-        </label>
-        <div className="flex items-center">
-          <div className="relative flex-grow">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
-              placeholder="제품명 입력하삼 !"
-              required
-            />
-            <button
-              type="submit"
-              className="absolute inset-y-0 right-0 rounded-r-lg bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-            >
-              검색
-            </button>
-          </div>
-          <AiFillBell className="ml-2 text-3xl text-gray-700 dark:text-gray-200" />
-        </div>
-      </form>
+      <div className={'flex flex-row items-center justify-between '}>
+        <ProductSearchBar />
+        <AiFillBell className="text-3xl text-gray-700 dark:text-gray-200" />
+      </div>
       <br />
       <div id="default-carousel" className="relative w-full" data-carousel="slide">
         <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
