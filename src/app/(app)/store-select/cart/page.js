@@ -11,10 +11,22 @@ const CartPage = () => {
   const [totalAmount, setTotalAmount] = useState([])
   const [totalPay, setTotalPay] = useState([])
   const [usedPoints, setUsedPoints] = useState(0) // 사용자가 입력한 포인트
-  const [EarnPoints, setEarnPoints] = useState(0) // 사용자가 입력한 포인트
+  const [earnPoints, setEarnPoints] = useState(0) // 사용자가 입력한 포인트
   const [remainingPoints, setRemainingPoints] = useState(1000)
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
+
+  // 결제 준비 정보 추가 및 전송 로직
+  const preparePaymentInfo = () => {
+    const updatedCartItems = cartItems.map((item) => ({
+      ...item,
+      usedPoints, // 각 아이템에 포인트 사용금액 추가
+      totalPay, // 총 결제 금액 추가
+      earnPoints, // 포인트 적립금액 추가
+    }))
+
+    return updatedCartItems
+  }
 
   // 장바구니가 비었는지 확인하는 상태 추가
   const isEmpty = cartItems.length === 0
@@ -109,17 +121,6 @@ const CartPage = () => {
     calculateTotalPay(totalAmount, value)
   }
 
-  // 포인트 입력 박스 스타일 정의
-  const inputStyle = {
-    color: 'red', // 입력 글씨 색상
-  }
-
-  // 각 섹션 스타일 정의
-  const sectionStyle = 'border-y-2 py-4 my-4 bg-white shadow'
-
-  // 금액 표시 부분 스타일 정의
-  const priceDetailStyle = 'flex justify-between'
-
   const removeItemFromCart = async (productId) => {
     try {
       const response = await fetchExtended(`/api/cart?${productId}`, {
@@ -209,12 +210,13 @@ const CartPage = () => {
                           onChange={handlePointsChange}
                           className="mx-2 w-16 rounded border text-center text-red-500"
                         />
+                        P
                       </td>
                     </tr>
                     <tr className="flex justify-between text-left">
                       <td className="w-1/2"></td>
                       <td className="text-s w-1/2 text-right">
-                        잔여: {formatNumber(remainingPoints - usedPoints)}
+                        잔여: {formatNumber(remainingPoints - usedPoints)}P
                       </td>
                       <button onClick={handleUseAllPoints} className="rounded bg-slate-200 py-1">
                         전액 사용
@@ -226,7 +228,7 @@ const CartPage = () => {
                     </tr>
                     <tr className="flex justify-between text-left">
                       <td className="w-1/2">포인트 적립금액:</td>
-                      <td className="w-1/2 text-right">{EarnPoints}P</td>
+                      <td className="w-1/2 text-right">{earnPoints}P</td>
                     </tr>
                   </tbody>
                 </table>
@@ -234,13 +236,13 @@ const CartPage = () => {
             </div>
           </div>
         )}
-        {/* </div> */}
       </div>
 
       <CartNavbar
         allSelected={allSelected}
         handleSelectAllChange={handleSelectAllChange}
-        totalPay={formatNumber(totalPay)}
+        initiatePayment={preparePaymentInfo}
+        totalPay={totalPay}
       />
     </div>
   )
