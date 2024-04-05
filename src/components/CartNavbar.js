@@ -1,6 +1,32 @@
 'use client'
 
-const CartNavbar = ({ allSelected, handleSelectAllChange, totalAmount }) => {
+import { fetchExtended } from '@/utils/fetchExtended'
+import React, { useEffect, useState } from 'react'
+
+const CartNavbar = ({ allSelected, handleSelectAllChange, totalAmount, cartItems }) => {
+  const initiatePayment = async () => {
+    try {
+      const response = await fetchExtended('/api/payment/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // 필요한 경우, 인증 토큰을 여기에 추가
+        },
+        body: JSON.stringify(cartItems),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        // 결제 페이지로 리다이렉트
+        window.location.href = data
+      } else {
+        // 오류 처리
+        console.error('Failed to initiate payment:', data)
+      }
+    } catch (error) {
+      console.error('Error initiating payment:', error)
+    }
+  }
+
   return (
     <div className="fixed inset-x-0 bottom-0 z-10 bg-gray-100 shadow-md">
       <div className="flex items-center justify-between rounded-t-2xl p-4">
@@ -14,7 +40,11 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, totalAmount }) => {
           <span className="ml-2 font-medium">전체</span>
           <span className="ml-4 font-bold">총액: {totalAmount}원</span>
         </div>
-        <button className="ml-4 flex-1 bg-blue-500 px-4 py-2 text-lg font-medium text-white">
+
+        <button
+          className="ml-4 flex-1 bg-blue-500 px-4 py-2 text-lg font-medium text-white"
+          onClick={initiatePayment}
+        >
           결제하기
         </button>
       </div>
