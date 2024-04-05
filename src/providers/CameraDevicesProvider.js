@@ -1,0 +1,87 @@
+'use client'
+
+import {
+  CAMERA_LOAD_STATUS_ERROR,
+  CAMERA_LOAD_STATUS_NO_DEVICES,
+  CAMERA_LOAD_STATUS_SUCCESS,
+  VIDEO_INPUT,
+} from '@/utils/definitions'
+import { createContext, useEffect, useState } from 'react'
+
+export const CameraDevicesContext = createContext(null)
+
+const CameraDevicesProvider = (props) => {
+  const [webcamId, setWebcamId] = useState()
+  const [webcamList, setWebcamList] = useState([])
+  const [status, setStatus] = useState({
+    status: undefined,
+    errorMsg: undefined,
+    errorName: undefined,
+  })
+
+  const contextData = {
+    status,
+    webcamId,
+    setWebcamId,
+    webcamList,
+  }
+
+  const loadCameraDeviceList = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({
+        video: true,
+      })
+
+      setStatus((prev) => ({
+        ...prev,
+        status: CAMERA_LOAD_STATUS_SUCCESS,
+      }))
+
+      const deviceList = await navigator.mediaDevices.enumerateDevices()
+
+      const webcamList = deviceList.filter((device) => device.kind === VIDEO_INPUT)
+
+      if (webcamList.length > 0) {
+        setWebcamId(webcamList[0].deviceId)
+        setWebcamList(webcamList)
+      } else {
+        setStatus((prev) => ({
+          ...prev,
+          status: CAMERA_LOAD_STATUS_NO_DEVICES,
+        }))
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('webcam error: ', error.cause, error.message, error.name)
+        setStatus({
+          status: CAMERA_LOAD_STATUS_ERROR,
+          errorMsg: error.message,
+          errorName: error.name,
+        })
+      } else {
+        console.log('webcam error: ', error)
+        setStatus((prev) => ({
+          ...prev,
+          status: CAMERA_LOAD_STATUS_ERROR,
+        }))
+      }
+    }
+  }
+
+  useEffect(() => {
+    loadCameraDeviceList()
+    if (navigator) {
+      navigator.mediaDevices.ondevicechange = (event) => {
+        loadCameraDeviceList()
+      }
+    }
+  }, [])
+
+  return (
+    <CameraDevicesContext.Provider value={contextData}>
+      {props.children}
+    </CameraDevicesContext.Provider>
+  )
+}
+
+export default CameraDevicesProvider
