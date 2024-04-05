@@ -19,7 +19,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
-import Loading from '@/components/ui/Loaing'
+import Loading from '@/components/ui/Loading'
 
 const Home = () => {
   const cameraDeviceProvider = useContext(CameraDevicesContext)
