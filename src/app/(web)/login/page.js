@@ -27,6 +27,7 @@ function Component() {
           } else {
             alert('Login success')
             sessionStorage.setItem('token', data['token'])
+            window.location.href = '/'
           }
         }
       })
