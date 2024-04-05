@@ -104,7 +104,11 @@ const MapComponent = ({ defaultPosition, stores }) => {
       <div id="map" style={{ width: '100vw', height: '92vh' }}></div>
       {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       {selectStore && (
-        <Modal show={selectStore !== null} onClose={() => setSelectStore(null)}>
+        <Modal
+          show={selectStore !== null}
+          onClose={() => setSelectStore(null)}
+          className={'bg-opacity-0'}
+        >
           <div
             className="fixed inset-0 flex items-end justify-center  "
             onClick={() => setSelectStore(null)}
