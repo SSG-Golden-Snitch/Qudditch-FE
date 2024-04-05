@@ -79,7 +79,7 @@ export default function BarcodeScanner({ handleResult, handleCloseModal, render 
     <main>
       <section className="container" id="demo-content">
         <div>
-          <video id="video" width="300" height="200" />
+          <video id="video" width="" height="" />
         </div>
       </section>
     </main>
