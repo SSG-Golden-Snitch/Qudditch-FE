@@ -87,7 +87,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
 
     window.goInventory = (storeId) => {
       if (!storeId) {
-        alert('스토어 정보가 없습니다.')
+        setAlertMessage('스토어 정보가 없습니다.')
       } else {
         router.push(`/map/inventory/${storeId}`)
       }
