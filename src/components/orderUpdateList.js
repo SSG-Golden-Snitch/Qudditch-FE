@@ -89,7 +89,11 @@ export default function GetDetail({ id }) {
   }
 
   if (!order) {
-    return <div>Loading...</div>
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
   }
 
   const removeFromOrder = async (index) => {
