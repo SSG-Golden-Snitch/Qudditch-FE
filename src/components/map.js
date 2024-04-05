@@ -1,14 +1,26 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { BsFillBookmarkStarFill } from 'react-icons/bs'
+import { Modal } from 'flowbite-react'
+import { Button } from 'flowbite-react'
 
 const MapComponent = ({ defaultPosition, stores }) => {
+  const [selectStore, setSelectStore] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
   const mapRef = useRef(null)
   const router = useRouter()
   const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
+  const handleMarkerClick = (store) => {
+    console.log(store)
+    setSelectStore(store)
+    setOpenModal(true)
+  }
+  const handleBookMarkClick = (e) => {
+    window.updateBookmark(selectStore.id)
+    e.stopPropagation()
+  }
   useEffect(() => {
     const loadMap = async () => {
       if (!defaultPosition || !window.naver || !stores || stores.length === 0) return
@@ -30,55 +42,61 @@ const MapComponent = ({ defaultPosition, stores }) => {
             anchor: new window.naver.maps.Point(12, 30),
           },
         })
-
-        // 정보창 내용 생성
-        const contentString = `
-        <div style="padding: 1px; background-color: white; border: 1px solid white; border-radius: 15px; box-shadow: 0px 0px 5px #000">
-          <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
-              <img src="bookmark.png" style="cursor: pointer; width: 26px; height: 26px;" onclick="window.updateBookmark(${store.id})" />
-            </div>
-            <form class="max-w-sm mx-auto" style="margin-top: 10px;">
-              <div class="relative" style="margin-bottom: 10px;">
-                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
-                  <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
-                </svg>
-                <p class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" pattern="^\d{5}(-\d{4})?$">
-                  ${store.address}
-                </p>
-              </div>
-              <div class="relative" style="margin-bottom: 10px;">
-                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
-                <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
-                </svg>
-                <p class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
-                  ${store.phone}
-                </p>
-              </div>
-            </form>
-            <div style="text-align: right;">
-              <button onClick="goInventory(${store.id})" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-gray rounded-full border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                재고현황
-              </button>
-            </div>
-          </div>
-          </div>
-        `
-
-        const customOverlay = new window.naver.maps.InfoWindow({
-          content: contentString,
-        })
-
+        // 마커 클릭 이벤트 리스너 추가
         window.naver.maps.Event.addListener(marker, 'click', () => {
-          if (customOverlay.getMap()) {
-            customOverlay.close()
-          } else {
-            customOverlay.open(mapRef.current, marker)
-          }
+          handleMarkerClick(store)
         })
       })
     }
+
+    //     // 정보창 내용 생성
+    //     const contentString = `
+    //     <div style="padding: 1px; background-color: white; border: 1px solid white; border-radius: 15px; box-shadow: 0px 0px 5px #000">
+    //       <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
+    //         <div style="display: flex; align-items: center; justify-content: space-between;">
+    //           <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
+    //           <img src="bookmark.png" style="cursor: pointer; width: 26px; height: 26px;" onclick="window.updateBookmark(${store.id})" />
+    //         </div>
+    //         <form class="max-w-sm mx-auto" style="margin-top: 10px;">
+    //           <div class="relative" style="margin-bottom: 10px;">
+    //             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+    //               <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+    //             </svg>
+    //             <p class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" pattern="^\d{5}(-\d{4})?$">
+    //               ${store.address}
+    //             </p>
+    //           </div>
+    //           <div class="relative" style="margin-bottom: 10px;">
+    //             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);">
+    //             <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
+    //             </svg>
+    //             <p class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+    //               ${store.phone}
+    //             </p>
+    //           </div>
+    //         </form>
+    //         <div style="text-align: right;">
+    //           <button onClick="goInventory(${store.id})" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-gray rounded-full border border-gray-200 hover:bg-gray-100 hover:text-gray-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+    //             재고현황
+    //           </button>
+    //         </div>
+    //       </div>
+    //       </div>
+    //     `
+
+    //     const customOverlay = new window.naver.maps.InfoWindow({
+    //       content: contentString,
+    //     })
+
+    //     window.naver.maps.Event.addListener(marker, 'click', () => {
+    //       if (customOverlay.getMap()) {
+    //         customOverlay.close()
+    //       } else {
+    //         customOverlay.open(mapRef.current, marker)
+    //       }
+    //     })
+    //   })
+    // }
 
     const script = document.createElement('script')
     script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5vhz6jovug'
@@ -89,7 +107,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
     return () => {
       document.body.removeChild(script)
     }
-  }, [defaultPosition, stores])
+  }, [defaultPosition, stores, handleMarkerClick])
 
   useEffect(() => {
     window.updateBookmark = async (storeId) => {
@@ -127,8 +145,78 @@ const MapComponent = ({ defaultPosition, stores }) => {
   return (
     <div>
       <div id="map" style={{ width: '100vw', height: '92vh' }}></div>
-      {/* <div style={{ width: '100vw', height: '100vh', display: 'flex' }}>
-       <div id="map" style={{ flex: '1', minWidth: '40%' }}></div> */}
+      {selectStore && (
+        <Modal show={selectStore !== null} onClose={() => setSelectStore(null)}>
+          <div
+            className="fixed inset-0 flex items-end justify-center  "
+            onClick={() => setSelectStore(null)}
+          >
+            <div
+              className="overflow-hidden bg-white shadow-xl "
+              style={{
+                width: '60%',
+                maxWidth: '20rem',
+                height: 'auto',
+                transform: 'translateY(-30%)',
+                borderRadius: '30px',
+              }}
+            >
+              <Modal.Header>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                >
+                  <h3 className="text-xl font-bold dark:text-white" style={{ marginRight: '7px' }}>
+                    {selectStore.name}
+                  </h3>
+                  <img
+                    src="bookmark.png"
+                    style={{ cursor: 'pointer', width: '26px', height: '26px' }}
+                    onClick={handleBookMarkClick}
+                  />
+                </div>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="mx-auto max-w-sm space-y-4">
+                  <div className="relative">
+                    <svg
+                      className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500 dark:text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 16 20"
+                    >
+                      <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
+                    </svg>
+                    <p className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+                      {selectStore.address}
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <svg
+                      className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-500 dark:text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 19 18"
+                    >
+                      <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z" />
+                    </svg>
+                    <p className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+                      {selectStore.phone}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-4 text-center">
+                  <button
+                    onClick={() => window.goInventory(selectStore.id)}
+                    className="mx-auto mb-2 rounded-full border border-gray-300 bg-gray-100 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                  >
+                    재고현황
+                  </button>
+                </div>
+              </Modal.Body>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }
