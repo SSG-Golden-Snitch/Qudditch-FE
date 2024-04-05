@@ -45,11 +45,7 @@ const MobileNavbar = () => {
     NavItem({ name: '홈', icon: <HiOutlineHome size={40} />, path: '/main' }),
     NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/point' }),
     NavPayment({ path: '/store-select' }),
-    NavItem({
-      name: '주문내역',
-      icon: <CiReceipt size={40} />,
-      path: '/order-history',
-    }),
+    NavItem({ name: '주문내역', icon: <CiReceipt size={40} />, path: '/order-history' }),
     NavItem({ name: '설정', icon: <CiSettings size={40} />, path: '/web-setting' }),
   ]
 
