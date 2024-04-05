@@ -1,21 +1,31 @@
 'use client'
 
 import '../../globals.css'
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, forwardRef, Fragment } from 'react'
 import Link from 'next/link'
-import { fetchExtended, apiUrl } from '../../../utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
 import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
+import { IoIosArrowBack } from 'react-icons/io'
+
+// 커스텀 입력 컴포넌트
+// eslint-disable-next-line react/display-name
+const CustomInput = forwardRef(({ value, onClick }, ref) => (
+  <button onClick={onClick} ref={ref} className="datepicker-button">
+    {/* <CalendarIcon className="calendar-icon" /> */}
+    {value}
+  </button>
+))
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
-  const [isDatePickerOpen, setDatePickerOpen] = useState(false)
+  // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
@@ -35,7 +45,7 @@ const OrderHistory = () => {
       const endpoint = `/api/order/history?${queryString}`
 
       try {
-        const response = await fetchExtended(apiUrl + endpoint, {
+        const response = await fetchExtended(endpoint, {
           method: 'GET', // HTTP 요청 메서드 지정
           // credentials: 'include', // 인증 정보(쿠키, 인증 헤더 등) 포함 옵션
         })
@@ -45,7 +55,7 @@ const OrderHistory = () => {
         if (!responseData) throw new Error('데이터 로딩 실패')
 
         // 상태 업데이트
-        setOrders(responseData)
+        setOrders(responseData.orders || [])
 
         // 총 판매액 계산
         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
@@ -96,38 +106,35 @@ const OrderHistory = () => {
   // }
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <div className="relative w-full max-w-4xl">
+    <div className="flex h-screen flex-col justify-between bg-gray-100">
+      <div className="fixed left-0 top-0 z-10 flex w-full justify-between bg-white p-4 shadow-md">
+        <button
+          type="button"
+          className="mb-4 flex items-center"
+          onClick={() => window.history.back()}
+        >
+          <IoIosArrowBack className="mr-2" />
+          <h2 className="text-xl font-bold">주문목록</h2>
+        </button>
+
         <div className="flex items-center">
-          <h1 className="mb-4 text-3xl font-bold">판매</h1>
-          <button onClick={() => setDatePickerOpen(!isDatePickerOpen)} className="ml-2">
-            <TbCalendarSmile size="30px" />
-          </button>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM"
+            showMonthYearPicker
+            customInput={<CustomInput />}
+            className="ml-4"
+          />
         </div>
-        {isDatePickerOpen && (
-          <div className="absolute top-full mt-2">
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              dateFormat="yyyy/MM"
-              showMonthYearPicker // 월과 년만 선택
-              inline
-            />
-          </div>
-        )}
-        {/* <p>선택된 날짜: {formatDateYMD(selectedDate)}</p> */}
       </div>
 
-      {/* <button onClick={handlePreviousMonth}>&lt;</button>
-      <span> {formatDateYM(currentDate)} </span>
-      <button onClick={handleNextMonth}>&gt;</button> */}
-
-      <div className="mb-4 flex w-full justify-end">
-        <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'blue' : 'gray'}>
-          판매내역 조회
+      <div className="mt-20 justify-between p-4">
+        <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+          주문내역 조회
         </Button>
-        <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'blue' : 'gray'}>
-          환불내역 조회
+        <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+          취소/반품내역 조회
         </Button>
       </div>
 
@@ -144,6 +151,7 @@ const OrderHistory = () => {
             ))}
           </tr>
         </thead>
+
         <tbody className="divide-y divide-gray-200 bg-white">
           {orders.map((order, index) => (
             <Fragment key={index}>
@@ -220,15 +228,6 @@ const OrderHistory = () => {
           </tr>
         </tbody>
       </table>
-
-      <div classname="mt-6 text-center">
-        <Button
-          onClick={() => (window.location.href = '/')}
-          className="mb-2 me-2 rounded-lg border border-gray-200 bg-slate-200 px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-zinc-200 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-        >
-          HOME
-        </Button>
-      </div>
     </div>
   )
 }
