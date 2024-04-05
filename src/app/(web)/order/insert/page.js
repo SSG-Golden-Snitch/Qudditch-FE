@@ -4,6 +4,7 @@ import { Table } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import { CustomAlert } from '@/components/CustomAlert'
 import Image from 'next/image'
 
 async function searchProductByName(productName) {
@@ -59,6 +60,11 @@ export default function OrderInsertPage() {
   const [searchResults, setSearchResults] = useState([])
   const [orderProducts, setOrderProducts] = useState([])
   const [recommend, setRecommend] = useState([])
+  const [alertMessage, setAlertMessage] = useState('')
+
+  const handleAlert = (message = '') => {
+    setAlertMessage(message)
+  }
 
   useEffect(() => {
     const fetchRecommend = async () => {
@@ -88,7 +94,7 @@ export default function OrderInsertPage() {
     const existingProduct = orderProducts.find((p) => p.id === id)
     if (existingProduct) {
       // 이미 추가된 제품이 있으면 알림 표시
-      alert(`${existingProduct.name}은(는) 이미 발주 목록에 추가되었습니다.`)
+      setAlertMessage(`${existingProduct.name}은(는) 이미 발주 목록에 추가되었습니다.`)
       return
     }
 
@@ -124,7 +130,6 @@ export default function OrderInsertPage() {
         productId: id,
         qty,
       }))
-      alert('발주가 성공적으로 등록되었습니다 !')
       const result = await insertOrder(productsToOrder)
       router.push('/order')
       console.log('발주 등록 결과:', result)
@@ -139,6 +144,7 @@ export default function OrderInsertPage() {
 
   return (
     <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+      {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       <form
         className="relative mx-auto max-w-md"
         onSubmit={(e) => {

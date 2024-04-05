@@ -1,5 +1,3 @@
-'use client'
-
 import GetDetail from '@/components/orderUpdateList'
 
 export default function OrderUpdate({ params: { id } }) {
