@@ -19,7 +19,8 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
-import Loading from '@/components/ui/Loading'
+import Loading from '@/components/ui/Loaing'
+import { BrowserQRCodeReader } from '@zxing/browser'
 
 const Home = () => {
   const cameraDeviceProvider = useContext(CameraDevicesContext)
@@ -32,6 +33,7 @@ const Home = () => {
   const [currentMode, setCurrentMode] = useState(NO_MODE)
   const [animateDelay, setAnimateDelay] = useState(1500)
   const [enteredCustomers, setEnteredCustomers] = useState([])
+  const codeReader = new BrowserQRCodeReader()
 
   const initModels = async () => {
     const vision = await initMediaPipVision()
@@ -79,6 +81,11 @@ const Home = () => {
     if (webcamRef.current && webcamRef.current.video && webcamRef.current.video.readyState === 4) {
       if (currentMode === FACE_DETECTION_MODE && !FaceDetection.isModelUpdating()) {
         const facePredictions = FaceDetection.detectFace(webcamRef.current.video)
+        await codeReader.decodeOnceFromVideoElement(webcamRef.current.video).then((result) => {
+          const now = new Date()
+          const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+          setEnteredCustomers([...enteredCustomers, time])
+        })
 
         if (facePredictions?.detections) {
           const canvas = canvas3dRef.current
