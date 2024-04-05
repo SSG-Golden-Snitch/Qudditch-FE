@@ -170,12 +170,6 @@ export default function Input() {
           </>
         )}
       </div>
-      {/* <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header></Modal.Header>
-        <Modal.Body>
-          <BarcodeScanner handleResult={handleResult} handleCloseModal={handleCloseModal} />
-        </Modal.Body>
-      </Modal> */}
 
       <Modal
         show={openModal}
@@ -187,9 +181,10 @@ export default function Input() {
         dismissible
         popup
       >
-        <Modal.Header> </Modal.Header>
-        <Modal.Body className="items-center justify-center justify-items-center">
-          <div className="text-center">
+        <Modal.Header></Modal.Header>
+        <Modal.Body className="grid items-center justify-items-center ">
+          <div className="pb-5 text-sm text-gray-500">폐기할 상품의 QR코드를 인식해주세요</div>
+          <div className="">
             <BarcodeScanner
               handleResult={handleResult}
               handleCloseModal={handleCloseModal}
