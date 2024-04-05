@@ -10,7 +10,7 @@ import {
   hintDisplayText,
   instructionDisplayText,
   streamDisplayText,
-} from './LivenessUtil'
+} from '@/components/LivenessUtil'
 import { useRouter } from 'next/navigation'
 
 const FaceRegistrationPage = () => {
