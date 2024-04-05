@@ -125,6 +125,12 @@ export default function OrderInsertPage() {
   }
 
   const handleSubmit = async () => {
+    if (orderProducts.length === 0) {
+      // 제품 목록이 비어 있으면 경고 메시지 표시
+      setAlertMessage('발주할 제품이 목록에 없습니다. 제품을 추가해 주세요.')
+      return // 함수 실행 중단
+    }
+
     try {
       const productsToOrder = orderProducts.map(({ id, qty }) => ({
         productId: id,
@@ -135,6 +141,7 @@ export default function OrderInsertPage() {
       console.log('발주 등록 결과:', result)
     } catch (error) {
       console.error('발주 등록 실패:', error)
+      setAlertMessage(`발주 등록 실패: ${error.message}`)
     }
   }
 

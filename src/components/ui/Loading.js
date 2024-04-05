@@ -2,7 +2,7 @@ const Loading = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div aria-label="Loading..." role="status" className="flex items-center space-x-2">
-        <svg className="h-20 w-20 animate-spin stroke-yellow-500" viewBox="0 0 256 256">
+        <svg className="h-16 w-16 animate-spin stroke-yellow-500" viewBox="0 0 256 256">
           <line
             x1="128"
             y1="32"
@@ -76,7 +76,7 @@ const Loading = () => {
             strokeWidth="24"
           ></line>
         </svg>
-        <span className="text-4xl font-medium text-gray-500">Loading...</span>
+        <span className="text-xl font-medium text-gray-500">Loading...</span>
       </div>
     </div>
   )
