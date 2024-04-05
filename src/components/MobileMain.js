@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { LuScanFace } from 'react-icons/lu'
 import { BsShop } from 'react-icons/bs'
@@ -75,7 +76,7 @@ const MobileMain = () => {
               type="submit"
               className="absolute inset-y-0 right-0 rounded-r-lg bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
             >
-              Search
+              검색
             </button>
           </div>
           <AiFillBell className="ml-2 text-3xl text-gray-700 dark:text-gray-200" />
@@ -129,12 +130,14 @@ const MobileMain = () => {
             </div>
             <p>매장출입</p>
           </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <BsShop />
+          <Link href="/map" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-200">
+              <div className="text-6xl">
+                <BsShop />
+              </div>
+              <p>매장찾기</p>
             </div>
-            <p>매장찾기</p>
-          </div>
+          </Link>
           <div className="flex flex-col items-center text-center">
             <div className="text-6xl">
               <TbMessageCircleSearch />
