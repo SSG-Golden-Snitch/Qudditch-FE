@@ -3,12 +3,12 @@
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { BsFillBookmarkStarFill } from 'react-icons/bs'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const mapRef = useRef(null)
   const router = useRouter()
   const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
-
   useEffect(() => {
     const loadMap = async () => {
       if (!defaultPosition || !window.naver || !stores || stores.length === 0) return
@@ -20,7 +20,6 @@ const MapComponent = ({ defaultPosition, stores }) => {
         }
         mapRef.current = new window.naver.maps.Map('map', mapOptions)
       }
-
       stores.forEach((store) => {
         const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
         const marker = new window.naver.maps.Marker({
@@ -38,7 +37,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
           <div class="p-3 text-sext-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <h3 class="text-1xl font-bold dark:text-white">${store.name}</h3>
-              <div onclick="window.updateBookmark(${store.id})" style="cursor: pointer;">❤️</div>
+              <img src="bookmark.png" style="cursor: pointer; width: 26px; height: 26px;" onclick="window.updateBookmark(${store.id})" />
             </div>
             <form class="max-w-sm mx-auto" style="margin-top: 10px;">
               <div class="relative" style="margin-bottom: 10px;">
@@ -112,7 +111,11 @@ const MapComponent = ({ defaultPosition, stores }) => {
     }
 
     window.goInventory = (storeId) => {
-      router.push(`/map/inventory/${storeId}`)
+      if (!storeId) {
+        alert('스토어 정보가 없습니다.')
+      } else {
+        router.push(`/map/inventory/${storeId}`)
+      }
     }
 
     return () => {
