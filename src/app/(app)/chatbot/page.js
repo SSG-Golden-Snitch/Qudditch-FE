@@ -69,7 +69,7 @@ function Chatbot() {
     getLocation()
   }, [])
 
-  const sendMessageWithLocation = async (latitude, longitude) => {
+  const sendMessageWithLocation = async (longitude, latitude) => {
     try {
       const response = await fetchExtended(
         `/api/chatbot/chatbot?msg=&currentWgs84X=${longitude}&currentWgs84Y=${latitude}`,
