@@ -14,6 +14,9 @@ const CartPage = () => {
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
 
+  // 장바구니가 비었는지 확인하는 상태 추가
+  const isEmpty = cartItems.length === 0
+
   useEffect(() => {
     // 페이지 로드 시, customerId 장바구니 아이템 조회 (userStoreId, userCustomerId, productId 고려)
     fetchCartItems()
@@ -120,60 +123,72 @@ const CartPage = () => {
         </div>
         {message && <p>{message}</p>}
 
-        <h3 className="mb-4 border-b-2">상품 목록</h3>
+        {/* 장바구니 상품 목록 표시 */}
+        {isEmpty ? (
+          // 장바구니가 비어있을 때
+          <div className="mt-8 text-center">
+            <p>장바구니에 담긴 상품이 없습니다.</p>
+            <p>오늘의 인기상품 보기 &gt;</p>
+          </div>
+        ) : (
+          // 장바구니에 상품이 담겨있을 때
+          <div>
+            <h3 className="mb-4 border-b-2">상품 목록</h3>
 
-        {cartItems.map((item) => (
-          <div key={item.productId} className="mb-4 rounded-lg border-2 p-4">
-            <div class="flex items-center justify-between pb-2">
-              <input
-                type="checkbox"
-                checked={selectedItems[item.productId]}
-                onChange={() => handleSelectionChange(item.productId)}
-                className="mr-2"
-              />
-              <img src={item.image} alt={item.name} className="mr-4 h-20 w-20 object-cover" />
-              <div className="flex-1">
-                <h4 className="font-bold">{item.name}</h4>
-                <p>
-                  {item.qty} 개 {formatNumber(item.price)}원
-                </p>
+            {cartItems.map((item) => (
+              <div key={item.productId} className="mb-4 rounded-lg border-2 p-4">
+                <div class="flex items-center justify-between pb-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems[item.productId]}
+                    onChange={() => handleSelectionChange(item.productId)}
+                    className="mr-2"
+                  />
+                  <img src={item.image} alt={item.name} className="mr-4 h-20 w-20 object-cover" />
+                  <div className="flex-1">
+                    <h4 className="font-bold">{item.name}</h4>
+                    <p>
+                      {item.qty} 개 {formatNumber(item.price)}원
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => removeItemFromCart(item.productId)}
+                    className="mb-10 rounded-lg border border-white bg-white px-1 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+                  >
+                    <IoMdClose />
+                  </button>
+                </div>
               </div>
+            ))}
 
-              <button
-                type="button"
-                onClick={() => removeItemFromCart(item.productId)}
-                className="mb-10 rounded-lg border border-white bg-white px-1 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-              >
-                <IoMdClose />
-              </button>
+            <div className="mt-4 border-t p-4">
+              <div className="font-bold">
+                <h3 className="mb-4 border-b-2">최종 결제금액</h3>
+                <p>총 상품 가격: {formatNumber(totalAmount)}원</p>
+                <div className="flex items-center text-red-500">
+                  <p>포인트 사용금액: -</p>
+                  <input
+                    type="text"
+                    value={usedPoints}
+                    onChange={handlePointsChange}
+                    className="mx-2 w-20 rounded border text-center"
+                  />
+                  원
+                  <button
+                    onClick={handleUseAllPoints}
+                    className="ml-2 rounded bg-blue-500 px-2 text-white"
+                  >
+                    전액 사용
+                  </button>
+                </div>
+                <p>총 결제 금액: 원</p>
+                <p>포인트 적립금액: </p>
+              </div>
             </div>
           </div>
-        ))}
-
-        <div className="mt-4 border-t p-4">
-          <div className="font-bold">
-            <h3 className="mb-4 border-b-2">최종 결제금액</h3>
-            <p>총 상품 가격: {formatNumber(totalAmount)}원</p>
-            <div className="flex items-center text-red-500">
-              <p>포인트 사용금액: -</p>
-              <input
-                type="text"
-                value={usedPoints}
-                onChange={handlePointsChange}
-                className="mx-2 w-20 rounded border text-center"
-              />
-              원
-              <button
-                onClick={handleUseAllPoints}
-                className="ml-2 rounded bg-blue-500 px-2 text-white"
-              >
-                전액 사용
-              </button>
-            </div>
-            <p>총 결제 금액: 원</p>
-            <p>포인트 적립금액: </p>
-          </div>
-        </div>
+        )}
       </div>
 
       <CartNavbar
