@@ -1,8 +1,8 @@
 'use client'
 
+import { fetchExtended } from '@/utils/fetchExtended'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { useRef } from 'react'
-import { fetchExtended } from '@/utils/fetchExtended'
 
 function Component() {
   const loginRef = useRef()
