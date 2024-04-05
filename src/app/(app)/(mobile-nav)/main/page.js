@@ -1,4 +1,3 @@
-
 import MobileMain from '@/components/MobileMain'
 
 const Main = () => {
