@@ -9,7 +9,9 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const [totalAmount, setTotalAmount] = useState([])
+  const [totalPay, setTotalPay] = useState([])
   const [usedPoints, setUsedPoints] = useState(0) // 사용자가 입력한 포인트
+  const [EarnPoints, setEarnPoints] = useState(0) // 사용자가 입력한 포인트
   const [remainingPoints, setRemainingPoints] = useState(1000)
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
@@ -80,18 +82,43 @@ const CartPage = () => {
       0,
     )
     setTotalAmount(total)
+    calculateTotalPay(total, usedPoints)
+  }
+
+  const calculateTotalPay = (totalAmount, usedPoints) => {
+    const totalPay = totalAmount - usedPoints
+    setTotalPay(totalPay)
+    calculateEarnPoints(totalPay) // 포인트 적립금액 계산
+  }
+
+  const calculateEarnPoints = (totalPay) => {
+    const earnPoints = Math.round(totalPay * 0.01)
+    setEarnPoints(earnPoints)
   }
 
   // 포인트 전액 사용 버튼 클릭 이벤트
   const handleUseAllPoints = () => {
-    setUsedPoints(remainingPoints)
+    setUsedPoints(Math.min(remainingPoints, totalAmount))
+    calculateTotalPay(totalAmount, remainingPoints)
   }
 
   // 포인트 입력 처리
   const handlePointsChange = (e) => {
     const value = parseInt(e.target.value, 10) || 0
-    setUsedPoints(value > remainingPoints ? remainingPoints : value)
+    setUsedPoints(Math.min(value, remainingPoints))
+    calculateTotalPay(totalAmount, value)
   }
+
+  // 포인트 입력 박스 스타일 정의
+  const inputStyle = {
+    color: 'red', // 입력 글씨 색상
+  }
+
+  // 각 섹션 스타일 정의
+  const sectionStyle = 'border-y-2 py-4 my-4 bg-white shadow'
+
+  // 금액 표시 부분 스타일 정의
+  const priceDetailStyle = 'flex justify-between'
 
   const removeItemFromCart = async (productId) => {
     try {
@@ -109,20 +136,20 @@ const CartPage = () => {
   }
 
   return (
-    <div className="flex h-screen flex-col justify-between">
-      <div className="p-4">
-        <div className="mb-4 flex items-center">
-          <button
-            type="button"
-            className="mb-4 flex items-center"
-            onClick={() => window.history.back()}
-          >
-            <IoIosArrowBack className="mr-2" />
-            <h2 className="text-xl font-bold">장바구니</h2>
-          </button>
-        </div>
-        {message && <p>{message}</p>}
+    <div className="flex h-screen flex-col justify-between bg-gray-100">
+      <div className="fixed left-0 top-0 z-10 flex w-full justify-between bg-white p-4 shadow-md">
+        <button
+          type="button"
+          className="mb-4 flex items-center"
+          onClick={() => window.history.back()}
+        >
+          <IoIosArrowBack className="mr-2" />
+          <h2 className="text-xl font-bold">장바구니</h2>
+        </button>
+      </div>
+      {message && <p>{message}</p>}
 
+      <div className="mt-20 justify-between bg-white p-4 shadow-md">
         {/* 장바구니 상품 목록 표시 */}
         {isEmpty ? (
           // 장바구니가 비어있을 때
@@ -165,36 +192,55 @@ const CartPage = () => {
 
             <div className="mt-4 border-t p-4">
               <div className="font-bold">
-                <h3 className="mb-4 border-b-2">최종 결제금액</h3>
-                <p>총 상품 가격: {formatNumber(totalAmount)}원</p>
-                <div className="flex items-center text-red-500">
-                  <p>포인트 사용금액: -</p>
-                  <input
-                    type="text"
-                    value={usedPoints}
-                    onChange={handlePointsChange}
-                    className="mx-2 w-20 rounded border text-center"
-                  />
-                  원
-                  <button
-                    onClick={handleUseAllPoints}
-                    className="ml-2 rounded bg-blue-500 px-2 text-white"
-                  >
-                    전액 사용
-                  </button>
-                </div>
-                <p>총 결제 금액: 원</p>
-                <p>포인트 적립금액: </p>
+                <h3 className="mb-4 border-b-2">결제금액</h3>
+                <table className="w-full">
+                  <tbody>
+                    <tr className="flex justify-between text-left">
+                      <td className="w-1/2">총 상품 가격:</td>
+                      <td className="w-1/2 text-right">{formatNumber(totalAmount)}원</td>
+                    </tr>
+                    <tr className="flex justify-between text-left">
+                      <td className="w-1/2">포인트 사용금액:</td>
+                      <td className="flex w-1/2 items-center justify-end text-right">
+                        -
+                        <input
+                          type="text"
+                          value={usedPoints}
+                          onChange={handlePointsChange}
+                          className="mx-2 w-16 rounded border text-center text-red-500"
+                        />
+                      </td>
+                    </tr>
+                    <tr className="flex justify-between text-left">
+                      <td className="w-1/2"></td>
+                      <td className="text-s w-1/2 text-right">
+                        잔여: {formatNumber(remainingPoints - usedPoints)}
+                      </td>
+                      <button onClick={handleUseAllPoints} className="rounded bg-slate-200 py-1">
+                        전액 사용
+                      </button>
+                    </tr>
+                    <tr className="flex justify-between text-left">
+                      <td className="w-1/2">총 결제 금액:</td>
+                      <td className="w-1/2 text-right">{formatNumber(totalPay)}원</td>
+                    </tr>
+                    <tr className="flex justify-between text-left">
+                      <td className="w-1/2">포인트 적립금액:</td>
+                      <td className="w-1/2 text-right">{EarnPoints}P</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         )}
+        {/* </div> */}
       </div>
 
       <CartNavbar
         allSelected={allSelected}
         handleSelectAllChange={handleSelectAllChange}
-        totalAmount={formatNumber(totalAmount)}
+        totalPay={formatNumber(totalPay)}
       />
     </div>
   )
