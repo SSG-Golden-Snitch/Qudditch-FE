@@ -1,9 +1,9 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-const CartNavbar = ({ allSelected, handleSelectAllChange, totalAmount, cartItems }) => {
+const CartNavbar = ({ allSelected, handleSelectAllChange, totalPay, cartItems }) => {
   const initiatePayment = async () => {
     try {
       const response = await fetchExtended('/api/payment/initiate', {
@@ -38,7 +38,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, totalAmount, cartItems
             className="h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
           <span className="ml-2 font-medium">전체</span>
-          <span className="ml-4 font-bold">총액: {totalAmount}원</span>
+          <span className="ml-4 font-bold">총액: {totalPay}원</span>
         </div>
 
         <button
