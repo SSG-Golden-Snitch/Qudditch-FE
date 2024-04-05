@@ -120,7 +120,7 @@ const StoreSelectPage = () => {
             className="mb-2 cursor-pointer rounded-md border border-gray-200 p-2"
             onClick={() => handleStoreSelect(store.id)}
           >
-            <Link href={`/camera`}>
+            <Link href={`/store-select/camera`}>
               <p className="font-medium">{store.name}</p>
               <p>{store.address}</p>
             </Link>
