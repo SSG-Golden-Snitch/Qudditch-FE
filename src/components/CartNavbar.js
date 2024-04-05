@@ -3,8 +3,10 @@
 import { fetchExtended } from '@/utils/fetchExtended'
 import React from 'react'
 
-const CartNavbar = ({ allSelected, handleSelectAllChange, totalPay, cartItems }) => {
-  const initiatePayment = async () => {
+const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, totalPay }) => {
+  const handleInitiatePayment = async () => {
+    const paymentData = initiatePayment()
+
     try {
       const response = await fetchExtended('/api/payment/initiate', {
         method: 'POST',
@@ -12,7 +14,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, totalPay, cartItems })
           'Content-Type': 'application/json',
           // 필요한 경우, 인증 토큰을 여기에 추가
         },
-        body: JSON.stringify(cartItems),
+        body: JSON.stringify(paymentData),
       })
       const data = await response.json()
       if (response.ok) {
@@ -43,7 +45,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, totalPay, cartItems })
 
         <button
           className="ml-4 flex-1 bg-blue-500 px-4 py-2 text-lg font-medium text-white"
-          onClick={initiatePayment}
+          onClick={handleInitiatePayment}
         >
           결제하기
         </button>
