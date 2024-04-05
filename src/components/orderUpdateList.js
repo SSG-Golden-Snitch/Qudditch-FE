@@ -75,10 +75,10 @@ export default function GetDetail({ id }) {
     })
 
     if (response.ok) {
-      alert('수정 성공!!')
+      alert('수정 성공')
       router.push(`/order/detail/${id}`)
     } else {
-      alert('수정 실패!!')
+      alert('수정 실패')
     }
   }
 
@@ -107,7 +107,7 @@ export default function GetDetail({ id }) {
   }
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-5">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
       <form
         className="relative mx-auto max-w-md"
         onSubmit={(e) => {
