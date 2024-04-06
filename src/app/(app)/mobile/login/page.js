@@ -1,76 +1,85 @@
+// src/app/mobile/login/page.js
 'use client'
-// use client는 JavaScript의 strict mode를 활성화시킨다.
-// strict mode는 좀 더 엄격한 JavaScript 문법을 적용하여 오류를 미연에 방지합니다.
-
-// 필요한 모듈을 가져옵니다.
-//fetchExtended 함수를 가져온다.
-import { fetchExtended } from '@/utils/fetchExtended'
-// flowbite-react 패키지에서 Button, Label, TextInput 컴포넌트를 가져옵니다.
 import { Button, Label, TextInput } from 'flowbite-react'
-import { useRef } from 'react' // React의 useRef 훅을 가져옵니다.
+import { signIn } from 'next-auth/react'
+import { useState } from 'react'
 
-// 함수형 컴포넌트를 정의합니다.
-function Component() {
-  // userRef 훅을 사용하여 로그인 폼 요소에 대한 참조를 생성합니다.
-  const loginRef = useRef()
+export default function MobileUserLogin() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  // 폼 제출 핸들러 함수를 정의합니다.
-  const handleSubmit = async (e) => {
-    e.preventDefault() // 기본 제출 동작을 방지합니다.
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
 
-    // 이메일과 비밀번호를 데이터 객체에 저장합니다.
-    const data = {
-      email: loginRef.current?.elements.email.value, // 이메일 입력란의 값
-      password: loginRef.current?.elements.password.value, // 비밀번호 입력란의 값
-    }
     try {
-      //POST 요청을 통해 데이터를 서버로 전송합니다.
-      await fetchExtended('/login', {
+      const response = await fetch('/api/user/login', {
         method: 'POST',
-        body: JSON.stringify(data), // 데이터를 JSON 문자열로 변경하여 전송합니다.
-        headers: {
-          'Content-Type': 'application/json', //JSON 형식의 데이터라는 것을 명시합니다.
-        },
+        body: JSON.stringify({ email, password }),
+        headers: { 'Content-Type': 'application/json' },
       })
+      const data = await response.json()
 
-      //  서버로부터 응답으 JSPON 형식으로 파싱합니다.
-      const responseData = await response.json()
+      setLoading(false)
 
-      // 서버 응답을 처리합니다.
-      if (typeof window !== 'undefined') {
-        if (responseData.error) {
-          alert(responseData.error) // 에러가 있는 경우 에러를 알립니다.
-        } else {
-          alert('Login success') // 로그인 성공 메시지를 알립니다.
-          sessionStorage.setItem('token', responseData.token) // 토큰을 세션 스토리지에 저장합니다.
-        }
+      if (data.error) {
+        alert(data.error)
+      } else {
+        alert('로그인 성공')
+        // 추후 토큰 저장 방식 개선 필요
+        localStorage.setItem('user-token', data.token)
       }
     } catch (error) {
-      console.error('Login request error:', error) // 요청 중 오류가 발생한 경우 콘솔에 에러를 출력합니다.
-      alert('An error occurred while logging in') // 로그인 중 오류를 알립니다.
+      setLoading(false)
+      alert('로그인 중 에러가 발생했습니다.')
     }
   }
 
+  // 소셜 로그인 처리 함수
+  const handleSocialSignIn = (provider) => async (e) => {
+    e.preventDefault()
+    await signIn(provider)
+  }
+
   return (
-    //   중간정렬
-    <form className="flex max-w-md flex-col gap-4" onSubmit={handleSubmit} ref={loginRef}>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="email" value="Your email" />
+    <div>
+      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <div>
+          <Label htmlFor="email">이메일</Label>
+          <TextInput
+            id="email"
+            type="email"
+            placeholder="name@example.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
-        <TextInput id="email" type="email" placeholder="name@flowbite.com" required />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="password" value="Your password" />
+        <div>
+          <Label htmlFor="password">비밀번호</Label>
+          <TextInput
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-        <TextInput id="password" type="password" required />
-      </div>
-      <Button type="submit" className="bg-yellow-400">
-        로그인
-      </Button>
-    </form>
+        <Button type="submit" disabled={loading}>
+          {loading ? '로그인 중...' : '로그인'}
+        </Button>
+        {/* 소셜 로그인 버튼 */}
+        <Button onClick={handleSocialSignIn('google')} disabled={loading}>
+          Google로 로그인
+        </Button>
+        <Button onClick={handleSocialSignIn('kakao')} disabled={loading}>
+          Kakao로 로그인
+        </Button>
+        <Button onClick={handleSocialSignIn('naver')} disabled={loading}>
+          Naver로 로그인
+        </Button>
+      </form>
+    </div>
   )
 }
-
-export default Component

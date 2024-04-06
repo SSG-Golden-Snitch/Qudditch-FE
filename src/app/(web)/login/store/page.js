@@ -1,66 +1,68 @@
-// 점주 로그인 페이지
+// src/app/web/login/store/page.js
 'use client'
-
-import { fetchExtended } from '@/utils/fetchExtended'
 import { Button, Label, TextInput } from 'flowbite-react'
-import { useRef } from 'react'
+import { useState } from 'react'
 
-const StoreLogin = () => {
-  const emailRef = useRef()
-  const passwordRef = useRef()
+export default function StoreLogin() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
-    const email = emailRef.current.value
-    const password = passwordRef.current.value
+    setLoading(true)
 
-    // 점주 로그인 로직을 여기에 구현합니다.
     try {
-      const response = await fetchExtended('/store/login', {
+      const response = await fetch('/api/store/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
       })
       const data = await response.json()
 
+      setLoading(false)
+
       if (data.error) {
-        alert('로그인 실패: ' + data.error)
+        alert(data.error)
       } else {
         alert('로그인 성공')
-        // 토큰을 로컬 스토리지에 저장하고 리다이렉트합니다.
-        localStorage.setItem('token', data.token)
-        // 로그인 후 페이지 리다이렉션 로직 추가
+        // 추후 토큰 저장 방식 개선 필요
+        localStorage.setItem('store-token', data.token)
       }
     } catch (error) {
-      alert('로그인 요청 중 오류가 발생했습니다.')
+      setLoading(false)
+      alert('로그인 중 에러가 발생했습니다.')
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Label htmlFor="email">이메일</Label>
-      <TextInput
-        ref={emailRef}
-        id="email"
-        type="email"
-        placeholder="이메일을 입력하세요"
-        required
-      />
-
-      <Label htmlFor="password">비밀번호</Label>
-      <TextInput
-        ref={passwordRef}
-        id="password"
-        type="password"
-        placeholder="비밀번호를 입력하세요"
-        required
-      />
-
-      <Button type="submit">로그인</Button>
-    </form>
+    <div>
+      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <div>
+          <Label htmlFor="email">이메일</Label>
+          <TextInput
+            id="email"
+            type="email"
+            placeholder="store@example.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="password">비밀번호</Label>
+          <TextInput
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <Button type="submit" disabled={loading}>
+          {loading ? '로그인 중...' : '로그인'}
+        </Button>
+      </form>
+    </div>
   )
 }
-
-export default StoreLogin
