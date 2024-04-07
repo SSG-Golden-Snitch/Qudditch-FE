@@ -7,6 +7,7 @@ import dobbyImage from '/public/image/dobby.png'
 import Image from 'next/image'
 import { CiMicrophoneOn } from 'react-icons/ci'
 import { BsStopCircle } from 'react-icons/bs'
+import Link from 'next/link'
 
 function Chatbot() {
   const [messages, setMessages] = useState([])
@@ -111,7 +112,9 @@ function Chatbot() {
       <header className="chat-header flex items-center justify-between rounded-t-lg bg-gray-800 p-2 text-white">
         <h1 className="text-lg font-semibold">SSGmart24</h1>
         <button className="home-button text-xl" aria-label="Home">
-          <HiOutlineHome />
+          <Link href="/main">
+            <HiOutlineHome />
+          </Link>
         </button>
       </header>
       <div className="chat-messages flex-1 overflow-y-auto p-5">

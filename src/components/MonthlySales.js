@@ -2,9 +2,8 @@
 import { useState, useEffect } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 
-const MonthlySales = () => {
-  const ym = '2024-03'
-  const [yearMonth, setYearMonth] = useState(ym)
+const MonthlySales = ({ dateInput }) => {
+  const yearMonth = dateInput
   const [result, setResult] = useState(null)
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const MonthlySales = () => {
   }
 
   return (
-    <div>
+    <div className="text-center">
       <h4 className="text-2xl font-bold text-gray-500">당월 판매금액</h4>
       <h3 className="text-3xl font-bold text-gray-800">
         {result && result.length > 0 && result[0]
