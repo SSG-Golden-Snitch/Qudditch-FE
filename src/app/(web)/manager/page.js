@@ -38,6 +38,7 @@ export default function Manager() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
+          console.log(res)
           throw new Error(res['message'])
         } else {
           setStoreOrder(res['data'])
@@ -78,17 +79,6 @@ export default function Manager() {
           <div className="text-red-500">{error}</div>
         ) : (
           <>
-            {/* <CustomTable
-              data={storeOrder}
-              pagination={pagination}
-              header={[
-                { label: 'id', col_name: 'id' },
-                { label: 'name', col_name: 'name' },
-                { label: 'items', col_name: 'orderItems' },
-                { label: 'orderedAt', col_name: 'orderedAt' },
-                { label: 'state', col_name: 'state' },
-              ]}
-            /> */}
             <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
               <Table.Head className="text-m whitespace-nowrap text-gray-900 dark:text-white">
                 <Table.HeadCell>id</Table.HeadCell>

@@ -25,6 +25,7 @@ export default function Stock() {
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
   const [keyword, setKeyword] = useState('')
+  const [categoryName, setCategoryName] = useState('')
 
   const handleAlert = (type, message) => {
     setColor(type)
@@ -102,20 +103,20 @@ export default function Stock() {
           <Select
             className="w-32"
             id="categories"
-            // required
             onChange={handleCategoryChange}
             value={categoryId}
           >
             <option value={0}>전체</option>
             <option value={1}>과자</option>
-            <option value={2}>아이스크림</option>
-            <option value={3}>초콜릿</option>
-            <option value={4}>젤리/푸딩</option>
-            <option value={5}>시리얼</option>
-            <option value={6}>음료수</option>
-            <option value={7}>생수</option>
-            <option value={8}>우유</option>
-            <option value={9}>라면</option>
+            <option value={2}>빵</option>
+            <option value={3}>우유</option>
+            <option value={4}>라면</option>
+            <option value={5}>커피</option>
+            <option value={6}>생수</option>
+            <option value={7}>음료수</option>
+            <option value={9}>즉석밥</option>
+            <option value={10}>아이스크림</option>
+            <option value={11}>젤리</option>
           </Select>
         </div>
 
