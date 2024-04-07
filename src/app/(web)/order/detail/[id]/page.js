@@ -1,17 +1,13 @@
 'use client'
 import OrderDetailPage from '@/components/orderProductList'
+import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter } from 'next/navigation'
-
-export async function getData({ params: { id } }) {
-  const storeOrder = await getStoreOrder(id)
-  return {
-    id: storeOrder.id,
-  }
-}
+import { CustomAlert } from '@/components/CustomAlert'
+import { useState } from 'react'
 
 async function getXlsx(id) {
-  const URL = `http://localhost:8080/api/store/order/download/${id}`
-  const response = await fetch(URL)
+  const URL = `/api/store/order/download/${id}`
+  const response = await fetchExtended(URL)
   if (!response.ok) {
     throw new Error('엑셀 파일 다운로드에 실패했습니다.')
   }
@@ -26,10 +22,17 @@ async function getXlsx(id) {
   window.URL.revokeObjectURL(url)
 }
 
-export default async function OrderDetail({ params: { id } }) {
+export default function OrderDetail({ params: { id } }) {
   const router = useRouter()
+  const [alertMessage, setAlertMessage] = useState('')
+
+  const handleAlert = (message = '') => {
+    setAlertMessage(message)
+  }
+
   const handleXlsxClick = async () => {
     try {
+      setAlertMessage('발주서 다운로드 성공')
       await getXlsx(id)
     } catch (error) {
       console.log(error)
@@ -37,6 +40,7 @@ export default async function OrderDetail({ params: { id } }) {
   }
   return (
     <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+      {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       <OrderDetailPage id={id} />
       <br />
       <div className="inline-flex rounded-md shadow-sm" role="group">
