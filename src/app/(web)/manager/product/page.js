@@ -3,10 +3,11 @@
 import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { Pagination } from 'flowbite-react'
+import { Pagination, Table } from 'flowbite-react'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
-export default function Store() {
+export default function Product() {
   const [pagination, setPagination] = useState({
     paginationParam: {
       page: 1,
@@ -18,7 +19,7 @@ export default function Store() {
     existPrev: false,
     existNext: false,
   })
-  const [store, setStore] = useState([])
+  const [product, setProduct] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [color, setColor] = useState('')
@@ -29,11 +30,11 @@ export default function Store() {
     setMessage(message)
   }
 
-  const handleStore = async (page = 1) => {
+  const handleProduct = async (page = 1) => {
     setError(null)
     setIsLoading(true)
 
-    const storeReqUrl = new URL(apiUrl + `/api/manage/store?page=${page}`)
+    const storeReqUrl = new URL(apiUrl + `/api/manage/product?page=${page}`)
 
     await fetchExtended(storeReqUrl, {
       method: 'GET',
@@ -49,7 +50,7 @@ export default function Store() {
           setError(res['message'])
           throw new Error(res['message'])
         } else {
-          setStore(res['data'])
+          setProduct(res['data'])
           setPagination(res['pagination'])
           console.log(res)
         }
@@ -63,7 +64,7 @@ export default function Store() {
   }
 
   useEffect(() => {
-    handleStore()
+    handleProduct()
   }, [])
 
   const handlePage = (page) => {
@@ -71,7 +72,7 @@ export default function Store() {
       ...pagination,
       paginationParam: { ...pagination.paginationParam, page },
     })
-    handleStore(page)
+    handleProduct(page)
   }
 
   if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
@@ -84,21 +85,37 @@ export default function Store() {
           <div className="text-red-500">{error}</div>
         ) : (
           <>
-            <CustomTable
-              handleData={handleStore}
-              handleAlert={handleAlert}
-              data={store}
-              pagination={pagination}
-              header={[
-                { label: 'id', col_name: 'id' },
-                { label: 'storename', col_name: 'storeName' },
-                { label: '대표명', col_name: 'name' },
-                { label: 'phone', col_name: 'phone' },
-                { label: 'EMAIL', col_name: 'email' },
-                { label: 'address', col_name: 'address' },
-                // { label: 'createAt', col_name: 'createdAt' },
-              ]}
-            />
+            <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
+              <Table.Head className="text-m whitespace-nowrap text-gray-900 dark:text-white">
+                <Table.HeadCell>id</Table.HeadCell>
+                <Table.HeadCell>image</Table.HeadCell>
+                <Table.HeadCell>brand</Table.HeadCell>
+                <Table.HeadCell>name</Table.HeadCell>
+                <Table.HeadCell>price</Table.HeadCell>
+                <Table.HeadCell>unitPrice</Table.HeadCell>
+                <Table.HeadCell>expiration</Table.HeadCell>
+              </Table.Head>
+              <Table.Body>
+                {product.map((item) => (
+                  <Table.Row
+                    key={item.id}
+                    className="items-center bg-white dark:border-gray-700 dark:bg-gray-800"
+                  >
+                    <Table.Cell>{item.id}</Table.Cell>
+                    <Table.Cell className="text-center">
+                      <div className="flex justify-center">
+                        <Image src={item.image} alt={item.name} width={100} height={100} />
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell>{item.brand}</Table.Cell>
+                    <Table.Cell>{item.name}</Table.Cell>
+                    <Table.Cell>{item.price}</Table.Cell>
+                    <Table.Cell>{item.unitPrice}</Table.Cell>
+                    <Table.Cell>{item.expirationDate}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
             <div className="relative items-center justify-center pt-10">
               <Pagination
                 currentPage={pagination.paginationParam.page}
