@@ -123,16 +123,20 @@ const CartPage = () => {
 
   const removeItemFromCart = async (productId) => {
     try {
-      const response = await fetchExtended(`/api/cart?${productId}`, {
-        method: 'delete',
+      // DELETE 메소드와 함께 productId를 URL 경로의 일부로 포함하여 요청
+      const response = await fetchExtended(`/api/cart/${productId}`, {
+        method: 'DELETE',
       })
       if (response.ok) {
-        fetchCartItems()
+        // 요청 성공 처리
+        fetchCartItems() // 장바구니 목록을 다시 가져옴
       } else {
-        throw new Error('장바구니 항목 삭제에 실패하였습니다')
+        // 요청 실패 처리
+        throw new Error('장바구니 항목 삭제에 실패하였습니다.')
       }
     } catch (error) {
-      setMessage(error.message)
+      // 에러 처리
+      console.error('Error:', error)
     }
   }
 
@@ -165,7 +169,7 @@ const CartPage = () => {
 
             {cartItems.map((item) => (
               <div key={item.productId} className="mb-4 rounded-lg border-2 p-4">
-                <div class="flex items-center justify-between pb-2">
+                <div className="flex items-center justify-between pb-2">
                   <input
                     type="checkbox"
                     checked={selectedItems[item.productId]}
@@ -179,14 +183,15 @@ const CartPage = () => {
                       {item.qty} 개 {formatNumber(item.price)}원
                     </p>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => removeItemFromCart(item.productId)}
-                    className="mb-10 rounded-lg border border-white bg-white px-1 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
-                  >
-                    <IoMdClose />
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => removeItemFromCart(item.productId)}
+                      className="mb-10 rounded-lg border border-white bg-white px-1 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+                    >
+                      <IoMdClose />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
