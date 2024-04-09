@@ -20,7 +20,6 @@ import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
 import Loading from '@/components/ui/Loading'
-import { BrowserQRCodeReader } from '@zxing/browser'
 
 const Home = () => {
   const cameraDeviceProvider = useContext(CameraDevicesContext)
