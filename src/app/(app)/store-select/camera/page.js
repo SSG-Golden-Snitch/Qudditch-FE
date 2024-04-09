@@ -1,7 +1,9 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { FaRegCircle } from 'react-icons/fa'
+import { FaCircle } from 'react-icons/fa'
+import { FiShoppingCart } from 'react-icons/fi'
+import Link from 'next/link'
 
 const CameraPage = () => {
   const videoRef = useRef(null)
@@ -44,7 +46,7 @@ const CameraPage = () => {
       <h1 className="mb-4 text-2xl font-bold">QR 인식</h1>
       <div className="relative">
         <video ref={videoRef} className="rounded-lg" autoPlay playsInline></video>
-        <FaRegCircle
+        <FaCircle
           onClick={takePhoto}
           style={{
             position: 'absolute',
@@ -53,11 +55,24 @@ const CameraPage = () => {
             transform: 'translateX(-50%)', // 왼쪽으로 50% 이동하여 중앙 정렬
             fontSize: '48px', // 아이콘 크기
             color: 'white', // 아이콘 색상
-            border: '4px solid white', // 테두리 색상
+            border: '2px solid red', // 테두리 색상
             borderRadius: '50%', // 원형 테두리
             cursor: 'pointer',
           }}
         />
+
+        <Link href={`/store-select/cart`}>
+          <FiShoppingCart
+            style={{
+              position: 'absolute',
+              bottom: '13%',
+              left: '80%',
+              transform: 'translateX(-80%)',
+              fontSize: '24px',
+              color: 'white',
+            }}
+          />
+        </Link>
       </div>
       {image && <img src={image} className="mt-4 rounded-lg" alt="Snapshot" />}
       <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
