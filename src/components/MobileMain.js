@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import AppLogo from '/public/AppLogo.svg'
 import BubbleSearch from '/public/BubbleSearch.svg'
-import FaceId from '/public/FaceId.svg'
+import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
 
