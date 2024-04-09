@@ -39,7 +39,7 @@ export default function ProductRank() {
   }, [])
 
   return (
-    <div className="flex flex-col space-y-4 overflow-hidden rounded-lg bg-gray-200 p-8">
+    <div className="flex flex-col space-y-4 overflow-hidden rounded-3xl bg-zinc-100 p-8">
       <h3 className="text-lg">
         <span className="font-bold">박준상</span>님을 위한 추천상품이 있어요 🧚‍♀️
       </h3>
@@ -52,7 +52,7 @@ export default function ProductRank() {
               className="h-auto w-full rounded-lg object-cover"
             />
             <div className="mt-1 text-sm font-medium">{product.productName}</div>
-            <div className="text-sm">{`${product.price.toLocaleString()}원`}</div>
+            {/* <div className="text-sm">{`${product.price.toLocaleString()}원`}</div> */}
           </div>
         ))}
       </div>

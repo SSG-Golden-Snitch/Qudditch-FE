@@ -1,19 +1,16 @@
 'use client'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { LuScanFace } from 'react-icons/lu'
-import { BsShop } from 'react-icons/bs'
-import { TbMessageCircleSearch } from 'react-icons/tb'
-import { AiFillBell } from 'react-icons/ai'
-import { Autocomplete, Flex, Loader, useTheme, View } from '@aws-amplify/ui-react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Autocomplete, Flex, Loader, View, useTheme } from '@aws-amplify/ui-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Img from 'next/image'
+import { useEffect, useState } from 'react'
+import { AiFillBell } from 'react-icons/ai'
 import AppLogo from '../../public/Applogo.svg'
+import BubbleSearch from '../../public/BubbleSearch.svg'
 import FaceId from '../../public/FaceId.svg'
 import SmallShop from '../../public/SmallShop.svg'
-import BubbleSearch from '../../public/BubbleSearch.svg'
+import ProductRank from './ProductRank'
 
 const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
 
@@ -128,74 +125,75 @@ const MobileMain = () => {
   }
 
   return (
-    <div className="">
-      <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
-        <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-8">
-          <div className="grid grid-cols-2 items-center justify-items-center text-center">
-            <AppLogo className="col-start-1" />
-            <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
-          </div>
+    <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
+      <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
+        <div className="grid grid-cols-2 items-center justify-items-center text-center">
+          <AppLogo className="col-start-1 " />
+          <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+        </div>
 
-          <div
-            id="default-carousel"
-            className="w-full items-center justify-center p-4 text-center"
-            data-carousel="slide"
-          >
-            <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-              {carouselData.map((src, index) => (
-                <div
-                  key={src}
-                  className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
-                  data-carousel-item
-                >
-                  <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
-                </div>
-              ))}
-              <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-                {carouselData.map((_, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
-                    aria-label={`Slide ${index + 1}`}
-                    onClick={() => goToSlide(index)}
-                  ></button>
-                ))}
+        <div
+          id="default-carousel"
+          className="w-full items-center justify-center p-4 text-center"
+          data-carousel="slide"
+        >
+          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+            {carouselData.map((src, index) => (
+              <div
+                key={src}
+                className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
+                data-carousel-item
+              >
+                <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
               </div>
+            ))}
+            <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+              {carouselData.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
+                  aria-label={`Slide ${index + 1}`}
+                  onClick={() => goToSlide(index)}
+                ></button>
+              ))}
             </div>
           </div>
         </div>
-        <div className="p-3">
-          <ProductSearchBar />
+      </div>
+      <div className="p-3">
+        <ProductSearchBar />
+      </div>
+      <div className="  px-7 pt-5">
+        <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
+          <Link href="/access" passHref>
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <FaceId className="mb-1" />
+              </div>
+              <p>매장출입</p>
+            </div>
+          </Link>
+          <Link href="/map" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-200">
+              <div className="text-6xl">
+                <SmallShop />
+              </div>
+              <p>매장찾기</p>
+            </div>
+          </Link>
+          <Link href="chatbot" passHref>
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <BubbleSearch />
+              </div>
+              <p>챗봇</p>
+            </div>
+          </Link>
         </div>
-        <div className="  px-7 pt-3">
-          <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
-            <Link href="/access" passHref>
-              <div className="flex flex-col items-center text-center">
-                <div className="text-6xl">
-                  <FaceId className="mb-1" />
-                </div>
-                <p>매장출입</p>
-              </div>
-            </Link>
-            <Link href="/map" passHref>
-              <div className="flex flex-col items-center text-center active:bg-gray-200">
-                <div className="text-6xl">
-                  <SmallShop />
-                </div>
-                <p>매장찾기</p>
-              </div>
-            </Link>
-            <Link href="chatbot" passHref>
-              <div className="flex flex-col items-center text-center">
-                <div className="text-6xl">
-                  <BubbleSearch />
-                </div>
-                <p>챗봇</p>
-              </div>
-            </Link>
-          </div>
-        </div>
+      </div>
+      <div className="mt-3 p-5">
+        <ProductRank />
       </div>
     </div>
   )
