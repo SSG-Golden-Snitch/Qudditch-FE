@@ -13,5 +13,5 @@ export const getDistance = (lat1, lng1, lat2, lng2) => {
 
   const distanceInMeters = R * c
 
-  return distanceInMeters.toFixed(1)
+  return distanceInMeters.toFixed(0)
 }
