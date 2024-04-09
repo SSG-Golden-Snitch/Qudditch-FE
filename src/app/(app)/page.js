@@ -1,3 +1,4 @@
+//src/app/page.js
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'

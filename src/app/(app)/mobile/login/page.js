@@ -2,22 +2,25 @@
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const router = useRouter() // Next.js 라우터 인스턴스를 가져옵니다.
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const response = await fetch('/api/user/login', {
+      const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // 쿠키를 포함시키기 위해 credentials 추가
       })
       const data = await response.json()
 
@@ -27,8 +30,8 @@ export default function MobileUserLogin() {
         alert(data.error)
       } else {
         alert('로그인 성공')
-        // 추후 토큰 저장 방식 개선 필요
-        localStorage.setItem('user-token', data.token)
+        //router.push('/main'); // 사용자를 /main 페이지로 리디렉트합니다.
+        router.push('http://localhost:3000/main')
       }
     } catch (error) {
       setLoading(false)
