@@ -189,8 +189,6 @@ const MobileMain = () => {
               </div>
               <p>챗봇</p>
             </div>
-          </Link>
-        </div>
       </div>
       <div className="mt-3 p-5">
         <ProductRank />
