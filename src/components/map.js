@@ -56,7 +56,9 @@ const MapComponent = ({ defaultPosition, stores }) => {
     }
 
     const script = document.createElement('script')
-    script.src = 'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5vhz6jovug'
+    script.src =
+      'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=' +
+      process.env.NEXT_PUBLIC_MAP_KEY
     script.async = true
     script.onload = loadMap
     document.body.appendChild(script)
