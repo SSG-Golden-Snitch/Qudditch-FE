@@ -5,6 +5,7 @@ import React from 'react'
 
 const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, totalPay }) => {
   const handleInitiatePayment = async () => {
+    // initiatePayment 함수 호출 결과를 paymentData에 저장
     const paymentData = initiatePayment()
 
     try {
@@ -19,7 +20,8 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
       const data = await response.json()
       if (response.ok) {
         // 결제 페이지로 리다이렉트
-        window.location.href = data
+        console.log('Redirect URL:', data.redirectUrl)
+        window.location.href = data.redirectUrl
       } else {
         // 오류 처리
         console.error('Failed to initiate payment:', data)
