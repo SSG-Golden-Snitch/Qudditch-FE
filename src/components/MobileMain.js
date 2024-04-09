@@ -12,7 +12,7 @@ import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
 
-const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
+const carouselData = ['1.png', '2.png', '3.png', '4.png', '5.png']
 
 const ProductSearchBar = () => {
   const router = useRouter()
@@ -137,7 +137,7 @@ const MobileMain = () => {
           className="w-full items-center justify-center p-4 text-center"
           data-carousel="slide"
         >
-          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+          <div className="h-70 relative overflow-hidden rounded-lg md:h-96">
             {carouselData.map((src, index) => (
               <div
                 key={src}
@@ -189,9 +189,11 @@ const MobileMain = () => {
               </div>
               <p>챗봇</p>
             </div>
-      </div>
-      <div className="mt-3 p-5">
-        <ProductRank />
+          </Link>
+        </div>
+        <div className="mt-3 p-5">
+          <ProductRank />
+        </div>
       </div>
     </div>
   )
