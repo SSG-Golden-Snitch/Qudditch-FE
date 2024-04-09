@@ -2,16 +2,15 @@
 import withPWAInit from '@ducanh2912/next-pwa'
 
 const withPWA = withPWAInit({
-    dest: 'public',
+  dest: 'public',
 })
 
 export default withPWA({
-    // Your Next.js config
-    images: {
-        remotePatterns: [
-            {
-                hostname: 'sitem.ssgcdn.com',
-            },
-        ],
-    },
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'sitem.ssgcdn.com',
+      },
+    ],
+  },
 })
