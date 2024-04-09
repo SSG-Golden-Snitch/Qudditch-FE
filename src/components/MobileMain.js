@@ -129,106 +129,6 @@ const MobileMain = () => {
 
   return (
     <div className="">
-      {/* <br />
-      <div className={'flex flex-row items-center justify-between '}>
-        <ProductSearchBar />
-        <AiFillBell className="text-3xl text-gray-700 dark:text-gray-200" />
-      </div>
-      <br />
-      <div id="default-carousel" className="relative w-full" data-carousel="slide">
-        <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-          {carouselData.map((src, index) => (
-            <div
-              key={src}
-              className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
-              data-carousel-item
-            >
-              <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-          {carouselData.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
-              aria-label={`Slide ${index + 1}`}
-              onClick={() => goToSlide(index)}
-            ></button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-          data-carousel-prev
-          onClick={prevSlide}
-        ></button>
-        <button
-          type="button"
-          className="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-          data-carousel-next
-          onClick={nextSlide}
-        ></button>
-      </div>
-      <br />
-      <main className="flex justify-center p-4">
-        <div className="flex w-full max-w-4xl justify-around">
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <LuScanFace />
-            </div>
-            <p>매장출입</p>
-          </div>
-          <Link href="/map" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-200">
-              <div className="text-6xl">
-                <BsShop />
-              </div>
-              <p>매장찾기</p>
-            </div>
-          </Link>
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <TbMessageCircleSearch />
-            </div>
-            <p>챗봇</p>
-          </div>
-        </div>
-      </main>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
-            alt=""
-          />
-        </div>
-      </div>  */}
       <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
         <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-8">
           <div className="grid grid-cols-2 items-center justify-items-center text-center">
@@ -251,45 +151,33 @@ const MobileMain = () => {
                   <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
                 </div>
               ))}
+              <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+                {carouselData.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
+                    aria-label={`Slide ${index + 1}`}
+                    onClick={() => goToSlide(index)}
+                  ></button>
+                ))}
+              </div>
             </div>
-
-            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-              {carouselData.map((_, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
-                  aria-label={`Slide ${index + 1}`}
-                  onClick={() => goToSlide(index)}
-                ></button>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              className="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-              data-carousel-prev
-              onClick={prevSlide}
-            ></button>
-            <button
-              type="button"
-              className="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-              data-carousel-next
-              onClick={nextSlide}
-            ></button>
           </div>
         </div>
         <div className="p-3">
           <ProductSearchBar />
         </div>
         <div className="  px-7 pt-3">
-          <div className="flex w-full max-w-4xl justify-around gap-0">
-            <div className="flex flex-col items-center text-center">
-              <div className="text-6xl">
-                <FaceId />
+          <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
+            <Link href="/access" passHref>
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl">
+                  <FaceId className="mb-1" />
+                </div>
+                <p>매장출입</p>
               </div>
-              <p>매장출입</p>
-            </div>
+            </Link>
             <Link href="/map" passHref>
               <div className="flex flex-col items-center text-center active:bg-gray-200">
                 <div className="text-6xl">
@@ -298,12 +186,14 @@ const MobileMain = () => {
                 <p>매장찾기</p>
               </div>
             </Link>
-            <div className="flex flex-col items-center text-center">
-              <div className="text-6xl">
-                <BubbleSearch />
+            <Link href="chatbot" passHref>
+              <div className="flex flex-col items-center text-center">
+                <div className="text-6xl">
+                  <BubbleSearch />
+                </div>
+                <p>챗봇</p>
               </div>
-              <p>챗봇</p>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
