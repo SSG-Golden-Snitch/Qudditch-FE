@@ -48,7 +48,11 @@ const MobileNavbar = () => {
   ]
 
   return (
-    <nav className={'fixed inset-x-0 bottom-0 z-10 block rounded-t-2xl bg-gray-100 px-4 shadow'}>
+    <nav
+      className={
+        'fixed inset-x-0 bottom-0 z-10 block h-[4rem] rounded-t-2xl bg-gray-100 px-4 shadow'
+      }
+    >
       <div id="tabs" className={'flex justify-between'}>
         {navItems.map((item, index) => (
           <div key={index}>{item}</div>
