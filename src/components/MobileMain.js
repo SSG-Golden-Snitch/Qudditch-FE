@@ -9,6 +9,11 @@ import { Autocomplete, Flex, Loader, useTheme, View } from '@aws-amplify/ui-reac
 import { fetchExtended } from '@/utils/fetchExtended'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import Img from 'next/image'
+import AppLogo from '../../public/Applogo.svg'
+import FaceId from '../../public/FaceId.svg'
+import SmallShop from '../../public/SmallShop.svg'
+import BubbleSearch from '../../public/BubbleSearch.svg'
 
 const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
 
@@ -100,7 +105,7 @@ const MobileMain = () => {
     const timeout = setTimeout(() => {
       const nextSlide = (currentSlide + 1) % carouselData.length
       setCurrentSlide(nextSlide)
-    }, 2000)
+    }, 3000)
 
     return () => clearTimeout(timeout)
   }, [currentSlide])
@@ -123,8 +128,8 @@ const MobileMain = () => {
   }
 
   return (
-    <div className="mx-4">
-      <br />
+    <div className="">
+      {/* <br />
       <div className={'flex flex-row items-center justify-between '}>
         <ProductSearchBar />
         <AiFillBell className="text-3xl text-gray-700 dark:text-gray-200" />
@@ -222,6 +227,84 @@ const MobileMain = () => {
             src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
             alt=""
           />
+        </div>
+      </div>  */}
+      <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
+        <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-8">
+          <div className="grid grid-cols-2 items-center justify-items-center text-center">
+            <AppLogo className="col-start-1" />
+            <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+          </div>
+
+          <div
+            id="default-carousel"
+            className="w-full items-center justify-center p-4 text-center"
+            data-carousel="slide"
+          >
+            <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+              {carouselData.map((src, index) => (
+                <div
+                  key={src}
+                  className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
+                  data-carousel-item
+                >
+                  <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
+                </div>
+              ))}
+            </div>
+
+            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+              {carouselData.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
+                  aria-label={`Slide ${index + 1}`}
+                  onClick={() => goToSlide(index)}
+                ></button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+              data-carousel-prev
+              onClick={prevSlide}
+            ></button>
+            <button
+              type="button"
+              className="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+              data-carousel-next
+              onClick={nextSlide}
+            ></button>
+          </div>
+        </div>
+        <div className="p-3">
+          <ProductSearchBar />
+        </div>
+        <div className="  px-7 pt-3">
+          <div className="flex w-full max-w-4xl justify-around gap-0">
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <FaceId />
+              </div>
+              <p>매장출입</p>
+            </div>
+            <Link href="/map" passHref>
+              <div className="flex flex-col items-center text-center active:bg-gray-200">
+                <div className="text-6xl">
+                  <SmallShop />
+                </div>
+                <p>매장찾기</p>
+              </div>
+            </Link>
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <BubbleSearch />
+              </div>
+              <p>챗봇</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
