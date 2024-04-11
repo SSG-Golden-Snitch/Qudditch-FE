@@ -19,6 +19,10 @@ export default function ProductRank() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('token')
+      if (!token) {
+        console.log('token is null')
+        return
+      }
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
       const decodedJWT = JSON.parse(
