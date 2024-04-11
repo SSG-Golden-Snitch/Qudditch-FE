@@ -1,10 +1,43 @@
 'use client'
 
+import { initializeApp } from 'firebase/app'
+import { getMessaging, getToken } from 'firebase/messaging'
+
 import { Button, Label, TextInput } from 'flowbite-react'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 
 function Component() {
+  const [fcmToken, setFcmToken] = useState()
+
+  // fcm을 위한 device 토큰 get
+  useEffect(() => {
+    const firebaseApp = initializeApp({
+      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FCM_PROJECT_ID,
+      storageBucket: process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET,
+      messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID,
+      appId: process.env.NEXT_PUBLIC_FCM_APP_ID,
+    })
+
+    const messaging = getMessaging(firebaseApp)
+
+    getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FCM_VAP_ID_KEY,
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          setFcmToken(currentToken)
+        } else {
+          console.log('No registration token available. Request permission to generate one.')
+        }
+      })
+      .catch((err) => {
+        console.log('An error occurred while retrieving token. ', err)
+      })
+  }, [])
+
   const loginRef = useRef()
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -20,14 +53,42 @@ function Component() {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (typeof window !== 'undefined') {
           if (data.error) {
             alert(data.error)
           } else {
+            const loginDeviceHandler = async () => {
+              if (fcmToken == null) {
+                alert('토큰을 아직 받아오지 못했습니다. 잠시후 다시시도 바랍니다.')
+                return
+              }
+              const resp = await fetch('https://dev.qudditch.dawoony.com/api/fcm/login-device', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: loginRef.current?.elements.email.value,
+                  deviceToken: fcmToken,
+                }),
+              })
+
+              return resp
+            }
+
+            const resp = await loginDeviceHandler()
+
+            if (resp != null && resp.status !== 200) {
+              alert('LOGIN DEVICE FAIL')
+              return
+            }
+
             alert('Login success')
             sessionStorage.setItem('token', data['token'])
-            window.location.href = '/main'
+
+            // 메인페이지 이동
+            window.location.href = '/m'
           }
         }
       })

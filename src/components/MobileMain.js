@@ -97,6 +97,19 @@ const ProductSearchBar = () => {
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
 
+  // 알림 권한 요청
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      Notification.requestPermission()
+        .then(function (permission) {
+          console.log('Permission:', permission)
+        })
+        .catch(function (error) {
+          console.error('Permission error:', error)
+        })
+    }
+  }, [])
+
   // 자동 슬라이드 기능
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -129,7 +142,9 @@ const MobileMain = () => {
       <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
         <div className="grid grid-cols-2 items-center justify-items-center text-center">
           <AppLogo className="col-start-1 " />
-          <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+          <Link href="/m/alert">
+            <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+          </Link>
         </div>
 
         <div
