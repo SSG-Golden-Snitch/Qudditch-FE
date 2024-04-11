@@ -88,7 +88,7 @@ const WebSettingPage = () => {
           </div>
           <div className="ml-2 mt-2 text-2xl font-bold">{name}님, 반가워요!</div>
           <div className="mx-2 mt-3 rounded-lg bg-gray-100">
-            <Link className="block w-full p-4" href="/point">
+            <Link className="block w-full p-4" href="/m/point">
               <div className="text-center text-2xl font-semibold">2003P</div>
             </Link>
           </div>
@@ -96,7 +96,7 @@ const WebSettingPage = () => {
       )}
       <div className="flex justify-between border-b-2 border-gray-200">
         {/* TODO 회원정보 수정 url*/}
-        <Link className="block w-full p-6" href="/update">
+        <Link className="block w-full p-6" href="/m/update">
           <div className="flex">
             <AiFillSetting className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">회원정보 수정</div>
@@ -105,7 +105,7 @@ const WebSettingPage = () => {
       </div>
       <Toggle />
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className="block w-full p-6" href="/alert">
+        <Link className="block w-full p-6" href="/m/alert">
           <div className="flex">
             <LiaClipboardListSolid className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">알림목록 조회</div>
@@ -113,7 +113,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/bookmark/product">
+        <Link className=" block w-full p-6" href="/m/bookmark/product">
           <div className="flex">
             <FaBox className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">관심상품 관리</div>
@@ -121,7 +121,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/customer-service">
+        <Link className=" block w-full p-6" href="/m/customer-service">
           <div className="flex">
             <IoStorefront className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">고객센터</div>
@@ -129,7 +129,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/app-info">
+        <Link className=" block w-full p-6" href="/m/app-info">
           <div className="flex">
             <FaMobileAlt className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>

@@ -112,7 +112,7 @@ function Chatbot() {
       <header className="chat-header flex items-center justify-between rounded-t-lg bg-gray-800 p-2 text-white">
         <h1 className="text-lg font-semibold">SSGmart24</h1>
         <button className="home-button text-xl" aria-label="Home">
-          <Link href="/main">
+          <Link href="/m">
             <HiOutlineHome />
           </Link>
         </button>

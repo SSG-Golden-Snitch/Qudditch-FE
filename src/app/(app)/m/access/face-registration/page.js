@@ -39,7 +39,7 @@ const FaceRegistrationPage = () => {
         throw new Error(res['error'])
       })
       .catch((err) => {
-        router.push(`/access/face-registration/failed?msg=${err.message}`)
+        router.push(`/m/access/face-registration/failed?msg=${err.message}`)
       })
   }
 

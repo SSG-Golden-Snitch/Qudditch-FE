@@ -118,7 +118,7 @@ const StoreSelectPage = () => {
             className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
             onClick={() => handleStoreSelect(store.id)}
           >
-            <Link href={`/store-select/camera`}>
+            <Link href={`/m/store-select/camera`}>
               <p className="mb-2 font-bold">{store.name}</p>
               <p>{store.address}</p>
             </Link>
