@@ -137,7 +137,7 @@ const MobileMain = () => {
           className="w-full items-center justify-center p-4 text-center"
           data-carousel="slide"
         >
-          <div className="h-70 relative overflow-hidden rounded-lg md:h-96">
+          <div className="relative h-48 overflow-hidden rounded-lg md:h-96">
             {carouselData.map((src, index) => (
               <div
                 key={src}
@@ -167,7 +167,7 @@ const MobileMain = () => {
       <div className="  px-7 pt-5">
         <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
           <Link href="/access" passHref>
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <FaceId className="mb-1" />
               </div>
@@ -175,7 +175,7 @@ const MobileMain = () => {
             </div>
           </Link>
           <Link href="/map" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-200">
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <SmallShop />
               </div>
@@ -183,7 +183,7 @@ const MobileMain = () => {
             </div>
           </Link>
           <Link href="chatbot" passHref>
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <BubbleSearch />
               </div>
