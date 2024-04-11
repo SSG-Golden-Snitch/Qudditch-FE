@@ -137,14 +137,14 @@ const MobileMain = () => {
           className="w-full items-center justify-center p-4 text-center"
           data-carousel="slide"
         >
-          <div className="h-70 relative overflow-hidden rounded-lg md:h-96">
+          <div className="relative h-48 overflow-hidden rounded-lg md:h-96">
             {carouselData.map((src, index) => (
               <div
                 key={src}
                 className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
                 data-carousel-item
               >
-                <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
+                <img src={src} className="block h-48 w-full" alt={`Slide ${index + 1}`} />
               </div>
             ))}
             <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
@@ -191,7 +191,7 @@ const MobileMain = () => {
             </div>
           </Link>
         </div>
-        <div className="mt-3 p-5">
+        <div className="mt-3 ">
           <ProductRank />
         </div>
       </div>

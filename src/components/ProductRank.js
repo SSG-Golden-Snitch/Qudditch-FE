@@ -34,6 +34,8 @@ export default function ProductRank() {
       )
 
       console.log('decodedJWT: ', decodedJWT)
+    } else {
+      console.log('window is undefined')
     }
     handleRank()
   }, [])
