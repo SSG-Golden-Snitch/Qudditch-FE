@@ -12,8 +12,10 @@ import {
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { HiMiniVideoCamera } from 'react-icons/hi2'
+import { useState } from 'react'
 
 const CustomSidebar = () => {
+  const [isAdmin, setIsAdmin] = useState(true)
   const router = useRouter()
   const pathname = usePathname()
 
@@ -54,6 +56,28 @@ const CustomSidebar = () => {
       path: '/enter-cam',
     },
   ]
+  const adminNavItems = [
+    {
+      title: 'Dashboard',
+      icon: HiChartPie,
+      path: '/manager',
+    },
+    {
+      title: 'Order',
+      icon: HiUser,
+      path: '/manager/order',
+    },
+    {
+      title: 'Product',
+      icon: HiViewBoards,
+      path: '/manager/product',
+    },
+    {
+      title: 'Store',
+      icon: HiInbox,
+      path: '/manager/store',
+    },
+  ]
 
   const isCurrentPage = (path) => {
     return path === pathname
@@ -67,20 +91,35 @@ const CustomSidebar = () => {
 
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          {navItems.map((item, index) => {
-            return (
-              <Sidebar.Item
-                as={Link}
-                key={index}
-                icon={item.icon}
-                href={item.path}
-                active={isCurrentPage(item.path)}
-                onClick={() => router.push(item.path)}
-              >
-                {item.title}
-              </Sidebar.Item>
-            )
-          })}
+          {isAdmin
+            ? adminNavItems.map((item, index) => {
+                return (
+                  <Sidebar.Item
+                    as={Link}
+                    key={index}
+                    icon={item.icon}
+                    href={item.path}
+                    active={isCurrentPage(item.path)}
+                    onClick={() => router.push(item.path)}
+                  >
+                    {item.title}
+                  </Sidebar.Item>
+                )
+              })
+            : navItems.map((item, index) => {
+                return (
+                  <Sidebar.Item
+                    as={Link}
+                    key={index}
+                    icon={item.icon}
+                    href={item.path}
+                    active={isCurrentPage(item.path)}
+                    onClick={() => router.push(item.path)}
+                  >
+                    {item.title}
+                  </Sidebar.Item>
+                )
+              })}
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
