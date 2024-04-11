@@ -59,7 +59,6 @@ const WebSettingPage = () => {
           ),
         )
 
-        console.log('jwt', decodedJWT)
         setName(decodedJWT.name)
       }
     }
@@ -271,7 +270,7 @@ function getNameFromToken() {
           .join(''),
       ),
     )
-    console.log('decode :', decodedJWT)
+
     return decodedJWT
   }
 }
