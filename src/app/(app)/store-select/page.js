@@ -5,6 +5,7 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import { Button } from 'flowbite-react'
 import Link from 'next/link'
 import MobileNavbar from '@/components/MobileNavbar'
+import { getDistance } from '@/utils/mapUtil'
 
 const StoreSelectPage = () => {
   const [stores, setStores] = useState([])
@@ -16,26 +17,34 @@ const StoreSelectPage = () => {
   // 위치 받기 (navigator.geolocation)
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setCurrentLocation({
-          x: position.coords.longitude, // 경도
-          y: position.coords.latitude, // 위도
-        })
-      })
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('현재 위치:', position.coords.latitude, position.coords.longitude)
+          setCurrentLocation({
+            x: position.coords.longitude, // 경도
+            y: position.coords.latitude, // 위도
+          })
+          fetchStores(position.coords.longitude, position.coords.latitude)
+        },
+        (error) => {
+          console.error('위치정보 오류:', error)
+        },
+      )
     }
   }, [])
 
-  // useEffect(() => {
-  //   if (currentLocation.x && currentLocation.y) {
-  //     fetchStores()
-  //   }
-  // }, [currentLocation])
+  useEffect(() => {
+    if (currentLocation.x && currentLocation.y) {
+      fetchStores(currentLocation.x, currentLocation.y)
+    }
+  }, [currentLocation, viewType])
 
-  const fetchStores = async () => {
+  const fetchStores = async (longitude, latitude) => {
+    console.log(`가게를 조회하는 현재 위치: ${latitude}, ${longitude}`)
     const params = {
-      currentWgs84X: currentLocation.x,
-      currentWgs84Y: currentLocation.y,
-      limit: 10,
+      currentWgs84X: longitude,
+      currentWgs84Y: latitude,
+      limit: 5,
     }
 
     const queryString = new URLSearchParams(params).toString()
@@ -67,9 +76,9 @@ const StoreSelectPage = () => {
     setStores(filteredStores)
   }
 
-  useEffect(() => {
-    fetchStores()
-  }, [viewType, currentLocation])
+  // useEffect(() => {
+  //   fetchStores()
+  // }, [viewType, currentLocation])
 
   // 서비스 이용매장 (userStoreId 존재)
   const handleStoreSelect = async (storeId) => {
@@ -112,20 +121,31 @@ const StoreSelectPage = () => {
       </div>
 
       <div>
-        {stores.map((store) => (
-          <div
-            key={store.id}
-            className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
-            onClick={() => handleStoreSelect(store.id)}
-          >
-            <Link href={`/store-select/camera`}>
-              <p className="mb-2 font-bold">{store.name}</p>
-              <p>{store.address}</p>
-            </Link>
-          </div>
-        ))}
-      </div>
+        {stores.map((store) => {
+          console.log(store)
+          const distance = getDistance(
+            currentLocation.y,
+            currentLocation.x,
+            store.wgs84Y,
+            store.wgs84X,
+          )
 
+          return (
+            <div
+              key={store.id}
+              className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
+            >
+              <Link href={`/store-select/camera`}>
+                <p className="mb-2 font-bold">{store.name}</p>
+                <p>{store.address}</p>
+                <p>
+                  {distance !== '위치 정보 없음' ? `${distance}m` : 'Location info not available'}
+                </p>
+              </Link>
+            </div>
+          )
+        })}
+      </div>
       <MobileNavbar />
     </div>
   )

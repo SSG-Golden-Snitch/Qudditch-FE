@@ -26,7 +26,7 @@ const OrderHistory = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
   // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
-  const [openDetails, setOpenDetails] = useState(null)
+  // const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
   useEffect(() => {
@@ -128,10 +128,6 @@ const OrderHistory = () => {
         />
       </div>
 
-      {/* <button onClick={handlePreviousMonth}>&lt;</button>
-      <span> {formatDateYM(currentDate)} </span>
-      <button onClick={handleNextMonth}>&gt;</button> */}
-
       <div className="mb-4 mt-20 flex w-full justify-center">
         <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
           판매내역 조회
@@ -145,31 +141,26 @@ const OrderHistory = () => {
         {orders.map((order, index) => (
           <Fragment key={index}>
             <div className="mb-4 rounded-lg border-2 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setOpenDetails(openDetails === index ? null : index)}
-                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                >
-                  {openDetails === index ? (
-                    <ChevronUpIcon className="h-5 w-5" />
-                  ) : (
-                    <ChevronDownIcon className="h-5 w-5" />
-                  )}
-                </button>
-                <div>
-                  <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-                  <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
-                    <span className="text-blue-500 hover:underline">
-                      [{order.customerOrder.partnerOrderId}]
-                    </span>
-                  </Link>
+              <div>
+                <div className="flex justify-between">
+                  <span>
+                    {formatDateYMD(order.customerOrder.orderedAt)}
+                    <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                      <span className="text-blue-500 hover:underline">
+                        [{order.customerOrder.partnerOrderId}]
+                      </span>
+                    </Link>
+                  </span>
+                  <span className="text-right font-bold">
+                    {formatNumber(order.customerOrder.totalAmount)}
+                  </span>
                 </div>
-                <span>{`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}</span>
-                <span className="text-right">{formatNumber(order.customerOrder.totalAmount)}</span>
+                <div>
+                  <div className="mt-2">
+                    {`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}
+                  </div>
+                </div>
               </div>
-              {openDetails === index && (
-                <div className="mt-4">{/* Detail view of the order */}</div>
-              )}
             </div>
           </Fragment>
         ))}
