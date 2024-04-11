@@ -26,57 +26,56 @@ const BestProduct = () => {
   const [chartInstance, setChartInstance] = useState(null)
 
   useEffect(() => {
-    if (labels.length !== 0) {
-      if (chartInstance) {
-        chartInstance.destroy()
-      }
-      const ctx = chartRef.current.getContext('2d')
-      const newChartInstance = new Chart(ctx, config)
-      setChartInstance(newChartInstance)
-
-      return () => {
-        newChartInstance.destroy()
-      }
+    if (chartInstance) {
+      chartInstance.destroy()
     }
-  }, [labels, productDataSet])
 
-  const config = {
-    type: 'doughnut',
-    options: {
-      plugins: {
-        legend: {
-          display: true,
-          position: 'right',
-          align: 'center',
-        },
-        title: {
-          display: true,
-          position: 'top',
-          text: 'Best 5 제품',
-          font: {
-            size: 30,
+    const config = {
+      type: 'doughnut',
+      options: {
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            align: 'center',
+          },
+          title: {
+            display: true,
+            position: 'top',
+            text: 'Best 5 제품',
+            font: {
+              size: 30,
+            },
           },
         },
       },
-    },
-    data: {
-      labels,
-      datasets: [
-        {
-          label: '인기 제품',
-          data: productDataSet,
-          backgroundColor: [
-            'rgb(232, 232, 232)',
-            'rgb(100, 100, 100)',
-            'rgb(86, 86, 86)',
-            'rgb(145, 145, 145)',
-            'rgb(200, 200, 200)',
-          ],
-          hoverOffset: 4,
-        },
-      ],
-    },
-  }
+      data: {
+        labels,
+        datasets: [
+          {
+            label: '인기 제품',
+            data: productDataSet,
+            backgroundColor: [
+              'rgb(232, 232, 232)',
+              'rgb(100, 100, 100)',
+              'rgb(86, 86, 86)',
+              'rgb(145, 145, 145)',
+              'rgb(200, 200, 200)',
+            ],
+            hoverOffset: 4,
+          },
+        ],
+      },
+    }
+
+    const ctx = chartRef.current.getContext('2d')
+    const newChartInstance = new Chart(ctx, config)
+    setChartInstance(newChartInstance)
+
+    return () => {
+      newChartInstance.destroy()
+    }
+  }, [labels, productDataSet])
 
   return (
     <div>

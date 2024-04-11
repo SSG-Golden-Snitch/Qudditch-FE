@@ -14,7 +14,7 @@ const RegistrationFailedPage = () => {
       <p className="mb-8 text-lg text-red-500">{searchParams.get('msg')}</p>
       <div className="flex flex-col space-y-4">
         <Button onClick={() => router.back()}>재시도</Button>
-        <Button onClick={() => router.push('/main')}>홈으로 가기</Button>
+        <Button onClick={() => router.push('/m')}>홈으로 가기</Button>
       </div>
     </div>
   )

@@ -1,12 +1,10 @@
 'use client'
 
-import '../../globals.css'
-import React, { useState, useEffect, forwardRef, Fragment } from 'react'
+import { forwardRef, Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
+import { fetchExtended } from '@/utils/fetchExtended'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
-import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
@@ -173,7 +171,7 @@ const OrderHistory = () => {
                 <td className="px-6 py-4">
                   <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
 
-                  <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                  <Link href={`/m/sales/receipt/${order.customerOrder.partnerOrderId}`}>
                     [{order.customerOrder.partnerOrderId}]
                   </Link>
                 </td>

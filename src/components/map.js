@@ -91,7 +91,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
       if (!storeId) {
         setAlertMessage('스토어 정보가 없습니다.')
       } else {
-        router.push(`/map/inventory/${storeId}`)
+        router.push(`/m/map/inventory/${storeId}`)
       }
     }
 
