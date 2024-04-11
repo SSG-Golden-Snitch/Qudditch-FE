@@ -81,7 +81,7 @@ const StoreSelectPage = () => {
 
   // 매장 이름 검색 반환
   const filterStoresByName = (allStores) => {
-    const nameMap = { 2: 'CU', 3: 'GS25', 4: '세븐일레븐' }
+    const nameMap = { 2: 'CU' }
     const filteredStores = allStores.filter((store) => store.name.includes(nameMap[viewType]))
     setStores(filteredStores)
   }
@@ -102,6 +102,8 @@ const StoreSelectPage = () => {
     if (response.ok) {
       const data = await response.text()
       setMessage('매장이 성공적으로 선택되었습니다. ' + data)
+
+      // selectedStore 업데이트
       setSelectedStore(storeId)
     } else {
       setMessage('매장 선택에 실패하였습니다.')
@@ -120,19 +122,13 @@ const StoreSelectPage = () => {
           전체
         </Button>
         <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
-          CU
-        </Button>
-        <Button onClick={() => setViewType(3)} color={viewType === 3 ? 'gray' : 'white'}>
-          GS25
-        </Button>
-        <Button onClick={() => setViewType(4)} color={viewType === 4 ? 'gray' : 'white'}>
-          세븐일레븐
+          무인매장
         </Button>
       </div>
 
       <div>
         {stores.map((store) => {
-          console.log(store)
+          console.log(store.id)
           const distance = getDistance(
             currentLocation.y,
             currentLocation.x,
@@ -142,10 +138,11 @@ const StoreSelectPage = () => {
 
           return (
             <div
-              key={store.id}
+              key={store.id} // 리스트 아이템 렌더링 할 때 고유한 식별자
               className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
             >
-              <Link href={`/store-select/camera`}>
+              <Link href={`/store-select/camera/${store.id}`}>
+                <p className="mb-2 font-bold">{store.id}</p>
                 <p className="mb-2 font-bold">{store.name}</p>
                 <p>{store.address}</p>
                 <p>
