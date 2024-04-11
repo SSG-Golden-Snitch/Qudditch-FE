@@ -55,7 +55,17 @@ const StoreSelectPage = () => {
         method: 'GET',
       })
       if (response.ok) {
-        const data = await response.json()
+        let data = await response.json()
+
+        // 거리 계산 및 추가
+        data = data.map((store) => ({
+          ...store,
+          distance: getDistance(currentLocation.y, currentLocation.x, store.wgs84Y, store.wgs84X),
+        }))
+
+        // 거리순으로 정렬
+        data.sort((a, b) => a.distance - b.distance)
+
         // viewType 1인 경우 바로 매장 목록을 설정
         if (viewType === 1) {
           setStores(data)
