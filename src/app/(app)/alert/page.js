@@ -1,6 +1,6 @@
 'use client'
 
-import Loading from '@/components/ui/Loaing'
+import Loading from '@/components/ui/Loading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 import { AiFillBell } from 'react-icons/ai'

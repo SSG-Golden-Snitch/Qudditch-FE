@@ -9,7 +9,7 @@ import { FaBox } from 'react-icons/fa'
 import { IoStorefront } from 'react-icons/io5'
 import { FaMobileAlt } from 'react-icons/fa'
 import { SlLocationPin } from 'react-icons/sl'
-import Loading from '@/components/ui/Loaing'
+import Loading from '@/components/ui/Loading'
 
 const WebSettingPage = () => {
   const [topMessage, setTopMessage] = useState()
