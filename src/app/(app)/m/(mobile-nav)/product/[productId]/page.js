@@ -130,7 +130,7 @@ const ProductSearchPage = () => {
                 <div
                   key={index}
                   className={'h-[4rem]'}
-                  onClick={() => router.push(`/m/map/inventory/${store['id']}`)}
+                  onClick={() => router.push(`/m/map?storeId=${store['id']}`)}
                 >
                   <div className={'flex flex-row items-center justify-between px-5'}>
                     <div className={'text-left'}>
