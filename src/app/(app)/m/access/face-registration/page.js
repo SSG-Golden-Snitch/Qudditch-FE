@@ -33,7 +33,7 @@ const FaceRegistrationPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res['result']['status'] === ANALYSIS_SUCCESS_MSG) {
-          router.replace('/access/face-registration/success')
+          router.replace('/m/access/face-registration/success')
           return
         }
         throw new Error(res['error'])

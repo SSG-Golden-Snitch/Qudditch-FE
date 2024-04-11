@@ -171,7 +171,7 @@ const OrderHistory = () => {
                 <td className="px-6 py-4">
                   <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
 
-                  <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                  <Link href={`/m/sales/receipt/${order.customerOrder.partnerOrderId}`}>
                     [{order.customerOrder.partnerOrderId}]
                   </Link>
                 </td>
