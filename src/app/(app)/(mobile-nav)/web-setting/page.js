@@ -7,25 +7,109 @@ import { AiFillBell, AiFillSetting } from 'react-icons/ai'
 import { LiaClipboardListSolid } from 'react-icons/lia'
 import { FaBox } from 'react-icons/fa'
 import { IoStorefront } from 'react-icons/io5'
+import { FaMobileAlt } from 'react-icons/fa'
+import { SlLocationPin } from 'react-icons/sl'
+import Loading from '@/components/ui/Loaing'
 
 const WebSettingPage = () => {
+  const [topMessage, setTopMessage] = useState()
+  const [isTopLoading, setIsTopLoading] = useState(true)
+  const [bookmarkStore, setBookmarkStore] = useState()
+  const [name, setName] = useState()
+  const [point, setPoint] = useState()
+
+  useState(async () => {
+    async function getBookmarkStore() {
+      const endpoint = `/api/store/bookmark`
+
+      try {
+        const response = await fetchExtended(endpoint, {
+          method: 'GET',
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+
+          if (data.length > 0) {
+            setBookmarkStore(data[0].name)
+          }
+        } else {
+          throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+        }
+      } catch (error) {
+        setTopMessage(error.message)
+        setIsTopLoading(false)
+      }
+    }
+
+    function getUsername() {
+      if (typeof window !== 'undefined') {
+        const token = sessionStorage.getItem('token')
+        const base64Payload = token.split('.')[1]
+        const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+        const decodedJWT = JSON.parse(
+          decodeURIComponent(
+            window
+              .atob(base64)
+              .split('')
+              .map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+              })
+              .join(''),
+          ),
+        )
+
+        console.log('jwt', decodedJWT)
+        setName(decodedJWT.name)
+      }
+    }
+
+    async function getPoint() {
+      // point 가져오기
+      setPoint(2713)
+      setIsTopLoading(false)
+    }
+
+    await getBookmarkStore()
+    getUsername()
+    await getPoint()
+  }, [])
+
   return (
     <>
+      {isTopLoading ? (
+        <Loading />
+      ) : topMessage != null ? (
+        message
+      ) : (
+        <div className="mx-3 mt-3 h-48 rounded-3xl bg-gray-200 p-8">
+          <div className="flex">
+            <SlLocationPin className="ml-2 text-sm text-gray-700" />
+            <div className="ml-3 text-sm">{bookmarkStore}</div>
+          </div>
+          <div className="ml-2 mt-2 text-2xl font-bold">{name}님, 반가워요!</div>
+          <div className="mx-2 mt-3 rounded-lg bg-gray-100">
+            <Link className="block w-full p-4" href="/point">
+              <div className="text-center text-2xl font-semibold">2003P</div>
+            </Link>
+          </div>
+        </div>
+      )}
+      <div className="flex justify-between border-b-2 border-gray-200">
+        {/* TODO 회원정보 수정 url*/}
+        <Link className="block w-full p-6" href="/update">
+          <div className="flex">
+            <AiFillSetting className="ml-2 text-3xl text-gray-700" />
+            <div className="ms-3 text-lg font-medium text-gray-900">회원정보 수정</div>
+          </div>
+        </Link>
+      </div>
       <Toggle />
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/alert">
           <div className="flex">
             <LiaClipboardListSolid className="ml-2 text-3xl text-gray-700" />
             <div className="ms-3 text-lg font-medium text-gray-900">알림목록 조회</div>
-          </div>
-        </Link>
-      </div>
-      <div className="flex justify-between border-b-2 border-gray-200">
-        {/* TODO 회원정보 수정 url*/}
-        <Link className="block w-full p-6" href="/main">
-          <div className="flex">
-            <AiFillSetting className="ml-2 text-3xl text-gray-700" />
-            <div className="ms-3 text-lg font-medium text-gray-900">회원정보 수정</div>
           </div>
         </Link>
       </div>
@@ -38,10 +122,18 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/bookmark/store">
+        <Link className=" block w-full p-6" href="/customer-service">
           <div className="flex">
             <IoStorefront className="ml-2 text-3xl text-gray-700" />
-            <div className="ms-3 text-lg font-medium text-gray-900">관심매장 관리</div>
+            <div className="ms-3 text-lg font-medium text-gray-900">고객센터</div>
+          </div>
+        </Link>
+      </div>
+      <div className="flex justify-between border-b-2 border-gray-200">
+        <Link className=" block w-full p-6" href="/app-info">
+          <div className="flex">
+            <FaMobileAlt className="ml-2 text-3xl text-gray-700" />
+            <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>
           </div>
         </Link>
       </div>
@@ -58,6 +150,12 @@ function Toggle() {
 
   useEffect(() => {
     fetchNotification()
+
+    if (Notification.permission !== 'granted') {
+      // 알림이 이미 허용된 상태
+      const pushPermissionMsg = '기기에서 직접 알림을 허용해주세요'
+      setMessage(pushPermissionMsg)
+    }
   }, [])
 
   // 디바이스 정보 조회 API
@@ -154,4 +252,26 @@ function MiniLoading() {
       <span className="sr-only">Loading...</span>
     </div>
   )
+}
+
+function getNameFromToken() {
+  if (typeof window !== 'undefined') {
+    // JWT 토큰 가져오기
+    const token = sessionStorage.getItem('token') // 세션 스토리지에서 토큰을 가져옵니다.
+    const base64Payload = token.split('.')[1]
+    const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+    const decodedJWT = JSON.parse(
+      decodeURIComponent(
+        window
+          .atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          })
+          .join(''),
+      ),
+    )
+    console.log('decode :', decodedJWT)
+    return decodedJWT
+  }
 }

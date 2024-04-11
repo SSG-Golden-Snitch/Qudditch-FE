@@ -7,6 +7,7 @@ import { AiFillBell } from 'react-icons/ai'
 import { FaCheck } from 'react-icons/fa'
 
 import { Button, Modal } from 'flowbite-react'
+import { IoIosArrowBack } from 'react-icons/io'
 
 export default function AlertListPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -39,8 +40,18 @@ export default function AlertListPage() {
   }
 
   return (
-    <div>
-      <ul className="mx-auto  bg-white shadow sm:rounded-md">
+    <div className="bg-gray-100 px-3 pb-3">
+      <div className="p-3">
+        <button
+          type="button"
+          className="mb-4 flex items-center"
+          onClick={() => window.history.back()}
+        >
+          <IoIosArrowBack className="mr-2" />
+          <div className="text-xl font-bold dark:text-white">알림 기록</div>
+        </button>
+      </div>
+      <ul className="rounded-2xl bg-white shadow">
         {isLoading ? <Loading /> : message ? message : <AlertList list={alerts} />}
       </ul>
     </div>
