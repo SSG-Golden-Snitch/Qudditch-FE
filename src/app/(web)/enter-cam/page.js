@@ -19,7 +19,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
-import Loading from '@/components/ui/Loaing'
+import Loading from '@/components/ui/Loading'
 import { useZxing } from 'react-zxing'
 
 const Home = () => {
@@ -160,7 +160,7 @@ const Home = () => {
     return () => {
       window.removeEventListener('beforeunload', cleanup)
     }
-  }, [])
+  }, [stream])
 
   useInterval({ callback: runPrediction, delay: animateDelay })
 

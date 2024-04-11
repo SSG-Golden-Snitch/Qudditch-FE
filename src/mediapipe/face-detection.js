@@ -22,7 +22,7 @@ const FaceDetection = (() => {
   const CONFIG_DEFAULT_DETECTION_CONFIDENCE_SLIDER_STEP_VALUE = 0.1
   const CONFIG_DEFAULT_SUPPRESSION_THRESHOLD_SLIDER_STEP_VALUE = 0.1
 
-  let minDetectionConfidence = 0.9
+  let minDetectionConfidence = 0.93
   let minSuppressionThreshold = 0.5
   let runningMode = RUNNING_MODE_VIDEO
   let delegate = DELEGATE_GPU

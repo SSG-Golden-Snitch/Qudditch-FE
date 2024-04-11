@@ -5,6 +5,7 @@ import { Table } from 'flowbite-react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { CustomAlert } from '@/components/CustomAlert'
+import Loading from '@/components/ui/Loading'
 
 async function searchProductByName(productName) {
   const URL = `/api/product/find/${productName}`
@@ -89,7 +90,11 @@ export default function GetDetail({ id }) {
   }
 
   if (!order) {
-    return <div>Loading...</div>
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
   }
 
   const removeFromOrder = async (index) => {
