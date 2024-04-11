@@ -53,7 +53,7 @@ const ProductSearchBar = () => {
   }
 
   const onSelect = (option) => {
-    router.push(`/product/${option['id']}`)
+    router.push(`/m/product/${option['id']}`)
   }
 
   const onClear = () => {
@@ -168,6 +168,8 @@ const MobileMain = () => {
         <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
           <Link href="/access" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
+          <Link href="/m/access" passHref>
+            <div className="flex flex-col items-center text-center">
               <div className="text-6xl">
                 <FaceId className="mb-1" />
               </div>
@@ -175,7 +177,8 @@ const MobileMain = () => {
             </div>
           </Link>
           <Link href="/map" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-100">
+          <Link href="/m/map" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-200">
               <div className="text-6xl">
                 <SmallShop />
               </div>
@@ -184,6 +187,8 @@ const MobileMain = () => {
           </Link>
           <Link href="chatbot" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
+          <Link href="/m/chatbot" passHref>
+            <div className="flex flex-col items-center text-center">
               <div className="text-6xl">
                 <BubbleSearch />
               </div>

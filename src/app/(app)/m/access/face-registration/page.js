@@ -1,8 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness'
-import { Button, Flex, Heading } from '@aws-amplify/ui-react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import {
   cameraDisplayText,
@@ -34,18 +33,18 @@ const FaceRegistrationPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res['result']['status'] === ANALYSIS_SUCCESS_MSG) {
-          router.replace('/access/face-registration/success')
+          router.replace('/m/access/face-registration/success')
           return
         }
         throw new Error(res['error'])
       })
       .catch((err) => {
-        router.push(`/access/face-registration/failed?msg=${err.message}`)
+        router.push(`/m/access/face-registration/failed?msg=${err.message}`)
       })
   }
 
   return (
-    <>
+    <div className={'h-screen'}>
       {loading ? (
         <div className="flex h-screen items-center justify-center">
           <div className="h-20 w-20 animate-ping rounded-full bg-violet-800"></div>
@@ -56,7 +55,7 @@ const FaceRegistrationPage = () => {
           region="ap-northeast-1"
           onAnalysisComplete={handleAnalysisComplete}
           onUserCancel={() => router.back()}
-          disableStartScreen={true}
+          disableStartScreen={false}
           displayText={{
             ...hintDisplayText,
             ...cameraDisplayText,
@@ -66,7 +65,7 @@ const FaceRegistrationPage = () => {
           }}
         />
       )}
-    </>
+    </div>
   )
 }
 

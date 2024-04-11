@@ -8,8 +8,11 @@ import { TbFaceId } from 'react-icons/tb'
 
 import { Progress, Spinner } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function Access() {
+  const router = useRouter()
   const [reqCode, setReqCode] = useState('')
   const [progress, setProgress] = useState(100)
   const [time, setTime] = useState(0)
@@ -33,8 +36,7 @@ export default function Access() {
   }
 
   const handleGoBack = () => {
-    // main
-    window.location.href = '/main'
+    router.back()
   }
 
   const handleProgress = () => {
@@ -166,9 +168,12 @@ export default function Access() {
           </>
         )}
       </div>
-      <div className="flex items-center justify-center gap-1 text-center text-sm">
+      <Link
+        href={'/access/face-registration'}
+        className="flex items-center justify-center gap-1 text-center text-sm"
+      >
         얼굴인식으로 인증하기 <TbFaceId />
-      </div>
+      </Link>
     </div>
   )
 }
