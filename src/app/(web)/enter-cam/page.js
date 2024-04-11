@@ -32,7 +32,7 @@ const Home = () => {
   const [modelLoadResult, setModelLoadResult] = useState()
   const [loading, setLoading] = useState(true)
   const [currentMode, setCurrentMode] = useState(NO_MODE)
-  const [animateDelay, setAnimateDelay] = useState(1500)
+  const [animateDelay, setAnimateDelay] = useState(1200)
   const [enteredCustomers, setEnteredCustomers] = useState([])
 
   const initModels = async () => {
@@ -186,7 +186,7 @@ const Home = () => {
                     }}
                     onUserMedia={cloneStream}
                   />
-                  <CloneVideo mediaStream={stream} />
+                  <CloneVideo mediaStream={stream} enteredCustomers setEnteredCustomers />
                   <canvas
                     id="3d canvas"
                     ref={canvas3dRefCallback}
@@ -220,19 +220,28 @@ const Home = () => {
 
 export default Home
 
-const CloneVideo = ({ mediaStream }) => {
+const CloneVideo = ({ mediaStream, enteredCustomers, setEnteredCustomers }) => {
   const { ref } = useZxing({
     onDecodeResult(result) {
-      const searchParams = new URLSearchParams([['uuid', result['text']]])
-      fetchExtended('/api/access/qrcode/confirm?' + searchParams.toString())
-        .then((data) => {
-          console.log(data)
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-        })
+      handleQrEnter(result['text'])
     },
   })
+
+  const handleQrEnter = async (uuid) => {
+    const searchParams = new URLSearchParams([['uuid', uuid]])
+    await fetchExtended('/api/access/qrcode/confirm?' + searchParams.toString())
+      .then((res) => res.json())
+      .then((data) => {
+        if (data['confirm']) {
+          const now = new Date()
+          const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+          setEnteredCustomers([...enteredCustomers, time])
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+  }
 
   useEffect(() => {
     if (!ref.current) return

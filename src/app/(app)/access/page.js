@@ -8,6 +8,7 @@ import { TbFaceId } from 'react-icons/tb'
 
 import { Progress, Spinner } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
+import Link from 'next/link'
 
 export default function Access() {
   const [reqCode, setReqCode] = useState('')
@@ -166,9 +167,12 @@ export default function Access() {
           </>
         )}
       </div>
-      <div className="flex items-center justify-center gap-1 text-center text-sm">
+      <Link
+        href={'/access/face-registration'}
+        className="flex items-center justify-center gap-1 text-center text-sm"
+      >
         얼굴인식으로 인증하기 <TbFaceId />
-      </div>
+      </Link>
     </div>
   )
 }
