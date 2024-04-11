@@ -1,11 +1,98 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import { LuScanFace } from 'react-icons/lu'
-import { BsShop } from 'react-icons/bs'
-import { TbMessageCircleSearch } from 'react-icons/tb'
+import { fetchExtended } from '@/utils/fetchExtended'
+import { Autocomplete, Flex, Loader, View, useTheme } from '@aws-amplify/ui-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { AiFillBell } from 'react-icons/ai'
+import AppLogo from '/public/AppLogo.svg'
+import BubbleSearch from '/public/BubbleSearch.svg'
+import FaceId from '/public/FaceID.svg'
+import SmallShop from '/public/SmallShop.svg'
+import ProductRank from './ProductRank'
 
 const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
+
+const ProductSearchBar = () => {
+  const router = useRouter()
+  const { tokens } = useTheme()
+  const [isLoading, setIsLoading] = useState(false)
+  const [products, setProducts] = useState([])
+
+  const searchProduct = async (keyword) =>
+    fetchExtended('/api/product/find/' + keyword.trim())
+      .then((res) => res.json())
+      .then((data) => {
+        if (data['status'] === 'success') {
+          return data['data'].reduce((acc, item) => {
+            acc.push({
+              label: item.name,
+              id: item.id,
+              brand: item.brand,
+              name: item.name,
+              image: item.image,
+            })
+            return acc
+          }, [])
+        } else return []
+      })
+      .catch((err) => {
+        setProducts(['검색 결과가 없습니다.'])
+        setIsLoading(false)
+      })
+
+  const onChange = (event) => {
+    setIsLoading(true)
+    searchProduct(event.target.value)
+      .then((items) => {
+        setProducts(items)
+        console.log(products)
+      })
+      .then(() => setIsLoading(false))
+  }
+
+  const onSelect = (option) => {
+    router.push(`/product/${option['id']}`)
+  }
+
+  const onClear = () => {
+    setProducts([])
+  }
+
+  const renderOption = (option, value) => {
+    const { id, brand, name, image } = option
+    return (
+      <Flex alignItems="center">
+        <Image src={image} alt={name} width="60" height="60" />
+        <p>{name}</p>
+      </Flex>
+    )
+  }
+
+  return (
+    <Autocomplete
+      label="상품 검색"
+      options={products}
+      placeholder="상품명을 입력해주세요"
+      size="medium"
+      isLoading={isLoading}
+      onChange={onChange}
+      onClear={onClear}
+      onSelect={onSelect}
+      renderOption={renderOption}
+      menuSlots={{
+        Empty: <View>찾으시는 상품이 존재하지 않습니다</View>,
+        LoadingIndicator: (
+          <Flex alignItems="center" gap="0.25rem">
+            <Loader emptyColor={tokens.colors.black} filledColor={tokens.colors.orange[40]} />
+            잠시만 기다려주세요...
+          </Flex>
+        ),
+      }}
+    />
+  )
+}
 
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -15,7 +102,7 @@ const MobileMain = () => {
     const timeout = setTimeout(() => {
       const nextSlide = (currentSlide + 1) % carouselData.length
       setCurrentSlide(nextSlide)
-    }, 2000)
+    }, 3000)
 
     return () => clearTimeout(timeout)
   }, [currentSlide])
@@ -38,140 +125,74 @@ const MobileMain = () => {
   }
 
   return (
-    <div className="mx-4">
-      <br />
-      <form className="relative mx-auto max-w-md">
-        <label
-          htmlFor="default-search"
-          className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
+    <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
+      <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
+        <div className="grid grid-cols-2 items-center justify-items-center text-center">
+          <AppLogo className="col-start-1 " />
+          <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+        </div>
+
+        <div
+          id="default-carousel"
+          className="w-full items-center justify-center p-4 text-center"
+          data-carousel="slide"
         >
-          Search
-        </label>
-        <div className="flex items-center">
-          <div className="relative flex-grow">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                fill="none"
-                viewBox="0 0 20 20"
+          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+            {carouselData.map((src, index) => (
+              <div
+                key={src}
+                className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
+                data-carousel-item
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
+                <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
+              </div>
+            ))}
+            <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+              {carouselData.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
+                  aria-label={`Slide ${index + 1}`}
+                  onClick={() => goToSlide(index)}
+                ></button>
+              ))}
             </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-10 pr-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
-              placeholder="제품명 입력하삼 !"
-              required
-            />
-            <button
-              type="submit"
-              className="absolute inset-y-0 right-0 rounded-r-lg bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-            >
-              Search
-            </button>
           </div>
-          <AiFillBell className="ml-2 text-3xl text-gray-700 dark:text-gray-200" />
         </div>
-      </form>
-      <br />
-      <div id="default-carousel" className="relative w-full" data-carousel="slide">
-        <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-          {carouselData.map((src, index) => (
-            <div
-              key={src}
-              className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
-              data-carousel-item
-            >
-              <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-          {carouselData.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`h-3 w-3 rounded-full ${index === currentSlide ? 'bg-white' : 'bg-gray-300'}`}
-              aria-label={`Slide ${index + 1}`}
-              onClick={() => goToSlide(index)}
-            ></button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-          data-carousel-prev
-          onClick={prevSlide}
-        ></button>
-        <button
-          type="button"
-          className="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-          data-carousel-next
-          onClick={nextSlide}
-        ></button>
       </div>
-      <br />
-      <main className="flex justify-center p-4">
-        <div className="flex w-full max-w-4xl justify-around">
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <LuScanFace />
+      <div className="p-3">
+        <ProductSearchBar />
+      </div>
+      <div className="  px-7 pt-5">
+        <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
+          <Link href="/access" passHref>
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <FaceId className="mb-1" />
+              </div>
+              <p>매장출입</p>
             </div>
-            <p>매장출입</p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <BsShop />
+          </Link>
+          <Link href="/map" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-200">
+              <div className="text-6xl">
+                <SmallShop />
+              </div>
+              <p>매장찾기</p>
             </div>
-            <p>매장찾기</p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="text-6xl">
-              <TbMessageCircleSearch />
+          </Link>
+          <Link href="/chatbot" passHref>
+            <div className="flex flex-col items-center text-center">
+              <div className="text-6xl">
+                <BubbleSearch />
+              </div>
+              <p>챗봇</p>
             </div>
-            <p>챗봇</p>
-          </div>
+          </Link>
         </div>
-      </main>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
-            alt=""
-          />
-        </div>
-        <div>
-          <img
-            className="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
-            alt=""
-          />
+        <div className="mt-3 p-5">
+          <ProductRank />
         </div>
       </div>
     </div>

@@ -2,6 +2,8 @@
 import OrderDetailPage from '@/components/orderProductList'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter } from 'next/navigation'
+import { CustomAlert } from '@/components/CustomAlert'
+import { useState } from 'react'
 
 async function getXlsx(id) {
   const URL = `/api/store/order/download/${id}`
@@ -22,8 +24,15 @@ async function getXlsx(id) {
 
 export default function OrderDetail({ params: { id } }) {
   const router = useRouter()
+  const [alertMessage, setAlertMessage] = useState('')
+
+  const handleAlert = (message = '') => {
+    setAlertMessage(message)
+  }
+
   const handleXlsxClick = async () => {
     try {
+      setAlertMessage('발주서 다운로드 성공')
       await getXlsx(id)
     } catch (error) {
       console.log(error)
@@ -31,6 +40,7 @@ export default function OrderDetail({ params: { id } }) {
   }
   return (
     <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+      {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       <OrderDetailPage id={id} />
       <br />
       <div className="inline-flex rounded-md shadow-sm" role="group">

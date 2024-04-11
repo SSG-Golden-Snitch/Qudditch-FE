@@ -11,6 +11,7 @@ import {
 } from 'react-icons/hi'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { HiMiniVideoCamera } from 'react-icons/hi2'
 
 const CustomSidebar = () => {
   const router = useRouter()
@@ -47,6 +48,11 @@ const CustomSidebar = () => {
       icon: HiCreditCard,
       path: '/sales',
     },
+    {
+      title: '출입 카메라',
+      icon: HiMiniVideoCamera,
+      path: '/enter-cam',
+    },
   ]
 
   const isCurrentPage = (path) => {
@@ -69,7 +75,7 @@ const CustomSidebar = () => {
                 icon={item.icon}
                 href={item.path}
                 active={isCurrentPage(item.path)}
-                onClick={(e) => router.push(item.path)}
+                onClick={() => router.push(item.path)}
               >
                 {item.title}
               </Sidebar.Item>
