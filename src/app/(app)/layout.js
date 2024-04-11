@@ -1,4 +1,5 @@
 import '@/app/globals.css'
+import '@aws-amplify/ui-react/styles.css'
 
 const APP_NAME = 'PWA App'
 const APP_DEFAULT_TITLE = 'My Awesome PWA App'

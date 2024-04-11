@@ -1,8 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaceLivenessDetector } from '@aws-amplify/ui-react-liveness'
-import { Button, Flex, Heading } from '@aws-amplify/ui-react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import {
   cameraDisplayText,
@@ -45,7 +44,7 @@ const FaceRegistrationPage = () => {
   }
 
   return (
-    <>
+    <div className={'h-screen'}>
       {loading ? (
         <div className="flex h-screen items-center justify-center">
           <div className="h-20 w-20 animate-ping rounded-full bg-violet-800"></div>
@@ -56,7 +55,7 @@ const FaceRegistrationPage = () => {
           region="ap-northeast-1"
           onAnalysisComplete={handleAnalysisComplete}
           onUserCancel={() => router.back()}
-          disableStartScreen={true}
+          disableStartScreen={false}
           displayText={{
             ...hintDisplayText,
             ...cameraDisplayText,
@@ -66,7 +65,7 @@ const FaceRegistrationPage = () => {
           }}
         />
       )}
-    </>
+    </div>
   )
 }
 
