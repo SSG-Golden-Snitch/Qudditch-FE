@@ -5,14 +5,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Modal } from 'flowbite-react'
 import { CustomAlert } from './CustomAlert'
+import { useSearchParams } from 'next/navigation'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const [selectStore, setSelectStore] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
+  const searchParams = useSearchParams()
   const mapRef = useRef(null)
   const router = useRouter()
-  const iconRef = '<div><img src="mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
+  const iconRef = '<div><img src="/mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
 
   const handleAlert = (message = '') => {
     setAlertMessage(message)
@@ -26,6 +28,17 @@ const MapComponent = ({ defaultPosition, stores }) => {
     window.updateBookmark(selectStore.id)
     e.stopPropagation()
   }
+
+  // main에서 storeId 받은 후 바로 모달창 띄우기 위한
+  useEffect(() => {
+    const storeId = searchParams.get('storeId')
+    if (storeId && stores) {
+      const store = stores.find((s) => s.id.toString() === storeId)
+      if (store) {
+        setSelectStore(store)
+      }
+    }
+  }, [searchParams, stores])
 
   useEffect(() => {
     const loadMap = async () => {
@@ -133,7 +146,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
                     {selectStore.name}
                   </h3>
                   <img
-                    src="bookmark.png"
+                    src="/bookmark.png"
                     style={{ cursor: 'pointer', width: '26px', height: '26px' }}
                     onClick={handleBookMarkClick}
                   />
