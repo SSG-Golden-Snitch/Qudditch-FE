@@ -1,6 +1,5 @@
 'use client'
 
-import '../../globals.css'
 import React, { useState, useEffect, forwardRef, Fragment } from 'react'
 import Link from 'next/link'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
