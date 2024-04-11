@@ -57,7 +57,7 @@ const ProductSearchPage = () => {
 
   useEffect(() => {
     handleProduct()
-  })
+  }, [productId])
 
   const priceToWon = (price) => {
     return price
@@ -140,12 +140,13 @@ const ProductSearchPage = () => {
                     <div className={'text-right'}>
                       <div className={'text-lg'}>{store['qty'] + '개'}</div>
                       <div className={'text-sm'}>
-                        {getDistance(
-                          currentLocation['latitude'],
-                          currentLocation['longitude'],
-                          store['wgs84Y'],
-                          store['wgs84X'],
-                        ) + 'm'}
+                        {currentLocation &&
+                          getDistance(
+                            currentLocation['latitude'],
+                            currentLocation['longitude'],
+                            store['wgs84Y'],
+                            store['wgs84X'],
+                          ) + 'm'}
                       </div>
                     </div>
                   </div>
