@@ -2,6 +2,7 @@
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,6 +10,7 @@ export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
   const router = useRouter() // Next.js 라우터 인스턴스를 가져옵니다.
 
   const handleLogin = async (e) => {
@@ -16,32 +18,31 @@ export default function MobileUserLogin() {
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:8080/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // 쿠키를 포함시키기 위해 credentials 추가
       })
       const data = await response.json()
-
       setLoading(false)
 
-      if (data.error) {
-        alert(data.error)
+      if (response.ok) {
+        setMessage('로그인 성공')
+        setTimeout(() => router.push('/main'), 1000) // Redirect after a second
       } else {
-        alert('로그인 성공')
-        //router.push('/main'); // 사용자를 /main 페이지로 리디렉트합니다.
-        router.push('http://localhost:3000/main')
+        setMessage(data.message || '로그인 실패')
       }
     } catch (error) {
       setLoading(false)
-      alert('로그인 중 에러가 발생했습니다.')
+      setMessage('서버와의 연결에 실패했습니다.')
     }
   }
 
   // 소셜 로그인 처리 함수
   const handleSocialSignIn = (provider) => async (e) => {
     e.preventDefault()
+    // Fetch API로 백엔드에 소셜 로그인 요청 보내기
     await signIn(provider)
   }
 
@@ -53,7 +54,7 @@ export default function MobileUserLogin() {
           <TextInput
             id="email"
             type="email"
-            placeholder="name@example.com"
+            placeholder="이메일을 입력해주세요"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -72,6 +73,15 @@ export default function MobileUserLogin() {
         <Button type="submit" disabled={loading}>
           {loading ? '로그인 중...' : '로그인'}
         </Button>
+        <div className="space-y-2 text-center">
+          <Link href="/mobile/register" className="text-blue-500 hover:underline">
+            회원가입
+          </Link>
+          <br />
+          <Link href="/mobile/find-account" className="text-blue-500 hover:underline">
+            아이디/비밀번호 찾기
+          </Link>
+        </div>
         {/* 소셜 로그인 버튼 */}
         <Button onClick={handleSocialSignIn('google')} disabled={loading}>
           Google로 로그인
