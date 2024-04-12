@@ -12,7 +12,7 @@ import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
 
-const carouselData = ['d.jpg', 'veg.jpg', 'pb.jpg', 'b.jpg', 'c.png']
+const carouselData = ['1.png', '2.png', '3.png', '4.png', '5.png']
 
 const ProductSearchBar = () => {
   const router = useRouter()
@@ -53,7 +53,7 @@ const ProductSearchBar = () => {
   }
 
   const onSelect = (option) => {
-    router.push(`/product/${option['id']}`)
+    router.push(`/m/product/${option['id']}`)
   }
 
   const onClear = () => {
@@ -97,6 +97,19 @@ const ProductSearchBar = () => {
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
 
+  // 알림 권한 요청
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      Notification.requestPermission()
+        .then(function (permission) {
+          console.log('Permission:', permission)
+        })
+        .catch(function (error) {
+          console.error('Permission error:', error)
+        })
+    }
+  }, [])
+
   // 자동 슬라이드 기능
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -129,7 +142,9 @@ const MobileMain = () => {
       <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
         <div className="grid grid-cols-2 items-center justify-items-center text-center">
           <AppLogo className="col-start-1 " />
-          <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+          <Link href="/m/alert">
+            <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
+          </Link>
         </div>
 
         <div
@@ -137,14 +152,14 @@ const MobileMain = () => {
           className="w-full items-center justify-center p-4 text-center"
           data-carousel="slide"
         >
-          <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
+          <div className="relative h-48 overflow-hidden rounded-lg md:h-96">
             {carouselData.map((src, index) => (
               <div
                 key={src}
                 className={`duration-700 ease-in-out ${index === currentSlide ? 'block' : 'hidden'}`}
                 data-carousel-item
               >
-                <img src={src} className="block h-auto w-full" alt={`Slide ${index + 1}`} />
+                <img src={src} className="block h-48 w-full" alt={`Slide ${index + 1}`} />
               </div>
             ))}
             <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse">
@@ -164,26 +179,26 @@ const MobileMain = () => {
       <div className="p-3">
         <ProductSearchBar />
       </div>
-      <div className="  px-7 pt-5">
+      <div className="px-7 pt-5">
         <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
-          <Link href="/access" passHref>
-            <div className="flex flex-col items-center text-center">
+          <Link href="/m/access" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <FaceId className="mb-1" />
               </div>
               <p>매장출입</p>
             </div>
           </Link>
-          <Link href="/map" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-200">
+          <Link href="/m/map" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <SmallShop />
               </div>
               <p>매장찾기</p>
             </div>
           </Link>
-          <Link href="/chatbot" passHref>
-            <div className="flex flex-col items-center text-center">
+          <Link href="/m/chatbot" passHref>
+            <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
                 <BubbleSearch />
               </div>
@@ -191,7 +206,7 @@ const MobileMain = () => {
             </div>
           </Link>
         </div>
-        <div className="mt-3 p-5">
+        <div className="mt-3 ">
           <ProductRank />
         </div>
       </div>

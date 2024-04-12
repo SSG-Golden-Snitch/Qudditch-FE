@@ -1,7 +1,7 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
-import { AiOutlineRollback } from 'react-icons/ai'
+import { IoIosArrowBack } from 'react-icons/io'
 
 export async function getData(id) {
   const response = await fetchExtended(`/api/store/location/stock?userStoreId=${id}`)
@@ -30,7 +30,7 @@ export default function LocationStockPage({ id }) {
     return (
       <div className="bg-white p-4">
         <div className="mb-6 flex items-center">
-          <AiOutlineRollback
+          <IoIosArrowBack
             className="mr-2 cursor-pointer text-lg"
             onClick={() => window.history.back()}
           />
@@ -43,7 +43,7 @@ export default function LocationStockPage({ id }) {
   return (
     <div className="bg-white p-4">
       <div className="mb-6 flex items-center">
-        <AiOutlineRollback
+        <IoIosArrowBack
           className="mr-2 cursor-pointer text-lg"
           onClick={() => window.history.back()}
         />
