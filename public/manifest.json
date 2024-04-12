@@ -3,7 +3,7 @@
   "background_color": "#f8e71c",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/main",
+  "start_url": "/m",
   "name": "Golden Snitch",
   "short_name": "snitch",
   "description": "team2",

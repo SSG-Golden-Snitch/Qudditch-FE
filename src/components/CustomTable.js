@@ -52,7 +52,9 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       : ''
                   }`}
                 >
-                  {h.col_name === 'inputAt' ? item[h.col_name].split('T')[0] : item[h.col_name]}
+                  {h.col_name === 'inputAt' || h.col_name === 'createdAt'
+                    ? item[h.col_name].split('T')[0]
+                    : item[h.col_name]}
 
                   {h.col_name === 'download' && (
                     <DownloadBtn

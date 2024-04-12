@@ -20,17 +20,19 @@ import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
 import Loading from '@/components/ui/Loading'
+import { useZxing } from 'react-zxing'
 
 const Home = () => {
   const cameraDeviceProvider = useContext(CameraDevicesContext)
   const webcamRef = useRef(null)
   const canvas3dRef = useRef(null)
   const canvas2dRef = useRef(null)
+  const [stream, setStream] = useState()
   const [mirrored, setMirrored] = useState(false)
   const [modelLoadResult, setModelLoadResult] = useState()
   const [loading, setLoading] = useState(true)
   const [currentMode, setCurrentMode] = useState(NO_MODE)
-  const [animateDelay, setAnimateDelay] = useState(1500)
+  const [animateDelay, setAnimateDelay] = useState(1200)
   const [enteredCustomers, setEnteredCustomers] = useState([])
 
   const initModels = async () => {
@@ -47,6 +49,10 @@ const Home = () => {
       }
       setModelLoadResult(enabledModels)
     }
+  }
+
+  const cloneStream = (S) => {
+    setStream(S.clone())
   }
 
   const handleCustomerEntered = async () => {
@@ -144,13 +150,17 @@ const Home = () => {
       setAnimateDelay(null)
       webcamRef.current = null
       canvas3dRef.current = null
+      stream?.getTracks().forEach((track) => {
+        track.stop()
+      })
+      setStream(null)
     }
 
     window.addEventListener('beforeunload', cleanup)
     return () => {
       window.removeEventListener('beforeunload', cleanup)
     }
-  }, [])
+  }, [stream])
 
   useInterval({ callback: runPrediction, delay: animateDelay })
 
@@ -174,13 +184,14 @@ const Home = () => {
                     videoConstraints={{
                       deviceId: cameraDeviceProvider.webcamId,
                     }}
+                    onUserMedia={cloneStream}
                   />
+                  <CloneVideo mediaStream={stream} enteredCustomers setEnteredCustomers />
                   <canvas
                     id="3d canvas"
                     ref={canvas3dRefCallback}
                     className="absolute left-0 top-0 h-full w-full object-contain"
                   ></canvas>
-                  {/* 보이지 않는 켄바스 */}
                   <canvas ref={canvas2dRef} className={'hidden'}></canvas>
                 </>
               ) : cameraDeviceProvider?.status.status === CAMERA_LOAD_STATUS_ERROR ? (
@@ -208,3 +219,34 @@ const Home = () => {
 }
 
 export default Home
+
+const CloneVideo = ({ mediaStream, enteredCustomers, setEnteredCustomers }) => {
+  const { ref } = useZxing({
+    onDecodeResult(result) {
+      handleQrEnter(result['text'])
+    },
+  })
+
+  const handleQrEnter = async (uuid) => {
+    const searchParams = new URLSearchParams([['uuid', uuid]])
+    await fetchExtended('/api/access/qrcode/confirm?' + searchParams.toString())
+      .then((res) => res.json())
+      .then((data) => {
+        if (data['confirm']) {
+          const now = new Date()
+          const time = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+          setEnteredCustomers([...enteredCustomers, time])
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+  }
+
+  useEffect(() => {
+    if (!ref.current) return
+    ref.current.srcObject = mediaStream ? mediaStream : null
+  }, [mediaStream, ref])
+
+  return <video ref={ref} className={'hidden'}></video>
+}

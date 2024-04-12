@@ -40,15 +40,19 @@ const MobileNavbar = () => {
   }
 
   const navItems = [
-    NavItem({ name: '홈', icon: <HiOutlineHome size={40} />, path: '/main' }),
-    NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/point' }),
-    NavPayment({ path: '/store-select' }),
-    NavItem({ name: '주문내역', icon: <CiReceipt size={40} />, path: '/order-history' }),
-    NavItem({ name: '설정', icon: <CiSettings size={40} />, path: '/web-setting' }),
+    NavItem({ name: '홈', icon: <HiOutlineHome size={40} />, path: '/m' }),
+    NavItem({ name: '포인트', icon: <CiHeart size={40} />, path: '/m/point' }),
+    NavPayment({ path: '/m/store-select' }),
+    NavItem({ name: '주문내역', icon: <CiReceipt size={40} />, path: '/m/order-history' }),
+    NavItem({ name: '설정', icon: <CiSettings size={40} />, path: '/m/setting' }),
   ]
 
   return (
-    <nav className={'fixed inset-x-0 bottom-0 z-10 block rounded-t-2xl bg-gray-100 px-4 shadow'}>
+    <nav
+      className={
+        'fixed inset-x-0 bottom-0 z-10 block h-[4rem] rounded-t-2xl bg-gray-100 px-4 shadow'
+      }
+    >
       <div id="tabs" className={'flex justify-between'}>
         {navItems.map((item, index) => (
           <div key={index}>{item}</div>
