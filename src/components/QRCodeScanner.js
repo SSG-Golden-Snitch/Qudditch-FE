@@ -1,11 +1,9 @@
-// QRCodeScanner 컴포넌트 수정
+// QRCodeScanner.jsx
 import React, { useEffect, useState } from 'react'
 import { BrowserQRCodeReader } from '@zxing/library'
 
-const QRCodeScanner = ({ onScan, selectedStore }) => {
-  // selectedStore props 추가
+const QRCodeScanner = ({ onScan }) => {
   const [videoInputDevices, setVideoInputDevices] = useState([])
-  const [error, setError] = useState(null) // 오류 상태 추가
 
   useEffect(() => {
     const codeReader = new BrowserQRCodeReader()
@@ -19,10 +17,7 @@ const QRCodeScanner = ({ onScan, selectedStore }) => {
             codeReader.reset()
           }
           if (err) {
-            setError(err) // 오류 상태 업데이트
-            console.error('QR 코드 디코딩 오류:', err)
-            // 오류 처리
-            // 예: 사용자에게 오류 메시지 표시 또는 다시 시도
+            console.error(err)
           }
         })
       }
@@ -31,11 +26,7 @@ const QRCodeScanner = ({ onScan, selectedStore }) => {
     return () => {
       codeReader.reset()
     }
-  }, [onScan, selectedStore]) // selectedStore props를 의존성 배열에 추가
-
-  if (error) {
-    return <div>오류가 발생했습니다: {error.message}</div> // 오류 메시지 표시
-  }
+  }, [onScan])
 
   return <video id="video" style={{ width: '100%' }} />
 }
