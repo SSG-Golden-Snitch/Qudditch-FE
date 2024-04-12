@@ -140,11 +140,15 @@ const MobileMain = () => {
   return (
     <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
       <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
-        <div className="grid grid-cols-2 items-center justify-items-center text-center">
-          <AppLogo className="col-start-1 " />
-          <Link href="/m/alert">
-            <AiFillBell className="col-end-7 text-2xl text-amber-400 dark:text-gray-200" />
-          </Link>
+        <div className="grid grid-cols-3 items-center justify-items-stretch text-center">
+          <div className="col-start-2 col-end-3 w-auto max-w-full">
+            <AppLogo />
+          </div>
+          <div className="col-start-3 col-end-4 flex justify-end pr-4">
+            <Link href="/m/alert">
+              <AiFillBell className="text-2xl text-amber-400 dark:text-gray-200" />
+            </Link>
+          </div>
         </div>
 
         <div
@@ -181,8 +185,6 @@ const MobileMain = () => {
       </div>
       <div className="px-7 pt-5">
         <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
-          <Link href="/access" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-100">
           <Link href="/m/access" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
@@ -191,7 +193,7 @@ const MobileMain = () => {
               <p>매장출입</p>
             </div>
           </Link>
-          <Link href="/map" passHref>
+
           <Link href="/m/map" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
@@ -200,8 +202,6 @@ const MobileMain = () => {
               <p>매장찾기</p>
             </div>
           </Link>
-          <Link href="chatbot" passHref>
-            <div className="flex flex-col items-center text-center active:bg-gray-100">
           <Link href="/m/chatbot" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
