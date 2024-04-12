@@ -1,18 +1,16 @@
 'use client'
 
-import { CustomAlert } from '@/components/CustomAlert'
-import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { Pagination, Table } from 'flowbite-react'
+import { Pagination, Table, Button } from 'flowbite-react'
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import Loading from '@/components/ui/Loading'
 
-export default function Product() {
+export default function Manager() {
+  const router = useRouter()
   const [pagination, setPagination] = useState({
     paginationParam: {
       page: 1,
-      keyword: "''",
     },
     totalPageCount: 0,
     startPage: 0,
@@ -20,24 +18,17 @@ export default function Product() {
     existPrev: false,
     existNext: false,
   })
-  const [product, setProduct] = useState([])
+  const [storeOrder, setStoreOrder] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [color, setColor] = useState('')
-  const [message, setMessage] = useState('')
 
-  const handleAlert = (type, message) => {
-    setColor(type)
-    setMessage(message)
-  }
-
-  const handleProduct = async (page = 1) => {
+  const handleStoreOrder = async (page = 1) => {
     setError(null)
     setIsLoading(true)
 
-    const storeReqUrl = new URL(apiUrl + `/api/manage/product?page=${page}`)
+    const storeOrderReqUrl = new URL(apiUrl + `/api/manage/order?page=${page}`)
 
-    await fetchExtended(storeReqUrl, {
+    await fetchExtended(storeOrderReqUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -48,12 +39,12 @@ export default function Product() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          setError(res['message'])
+          console.log(res)
           throw new Error(res['message'])
         } else {
-          setProduct(res['data'])
+          setStoreOrder(res['data'])
+          console.log(res['data'])
           setPagination(res['pagination'])
-          console.log(res)
         }
       })
       .catch((error) => {
@@ -65,23 +56,26 @@ export default function Product() {
   }
 
   useEffect(() => {
-    handleProduct()
+    handleStoreOrder()
   }, [])
 
   const handlePage = (page) => {
     setPagination({
       ...pagination,
-      paginationParam: { ...pagination.paginationParam, page },
+      paginationParam: { ...pagination.paginationParam, page: page + 1 },
     })
-    handleProduct(page)
+    handleStoreOrder(page)
   }
 
   if (isLoading) return <Loading />
-  return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
-      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
-      <div className="flex flex-col items-center pt-10">
+  const orderDetailClick = (storeOrderId) => {
+    router.push(`order/${storeOrderId}`)
+  }
+
+  return (
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
+      <div className="flex flex-col items-center">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
@@ -89,35 +83,32 @@ export default function Product() {
             <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
               <Table.Head className="text-m whitespace-nowrap text-gray-900 dark:text-white">
                 <Table.HeadCell>id</Table.HeadCell>
-                <Table.HeadCell>image</Table.HeadCell>
-                <Table.HeadCell>brand</Table.HeadCell>
                 <Table.HeadCell>name</Table.HeadCell>
-                <Table.HeadCell>price</Table.HeadCell>
-                <Table.HeadCell>unitPrice</Table.HeadCell>
-                <Table.HeadCell>expiration</Table.HeadCell>
+                <Table.HeadCell>items</Table.HeadCell>
+                <Table.HeadCell>orderedAt</Table.HeadCell>
+                <Table.HeadCell>state</Table.HeadCell>
               </Table.Head>
               <Table.Body>
-                {product.map((item) => (
+                {storeOrder.map((item) => (
                   <Table.Row
                     key={item.id}
                     className="items-center bg-white dark:border-gray-700 dark:bg-gray-800"
                   >
                     <Table.Cell>{item.id}</Table.Cell>
-                    <Table.Cell className="text-center">
-                      <div className="flex justify-center">
-                        <Image src={item.image} alt={item.name} width={100} height={100} />
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell>{item.brand}</Table.Cell>
                     <Table.Cell>{item.name}</Table.Cell>
-                    <Table.Cell>{item.price}</Table.Cell>
-                    <Table.Cell>{item.unitPrice}</Table.Cell>
-                    <Table.Cell>{item.expirationDate}</Table.Cell>
+                    <Table.Cell
+                      onClick={() => orderDetailClick(item['id'])}
+                      className="cursor-pointer hover:underline"
+                    >
+                      {item.orderItems}
+                    </Table.Cell>
+                    <Table.Cell>{item.orderedAt.split('T')[0]}</Table.Cell>
+                    <Table.Cell>{item.state}</Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table>
-            <div className="relative items-center justify-center pt-10">
+            <div className="relative flex items-center justify-center pt-10">
               <Pagination
                 currentPage={pagination.paginationParam.page}
                 totalPages={pagination.totalPageCount}

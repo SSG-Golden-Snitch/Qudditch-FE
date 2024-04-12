@@ -1,10 +1,11 @@
 'use client'
 
-import { forwardRef, Fragment, useEffect, useState } from 'react'
+import React, { useState, useEffect, forwardRef, Fragment } from 'react'
 import Link from 'next/link'
-import { fetchExtended } from '@/utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { HiOutlineTag } from 'react-icons/hi'
+import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
@@ -24,7 +25,7 @@ const OrderHistory = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
   // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
-  const [openDetails, setOpenDetails] = useState(null)
+  // const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
   useEffect(() => {
@@ -53,13 +54,15 @@ const OrderHistory = () => {
         if (!responseData) throw new Error('데이터 로딩 실패')
 
         // 상태 업데이트
-        setOrders(responseData.orders || [])
+        setOrders(responseData || [])
 
         // 총 판매액 계산
         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
         setTotalSales(total)
       } catch (error) {
         console.error('주문 내역을 불러오는 중 오류가 발생했습니다.', error)
+        setOrders([])
+        setTotalSales(0)
       }
     }
 
@@ -104,8 +107,8 @@ const OrderHistory = () => {
   // }
 
   return (
-    <div className="flex h-screen flex-col justify-between bg-gray-100">
-      <div className="fixed left-0 top-0 z-10 flex w-full justify-between bg-white p-4 shadow-md">
+    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+      <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
         <button
           type="button"
           className="mb-4 flex items-center"
@@ -114,118 +117,53 @@ const OrderHistory = () => {
           <IoIosArrowBack className="mr-2" />
           <h2 className="text-xl font-bold">주문목록</h2>
         </button>
-
-        <div className="flex items-center">
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="yyyy/MM"
-            showMonthYearPicker
-            customInput={<CustomInput />}
-            className="ml-4"
-          />
-        </div>
+        <DatePicker
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          dateFormat="yyyy/MM"
+          showMonthYearPicker
+          customInput={<CustomInput />}
+          className="ml-4"
+        />
       </div>
 
-      <div className="mt-20 justify-between p-4">
+      <div className="mb-4 mt-20 flex w-full justify-center">
         <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
-          주문내역 조회
+          판매내역 조회
         </Button>
         <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
-          취소/반품내역 조회
+          환불내역 조회
         </Button>
       </div>
 
-      <table className="w-full max-w-4xl divide-y divide-gray-200">
-        <thead className="bg-gray-100">
-          <tr>
-            {['No', '결제 일자', '상품 정보', '수량', '가격', '결제 금액'].map((header) => (
-              <th
-                key={header}
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {orders.map((order, index) => (
-            <Fragment key={index}>
-              <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                <td className="flex items-center px-6 py-4">
-                  <button
-                    onClick={() => setOpenDetails(openDetails === index ? null : index)}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                  >
-                    {openDetails === index ? (
-                      <ChevronUpIcon className="h-5 w-5" />
-                    ) : (
-                      <ChevronDownIcon className="h-5 w-5" />
-                    )}
-                  </button>
-                  {index + 1}
-                </td>
-                {/* <td className="px-6 py-4">{index + 1}</td> */}
-                <td className="px-6 py-4">
-                  <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-
-                  <Link href={`/m/sales/receipt/${order.customerOrder.partnerOrderId}`}>
-                    [{order.customerOrder.partnerOrderId}]
-                  </Link>
-                </td>
-                <td className="px-6 py-4">
-                  {order.customerOrderProducts && order.customerOrderProducts.length > 0
-                    ? `${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`
-                    : '상품 정보 없음'}
-                </td>
-                <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
-                <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
-                <td className="px-6 text-right">{formatNumber(order.customerOrder.totalAmount)}</td>
-              </tr>
-              {openDetails === index && (
-                <tr className="bg-gray-50 dark:bg-gray-700">
-                  <td colSpan="6" className="px-6 py-4">
-                    <table className="w-full">
-                      <tbody>
-                        {order.customerOrderProducts.map((product, prodIndex) => {
-                          // 주문 상품의 총액 계산
-                          const productTotalAmount = product.qty * product.price
-                          return (
-                            <tr key={prodIndex} className="border-b">
-                              <td className="flex items-center px-6 py-4">
-                                <HiOutlineTag />
-                              </td>
-                              <td className="px-6 py-4">
-                                {formatDateYMD(order.customerOrder.orderedAt)}
-                              </td>
-                              <td className="px-6 py-4 text-left">{product.productName}</td>
-                              <td className="px-6 py-4 text-right">{product.qty}</td>
-                              <td className="px-6 py-4 text-right">
-                                {formatNumber(product.price)}
-                              </td>
-                              <td className="px-6 text-right">
-                                {formatNumber(productTotalAmount)}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              )}
-            </Fragment>
-          ))}
-          <tr className="bg-gray-50 dark:bg-gray-700">
-            <td colSpan="5" className="px-6 py-4 text-right">
-              합계
-            </td>
-            <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="overflow-auto">
+        {orders.map((order, index) => (
+          <Fragment key={index}>
+            <div className="mb-4 rounded-lg border-2 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+              <div>
+                <div className="flex justify-between">
+                  <span>
+                    {formatDateYMD(order.customerOrder.orderedAt)}
+                    <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                      <span className="text-blue-500 hover:underline">
+                        [{order.customerOrder.partnerOrderId}]
+                      </span>
+                    </Link>
+                  </span>
+                  <span className="text-right font-bold">
+                    {formatNumber(order.customerOrder.totalAmount)}
+                  </span>
+                </div>
+                <div>
+                  <div className="mt-2">
+                    {`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Fragment>
+        ))}
+      </div>
     </div>
   )
 }

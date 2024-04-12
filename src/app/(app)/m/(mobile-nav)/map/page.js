@@ -1,8 +1,9 @@
 'use client'
 
 import MapComponent from '@/components/map'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import Loading from '@/components/ui/Loading'
 
 const HomePage = () => {
   const [currentPosition, setCurrentPosition] = useState(null)
@@ -40,9 +41,11 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div>
-      <MapComponent defaultPosition={currentPosition} stores={data} />
-    </div>
+    <Suspense fallback={<Loading />}>
+      <div>
+        <MapComponent defaultPosition={currentPosition} stores={data} />
+      </div>
+    </Suspense>
   )
 }
 

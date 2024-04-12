@@ -54,13 +54,15 @@ const Sales = () => {
         if (!responseData) throw new Error('데이터 로딩 실패')
 
         // 상태 업데이트
-        setOrders(responseData.orders || [])
+        setOrders(responseData || [])
 
         // 총 판매액 계산
         const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
         setTotalSales(total)
       } catch (error) {
         console.error('주문 내역을 불러오는 중 오류가 발생했습니다.', error)
+        setOrders([])
+        setTotalSales(0)
       }
     }
 

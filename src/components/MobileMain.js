@@ -193,7 +193,6 @@ const MobileMain = () => {
               <p>매장출입</p>
             </div>
           </Link>
-
           <Link href="/m/map" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">

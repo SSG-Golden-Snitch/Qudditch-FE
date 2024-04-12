@@ -169,7 +169,7 @@ export default function Access() {
         )}
       </div>
       <Link
-        href={'/access/face-registration'}
+        href={'/m/access/face-registration'}
         className="flex items-center justify-center gap-1 text-center text-sm"
       >
         얼굴인식으로 인증하기 <TbFaceId />
