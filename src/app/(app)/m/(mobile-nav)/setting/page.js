@@ -16,7 +16,10 @@ const WebSettingPage = () => {
   const [isTopLoading, setIsTopLoading] = useState(true)
   const [bookmarkStore, setBookmarkStore] = useState()
   const [name, setName] = useState()
-  const [point, setPoint] = useState()
+  const [point, setPoint] = useState(0)
+  const [totalUsedPoint, setTotalUsedPoint] = useState(0)
+  const [totalEarnPoint, setTotalEarnPoint] = useState(0)
+  const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
 
   useState(async () => {
     async function getBookmarkStore() {
@@ -65,8 +68,31 @@ const WebSettingPage = () => {
 
     async function getPoint() {
       // point 가져오기
-      setPoint(2713)
-      setIsTopLoading(false)
+      try {
+        const response = await fetchExtended(`api/order/history/point?startIndex=${startIndex}`)
+        const data = await response.json()
+
+        // 날짜 순으로 정렬
+        data.sort((a, b) => new Date(a.orderedAt) - new Date(b.orderedAt))
+
+        let totalUsed = 0
+        let totalEarn = 0
+
+        data.forEach((item) => {
+          if (item.usedPoint) totalUsed += item.usedPoint
+          if (item.earnPoint) totalEarn += item.earnPoint
+        })
+
+        setTotalUsedPoint(totalUsed)
+        setTotalEarnPoint(totalEarn)
+
+        // 새로운 데이터를 설정
+        setPoint(totalEarn - totalUsed)
+        setIsTopLoading(false)
+      } catch (error) {
+        setTopMessage(error.message)
+        setIsTopLoading(false)
+      }
     }
 
     await getBookmarkStore()
@@ -79,7 +105,7 @@ const WebSettingPage = () => {
       {isTopLoading ? (
         <Loading />
       ) : topMessage != null ? (
-        message
+        topMessage
       ) : (
         <div className="mx-3 mt-3 h-48 rounded-3xl bg-gray-200 p-8">
           <div className="flex">
@@ -89,7 +115,7 @@ const WebSettingPage = () => {
           <div className="ml-2 mt-2 text-2xl font-bold">{name}님, 반가워요!</div>
           <div className="mx-2 mt-3 rounded-lg bg-gray-100">
             <Link className="block w-full p-4" href="/m/point">
-              <div className="text-center text-2xl font-semibold">2003P</div>
+              <div className="text-center text-2xl font-semibold">{point + 'P'}</div>
             </Link>
           </div>
         </div>
