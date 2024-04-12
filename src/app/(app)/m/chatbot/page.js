@@ -54,6 +54,8 @@ function Chatbot() {
           (position) => {
             const latitude = position.coords.latitude
             const longitude = position.coords.longitude
+            console.log(latitude)
+            console.log(longitude)
 
             sendMessageWithLocation(latitude, longitude)
           },
