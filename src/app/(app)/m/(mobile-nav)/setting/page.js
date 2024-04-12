@@ -21,83 +21,87 @@ const WebSettingPage = () => {
   const [totalEarnPoint, setTotalEarnPoint] = useState(0)
   const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
 
-  useState(async () => {
-    async function getBookmarkStore() {
-      const endpoint = `/api/store/bookmark`
+  useEffect(() => {
+    async function getTopDatas() {
+      async function getBookmarkStore() {
+        const endpoint = `/api/store/bookmark`
 
-      try {
-        const response = await fetchExtended(endpoint, {
-          method: 'GET',
-        })
+        try {
+          const response = await fetchExtended(endpoint, {
+            method: 'GET',
+          })
 
-        if (response.ok) {
+          if (response.ok) {
+            const data = await response.json()
+
+            if (data.length > 0) {
+              setBookmarkStore(data[0].name)
+            }
+          } else {
+            throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+          }
+        } catch (error) {
+          setTopMessage(error.message)
+          setIsTopLoading(false)
+        }
+      }
+
+      function getUsername() {
+        if (typeof window !== 'undefined') {
+          const token = sessionStorage.getItem('token')
+          const base64Payload = token.split('.')[1]
+          const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+          const decodedJWT = JSON.parse(
+            decodeURIComponent(
+              window
+                .atob(base64)
+                .split('')
+                .map(function (c) {
+                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                })
+                .join(''),
+            ),
+          )
+
+          setName(decodedJWT.name)
+        }
+      }
+
+      async function getPoint() {
+        // point 가져오기
+        try {
+          const response = await fetchExtended(`api/order/history/point?startIndex=${startIndex}`)
           const data = await response.json()
 
-          if (data.length > 0) {
-            setBookmarkStore(data[0].name)
-          }
-        } else {
-          throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+          // 날짜 순으로 정렬
+          data.sort((a, b) => new Date(a.orderedAt) - new Date(b.orderedAt))
+
+          let totalUsed = 0
+          let totalEarn = 0
+
+          data.forEach((item) => {
+            if (item.usedPoint) totalUsed += item.usedPoint
+            if (item.earnPoint) totalEarn += item.earnPoint
+          })
+
+          setTotalUsedPoint(totalUsed)
+          setTotalEarnPoint(totalEarn)
+
+          // 새로운 데이터를 설정
+          setPoint(totalEarn - totalUsed)
+          setIsTopLoading(false)
+        } catch (error) {
+          setTopMessage(error.message)
+          setIsTopLoading(false)
         }
-      } catch (error) {
-        setTopMessage(error.message)
-        setIsTopLoading(false)
       }
+
+      await getBookmarkStore()
+      getUsername()
+      await getPoint()
     }
 
-    function getUsername() {
-      if (typeof window !== 'undefined') {
-        const token = sessionStorage.getItem('token')
-        const base64Payload = token.split('.')[1]
-        const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
-        const decodedJWT = JSON.parse(
-          decodeURIComponent(
-            window
-              .atob(base64)
-              .split('')
-              .map(function (c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-              })
-              .join(''),
-          ),
-        )
-
-        setName(decodedJWT.name)
-      }
-    }
-
-    async function getPoint() {
-      // point 가져오기
-      try {
-        const response = await fetchExtended(`api/order/history/point?startIndex=${startIndex}`)
-        const data = await response.json()
-
-        // 날짜 순으로 정렬
-        data.sort((a, b) => new Date(a.orderedAt) - new Date(b.orderedAt))
-
-        let totalUsed = 0
-        let totalEarn = 0
-
-        data.forEach((item) => {
-          if (item.usedPoint) totalUsed += item.usedPoint
-          if (item.earnPoint) totalEarn += item.earnPoint
-        })
-
-        setTotalUsedPoint(totalUsed)
-        setTotalEarnPoint(totalEarn)
-
-        // 새로운 데이터를 설정
-        setPoint(totalEarn - totalUsed)
-        setIsTopLoading(false)
-      } catch (error) {
-        setTopMessage(error.message)
-        setIsTopLoading(false)
-      }
-    }
-
-    await getBookmarkStore()
-    getUsername()
-    await getPoint()
+    getTopDatas()
   }, [])
 
   return (
