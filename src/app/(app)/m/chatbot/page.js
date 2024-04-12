@@ -47,6 +47,53 @@ function Chatbot() {
     ])
   }, [])
 
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude
+            const longitude = position.coords.longitude
+
+            sendMessageWithLocation(latitude, longitude)
+          },
+          (error) => {
+            console.error('Geolocation error:', error)
+          },
+        )
+      } else {
+        console.error('Geolocation not supported')
+      }
+    }
+
+    getLocation()
+  }, [])
+
+  const sendMessageWithLocation = async (longitude, latitude) => {
+    try {
+      const response = await fetchExtended(
+        `/api/chatbot/chatbot?msg=&currentWgs84X=${longitude}&currentWgs84Y=${latitude}`,
+      )
+      const reader = response.body.getReader()
+      let resultMessage = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          break
+        }
+        resultMessage += decoder.decode(value)
+      }
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: resultMessage, sender: '도비', time: getTime() },
+      ])
+    } catch (error) {
+      console.error('error', error)
+    }
+  }
+
   const startListening = () => {
     const recognition = new window.webkitSpeechRecognition()
     recognition.lang = 'ko-KR' // 한국어로 인식하도록 설정
@@ -72,27 +119,42 @@ function Chatbot() {
     const decoder = new TextDecoder('utf-8')
 
     try {
-      const response = await fetchExtended(
-        `/api/chatbot/chatbot?msg=${inputValue}&currentWgs84X=129.11196536724063&currentWgs84Y=37.48007634973913`,
-      )
-      const reader = response.body.getReader()
-      let resultMessage = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) {
-          break
-        }
-        resultMessage += decoder.decode(value)
+      if (!navigator.geolocation) {
+        console.error('Geolocation not supported')
+        return
       }
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { text: inputValue, sender: '나', time: getTime() },
-        { text: resultMessage, sender: '도비', time: getTime() },
-      ])
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const latitude = position.coords.latitude
+          const longitude = position.coords.longitude
 
-      setInputValue('')
+          const response = await fetchExtended(
+            `/api/chatbot/chatbot?msg=${inputValue}&currentWgs84X=${longitude}&currentWgs84Y=${latitude}`,
+          )
+          const reader = response.body.getReader()
+          let resultMessage = ''
+
+          while (true) {
+            const { done, value } = await reader.read()
+            if (done) {
+              break
+            }
+            resultMessage += decoder.decode(value)
+          }
+
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: inputValue, sender: '나', time: getTime() },
+            { text: resultMessage, sender: '도비', time: getTime() },
+          ])
+
+          setInputValue('')
+        },
+        (error) => {
+          console.error('Geolocation error:', error)
+        },
+      )
     } catch (error) {
       console.error('error', error)
     }
