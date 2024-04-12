@@ -8,6 +8,7 @@ export async function getRank() {
 
 export default function ProductRank() {
   const [rank, setRank] = useState([])
+  const [userName, setUserName] = useState('')
 
   const handleRank = async () => {
     await getRank().then((data) => {
@@ -17,6 +18,8 @@ export default function ProductRank() {
 
   // jwt 토큰에서 name 들고오는
   useEffect(() => {
+    handleRank()
+
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('token')
       if (!token) {
@@ -38,17 +41,21 @@ export default function ProductRank() {
       )
 
       console.log('decodedJWT: ', decodedJWT)
+      setUserName(decodedJWT.name)
     } else {
       console.log('window is undefined')
     }
-    handleRank()
   }, [])
 
   return (
     <div className="flex flex-col space-y-4 overflow-hidden rounded-3xl bg-zinc-100 p-8">
-      <h3 className="text-lg">
-        <span className="font-bold">박준상</span>님을 위한 추천상품이 있어요 🧚‍♀️
-      </h3>
+      {userName ? (
+        <h3 className="text-lg">
+          <span className="font-bold">{userName}</span>님을 위한 추천상품이 있어요 🧚‍♀️
+        </h3>
+      ) : (
+        <h3 className="text-lg">오늘의 추천상품 🧚‍♀️</h3>
+      )}
       <div className="flex space-x-4 overflow-x-auto">
         {rank.map((product) => (
           <div key={product.productId} className="w-20 flex-none">
