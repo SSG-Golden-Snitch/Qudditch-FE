@@ -113,15 +113,16 @@ const Point = () => {
       <MobileNavbar />
       <div className="container mx-auto px-4 py-8">
         <div>
-          <h1 className="text-2xl font-bold">SSGmart포인트 확인</h1>
-          <div className="mb-4">
+          <h1 className="mb-2 text-2xl font-bold">SSGmart포인트 확인</h1>
+          <div className="mb-2">
+            <p className="text-gray-600">총 포인트: {totalEarnPoint - totalUsedPoint}</p>
             <p className="text-gray-600">총 적립 포인트: {totalEarnPoint}</p>
             <p className="text-gray-600">총 사용 포인트: {totalUsedPoint}</p>
           </div>
         </div>
-        <h2 className="mb-4 text-xl font-bold">포인트 사용 내역</h2>
+        <h2 className="mb-2 text-xl font-bold">포인트 사용 내역</h2>
         {/* 버튼 영역 */}
-        <div className="mb-4">
+        <div className="mb-2">
           <button
             className="mr-2 rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
             onClick={() => handleDisplayTypeChange('전체')}
