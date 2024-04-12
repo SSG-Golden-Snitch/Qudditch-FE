@@ -4,15 +4,15 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FaCircle } from 'react-icons/fa'
 import { FiShoppingCart } from 'react-icons/fi'
 import Link from 'next/link'
-import BarcodeScanner from '@/components/QRcodeScanner'
+
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useParams } from 'next/navigation'
+import QRCodeScanner from '@/components/QRCodeScanner'
 
 const CameraPage = () => {
   const { storeId } = useParams()
 
   console.log(storeId)
-  alert(storeId)
 
   // 웹 카메라
   const videoRef = useRef(null)
@@ -76,7 +76,7 @@ const CameraPage = () => {
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
       <h1 className="mb-4 text-2xl font-bold">QR 인식</h1>
       <div className="relative">
-        <BarcodeScanner onScan={handleScan} />
+        <QRCodeScanner onScan={handleScan} />
         {/* <FaCircle
           onClick={takePhoto}
           style={{
