@@ -33,7 +33,8 @@ export default function Register() {
     }
   }, [router.isReady, router.query]) // router.isReady와 router.query를 의존성 배열에 추가
 
-  const validateEmail = (email) => {
+  // 이메일 형식을 검증하는 함수입니다.
+  const validateEmailFormat = (email) => {
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return re.test(String(email).toLowerCase())
@@ -48,37 +49,51 @@ export default function Register() {
   // 문제6. 이메일 중복 확인중 오류가 발생했습니다. (X) -> 중복된 이메일입니다.
   // 문제7. 비동기가 너무 많아 상관은없는데 필요없는부분에도 사용중이다.
   // 문제8. 프로미스함수 에 대해 공부하기 비동기 / 동기 관련
+
+  // 이메일 중복 확인 및 이메일 형식 검사 함수입니다.
   const checkEmail = async () => {
-    if (!validateEmail(email)) {
+    if (!validateEmailFormat(email)) {
       setEmailError('이메일 형식이 아닙니다.')
       setEmailVerified(false)
+      setEmailStatus('')
       return
     }
 
     setLoading(true)
     setEmailError('')
     setEmailStatus('')
-    fetch('http://localhost:8080/check-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setEmailStatus(
-          data.message === '사용 가능한 이메일입니다.'
-            ? '사용 가능한 이메일입니다.'
-            : '사용 불가능한 이메일입니다.',
-        )
-        setEmailVerified(data.message === '사용 가능한 이메일입니다.')
+    try {
+      const response = await fetch('http://localhost:8080/check-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       })
-      .catch((error) => {
-        setEmailStatus('이메일 중복 확인 중 오류가 발생했습니다: ' + error.message)
+      const data = await response.json()
+      if (data.message === '사용 가능한 이메일입니다.') {
+        setEmailStatus('사용 가능한 이메일입니다.')
+        setEmailVerified(true)
+      } else {
+        setEmailStatus('사용 불가능한 이메일입니다.')
         setEmailVerified(false)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      }
+    } catch (error) {
+      setEmailError('이메일 중복 확인 중 오류가 발생했습니다: ' + error.message)
+      setEmailVerified(false)
+    } finally {
+      setLoading(false)
+    }
+  }
+  // 이메일 입력 필드의 onChange 이벤트 핸들러입니다.
+  const handleEmailChange = (e) => {
+    const inputEmail = e.target.value
+    setEmail(inputEmail)
+
+    // 이메일 형식이 올바른지 실시간으로 확인합니다.
+    if (validateEmailFormat(inputEmail)) {
+      setEmailError('')
+    } else {
+      setEmailError('이메일 형식이 아닙니다.')
+    }
   }
 
   //인증이메일보내기
@@ -212,15 +227,15 @@ export default function Register() {
               placeholder="이메일을 입력하세요"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               className="flex-1"
             />
-            <Button onClick={checkEmail} disabled={loading || !email}>
+            <Button onClick={checkEmail} disabled={loading || !email || emailError}>
               {loading ? '확인 중...' : '이메일 중복 체크'}
             </Button>
           </div>
           {emailError && <Alert color="failure">{emailError}</Alert>}
-          {emailStatus && (
+          {emailStatus && !emailError && (
             <Alert color={emailVerified ? 'success' : 'failure'}>{emailStatus}</Alert>
           )}
         </div>
