@@ -12,7 +12,7 @@ const StoreSelectPage = () => {
   const [currentLocation, setCurrentLocation] = useState({ x: null, y: null })
   const [selectedStore, setSelectedStore] = useState(null)
   const [message, setMessage] = useState('')
-  const [viewType, setViewType] = useState(1) // 1: 전체, 2: CU, 3: GS25, 4: 세븐일레븐
+  const [viewType, setViewType] = useState(1) // 1: 전체, 2: 무인매장
 
   // 위치 받기 (navigator.geolocation)
   useEffect(() => {
@@ -63,32 +63,37 @@ const StoreSelectPage = () => {
           distance: getDistance(currentLocation.y, currentLocation.x, store.wgs84Y, store.wgs84X),
         }))
 
-        // 거리순으로 정렬
+        // 거리순 정렬
         data.sort((a, b) => a.distance - b.distance)
 
         // viewType 1인 경우 바로 매장 목록을 설정
         if (viewType === 1) {
           setStores(data)
         } else {
-          // viewType 2, 3, 4인 경우, 필터링된 목록을 설정
-          filterStoresByName(data)
+          // viewType 2인 경우, 무인매장 필터링: userStoreId 유효성 확인
+          await filterUnmannedStores(data)
         }
+      } else {
+        throw new Error('Failed to fetch store data')
       }
     } catch (error) {
-      setMessage(error.message)
+      console.error('Error fetching stores:', error)
+      setMessage(error.message || 'Failed to fetch stores')
     }
   }
 
-  // 매장 이름 검색 반환
-  const filterStoresByName = (allStores) => {
-    const nameMap = { 2: 'CU' }
-    const filteredStores = allStores.filter((store) => store.name.includes(nameMap[viewType]))
-    setStores(filteredStores)
-  }
+  const filterUnmannedStores = async (stores) => {
+    const checks = await Promise.all(
+      stores.map((store) =>
+        fetchExtended(`/api/userstore?storeId=${store.id}`, { method: 'GET' }).then((res) =>
+          res.ok ? res.json() : { userStoreId: null },
+        ),
+      ),
+    )
 
-  // useEffect(() => {
-  //   fetchStores()
-  // }, [viewType, currentLocation])
+    const validStores = stores.filter((store, index) => checks[index] && checks[index].userStoreId)
+    setStores(validStores)
+  }
 
   // 서비스 이용매장 (userStoreId 존재)
   const handleStoreSelect = async (storeId) => {
@@ -100,13 +105,16 @@ const StoreSelectPage = () => {
     })
 
     if (response.ok) {
-      const data = await response.text()
-      setMessage('매장이 성공적으로 선택되었습니다. ' + data)
-
-      // selectedStore 업데이트
-      setSelectedStore(storeId)
+      const data = await response.json()
+      if (data.userStoreId) {
+        setSelectedStore(data.userStoreId) // userStoreId로 selectedStore 상태 업데이트
+        setMessage('매장이 성공적으로 선택되었습니다.')
+      } else {
+        setMessage('해당 매장은 무인매장 서비스를 제공하지 않습니다.')
+      }
     } else {
-      setMessage('매장 선택에 실패하였습니다.')
+      const error = await response.text() // 에러 메시지 읽기
+      setMessage(`매장 선택에 실패하였습니다: ${error}`)
     }
   }
 
@@ -139,15 +147,18 @@ const StoreSelectPage = () => {
           return (
             <div
               key={store.id} // 리스트 아이템 렌더링 할 때 고유한 식별자
-              className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
+              className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5 hover:bg-zinc-100"
+              onClick={() => handleStoreSelect(store.id)} // 클릭 시 매장 선택 이벤트 처리
             >
               <Link href={`/m/store-select/camera/${store.id}`}>
                 <p className="mb-2 font-bold">{store.id}</p>
-                <p className="mb-2 font-bold">{store.name}</p>
+                <div className="flex items-center justify-between">
+                  <p className="mb-2 font-bold">{store.name}</p>
+                  <p>
+                    {distance !== '위치 정보 없음' ? `${distance}m` : 'Location info not available'}
+                  </p>
+                </div>
                 <p>{store.address}</p>
-                <p>
-                  {distance !== '위치 정보 없음' ? `${distance}m` : 'Location info not available'}
-                </p>
               </Link>
             </div>
           )
