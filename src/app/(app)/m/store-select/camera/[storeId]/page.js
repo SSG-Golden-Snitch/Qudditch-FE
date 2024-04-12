@@ -92,7 +92,7 @@ const CameraPage = () => {
           }}
         /> */}
 
-        <Link href={`/store-select/cart`}>
+        <Link href={`/m/store-select/cart`}>
           <FiShoppingCart
             style={{
               position: 'absolute',

@@ -141,7 +141,7 @@ const StoreSelectPage = () => {
               key={store.id} // 리스트 아이템 렌더링 할 때 고유한 식별자
               className="mb-2 cursor-pointer rounded-md border border-gray-200 p-5"
             >
-              <Link href={`/store-select/camera/${store.id}`}>
+              <Link href={`/m/store-select/camera/${store.id}`}>
                 <p className="mb-2 font-bold">{store.id}</p>
                 <p className="mb-2 font-bold">{store.name}</p>
                 <p>{store.address}</p>
