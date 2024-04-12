@@ -1,7 +1,14 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Flex } from '@aws-amplify/ui-react'
+
 import { useEffect, useState } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
+
+import { Autocomplete, Loader, View } from '@aws-amplify/ui-react'
+import Image from 'next/image'
+
+import { useTheme } from '@aws-amplify/ui-react'
 
 export async function getData(id) {
   const response = await fetchExtended(`/api/store/location/stock?userStoreId=${id}`)
@@ -11,6 +18,59 @@ export async function getData(id) {
 export default function LocationStockPage({ id }) {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [products, setProducts] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const { tokens } = useTheme()
+
+  const searchProduct = async (keyword) =>
+    fetchExtended('/api/product/find/' + id + '/' + keyword.trim())
+      .then((res) => res.json())
+      .then((data) => {
+        if (data['status'] === 'success') {
+          return data['data'].reduce((acc, item) => {
+            acc.push({
+              label: item.name,
+              id: item.id,
+              brand: item.brand,
+              name: item.name,
+              image: item.image,
+            })
+            return acc
+          }, [])
+        } else return []
+      })
+      .catch((err) => {
+        setProducts(['검색 결과가 없습니다.'])
+        setIsLoading(false)
+      })
+
+  const onChange = (event) => {
+    setIsLoading(true)
+    searchProduct(event.target.value)
+      .then((items) => {
+        setProducts(items)
+        console.log(products)
+      })
+      .then(() => setIsLoading(false))
+  }
+
+  const onSelect = (option) => {
+    return
+  }
+
+  const onClear = () => {
+    setProducts([])
+  }
+
+  const renderOption = (option, value) => {
+    const { id, brand, name, image } = option
+    return (
+      <Flex alignItems="center">
+        <Image src={image} alt={name} width="60" height="60" />
+        <p>{name}</p>
+      </Flex>
+    )
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,14 +107,26 @@ export default function LocationStockPage({ id }) {
           className="mr-2 cursor-pointer text-lg"
           onClick={() => window.history.back()}
         />
-        <div className="relative flex-grow">
-          <input
-            type="text"
-            placeholder="제품이름으로 검색"
-            className="w-full rounded-md border py-2 pl-4 pr-10 focus:border-gray-500 focus:outline-none"
-          />
-          <button className="absolute right-0 top-0 mr-4 mt-2">🔍</button>
-        </div>
+        <Autocomplete
+          label="상품 검색"
+          options={products}
+          placeholder="상품명을 입력해주세요"
+          size="medium"
+          isLoading={isLoading}
+          onChange={onChange}
+          onClear={onClear}
+          onSelect={onSelect}
+          renderOption={renderOption}
+          menuSlots={{
+            Empty: <View>찾으시는 상품이 존재하지 않습니다</View>,
+            LoadingIndicator: (
+              <Flex alignItems="center" gap="0.25rem">
+                <Loader emptyColor={tokens.colors.black} filledColor={tokens.colors.orange[40]} />
+                잠시만 기다려주세요...
+              </Flex>
+            ),
+          }}
+        />
       </div>
       <div className="grid gap-4 overflow-y-auto" style={{ maxHeight: '650px' }}>
         {data.list.map((product) => (
