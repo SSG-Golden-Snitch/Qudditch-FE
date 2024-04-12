@@ -1,4 +1,5 @@
 // src/app/mobile/login/page.js
+//http://localhost:3000/mobile/login
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
@@ -18,7 +19,7 @@ export default function MobileUserLogin() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },

@@ -1,4 +1,5 @@
 // src/app/mobile/register/page.js
+//http://localhost:3000/mobile/register
 'use client'
 import { Alert, Button, Label, TextInput } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
@@ -16,6 +17,7 @@ export default function Register() {
   const [verificationStatus, setVerificationStatus] = useState('')
   const [emailStatus, setEmailStatus] = useState('')
   const [emailVerified, setEmailVerified] = useState(false)
+  const [emailError, setEmailError] = useState('')
 
   // 이 컴포넌트는 페이지 디렉토리의 일부여야 라우터에 접근할 수 있다.
   const router = useRouter()
@@ -31,6 +33,12 @@ export default function Register() {
     }
   }, [router.isReady, router.query]) // router.isReady와 router.query를 의존성 배열에 추가
 
+  const validateEmail = (email) => {
+    const re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  }
+
   // 이메일 중복 확인 함수
   // 문제1. Axios가 아닌 fetch를 사용할때 사용법을 익히고 사용 .then() 잘확인
   // 문제2. 백에서 리턴값이 확실할때는  ResponseEntity<?>와일드카드 사용하지 않기
@@ -41,21 +49,31 @@ export default function Register() {
   // 문제7. 비동기가 너무 많아 상관은없는데 필요없는부분에도 사용중이다.
   // 문제8. 프로미스함수 에 대해 공부하기 비동기 / 동기 관련
   const checkEmail = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('이메일 형식이 아닙니다.')
+      setEmailVerified(false)
+      return
+    }
+
     setLoading(true)
+    setEmailError('')
     setEmailStatus('')
     fetch('http://localhost:8080/check-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     })
-      .then((response) => response.json()) // JSON 응답을 파싱
+      .then((response) => response.json())
       .then((data) => {
-        // "message" 키에 해당하는 값을 사용하여 상태를 설정
-        setEmailStatus(data.message) // "사용 가능한 이메일입니다." 또는 "이미 사용 중인 이메일입니다."
+        setEmailStatus(
+          data.message === '사용 가능한 이메일입니다.'
+            ? '사용 가능한 이메일입니다.'
+            : '사용 불가능한 이메일입니다.',
+        )
         setEmailVerified(data.message === '사용 가능한 이메일입니다.')
       })
       .catch((error) => {
-        setEmailStatus('이메일 중복 확인 중 오류가 발생했습니다.')
+        setEmailStatus('이메일 중복 확인 중 오류가 발생했습니다: ' + error.message)
         setEmailVerified(false)
       })
       .finally(() => {
@@ -66,23 +84,26 @@ export default function Register() {
   //인증이메일보내기
   const sendVerificationEmail = async () => {
     setLoading(true)
+    setVerificationStatus('')
     try {
       const response = await fetch('http://localhost:8080/request-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       })
-      const data = await response.json()
+      const text = await response.text() // text로 응답을 받습니다.
       setLoading(false)
-      if (data.success) {
+      if (response.ok) {
+        setVerificationStatus(text) // 성공 메시지를 설정합니다.
         setEmailVerified(true)
-        setVerificationStatus(data.message)
       } else {
-        setVerificationStatus(data.message)
+        // 응답이 성공적이지 않을 경우 서버에서 반환된 오류 메시지를 사용합니다.
+        setVerificationStatus(text)
       }
     } catch (error) {
       setLoading(false)
-      setVerificationStatus('서버 에러가 발생했습니다.')
+      // 네트워크 오류나 요청 실패시 기본 에러 메시지를 설정합니다.
+      setVerificationStatus('서버 에러가 발생했습니다: ' + error.message)
     }
   }
 
@@ -101,6 +122,17 @@ export default function Register() {
     } catch (error) {
       setLoading(false)
       setVerificationStatus('인증 실패: 서버에 문제가 발생했습니다.')
+    }
+  }
+
+  // 비밀번호 확인 및 에러 또는 성공 메시지 설정 함수
+  const validatePassword = () => {
+    if (password !== confirmPassword) {
+      setPasswordError('비밀번호가 일치하지 않습니다.')
+    } else if (password.length > 0 && confirmPassword.length > 0) {
+      setPasswordError('사용 가능한 비밀번호입니다.') // 성공 메시지 설정
+    } else {
+      setPasswordError('')
     }
   }
 
@@ -187,10 +219,9 @@ export default function Register() {
               {loading ? '확인 중...' : '이메일 중복 체크'}
             </Button>
           </div>
+          {emailError && <Alert color="failure">{emailError}</Alert>}
           {emailStatus && (
-            <Alert color={emailStatus === '사용 가능한 이메일입니다.' ? 'success' : 'failure'}>
-              {emailStatus}
-            </Alert>
+            <Alert color={emailVerified ? 'success' : 'failure'}>{emailStatus}</Alert>
           )}
         </div>
         <Button onClick={sendVerificationEmail} disabled={loading}>
@@ -237,10 +268,15 @@ export default function Register() {
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.target.value)
-              setPasswordError('')
             }}
+            onBlur={validatePassword} // 입력란에서 포커스가 벗어날 때 검증을 실행합니다.
           />
-          {passwordError && <Alert color="failure">{passwordError}</Alert>}
+          {/* 비밀번호 일치 여부에 따른 메시지 표시 */}
+          {passwordError && (
+            <Alert color={passwordError === '사용 가능한 비밀번호입니다.' ? 'success' : 'failure'}>
+              {passwordError}
+            </Alert>
+          )}
         </div>
         <div>
           <Label htmlFor="name">이름</Label>
