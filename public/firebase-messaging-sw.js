@@ -17,7 +17,7 @@ self.addEventListener('push', function (e) {
 })
 // 푸시 알림 클릭시 해당 url로 새로열기
 self.addEventListener('notificationclick', function (event) {
-  const url = '/m'
+  const url = '/m/alert'
   event.notification.close()
   event.waitUntil(clients.openWindow(url))
 })
