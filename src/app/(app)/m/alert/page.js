@@ -29,6 +29,40 @@ export default function AlertListPage() {
         const data = await response.json()
         setIsLoading(false)
         setAlerts(data)
+
+        data.forEach((alert) => {
+          if (alert.readedAt == null) {
+            // 디바이스 정보 조회 API
+            const setAlertReadedAt = async (readId) => {
+              const endpoint = `/api/fcm/alert/readed-at`
+              let currentDateTime = getCurrentDateTime()
+
+              try {
+                const response = await fetchExtended(endpoint, {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    alertId: readId,
+                    readedAt: currentDateTime,
+                  }),
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                })
+
+                if (response.ok) {
+                  // SUCCESS
+                  alertLog.readedAt = readedAt
+                } else {
+                  throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+                }
+              } catch (error) {
+                alert(error.message)
+              }
+            }
+
+            setAlertReadedAt(alert.id)
+          }
+        })
       } else {
         throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
       }
