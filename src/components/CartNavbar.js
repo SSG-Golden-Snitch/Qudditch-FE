@@ -20,8 +20,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
       const data = await response.json()
       if (response.ok) {
         // 결제 페이지로 리다이렉트
-        console.log('Redirect URL:', data.redirectUrl)
-        window.location.href = data.redirectUrl
+        window.location.href = data.next_redirect_pc_url
       } else {
         // 오류 처리
         console.error('Failed to initiate payment:', data)
