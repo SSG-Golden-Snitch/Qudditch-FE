@@ -12,7 +12,7 @@ const CartPage = () => {
   const [totalPay, setTotalPay] = useState([])
   const [usedPoints, setUsedPoints] = useState(0) // 사용자가 입력한 포인트
   const [earnPoints, setEarnPoints] = useState(0) // 사용자가 입력한 포인트
-  const [remainingPoints, setRemainingPoints] = useState(1000)
+  const [remainingPoints, setRemainingPoints] = useState(0) // 실제 적립액 으로 변경하기
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
 
@@ -32,6 +32,7 @@ const CartPage = () => {
   const isEmpty = cartItems.length === 0
 
   useEffect(() => {
+    console.log(cartItems)
     // 페이지 로드 시, customerId 장바구니 아이템 조회 (userStoreId, userCustomerId, productId 고려)
     fetchCartItems()
   }, [])
@@ -121,6 +122,32 @@ const CartPage = () => {
     calculateTotalPay(totalAmount, value)
   }
 
+  // 수량 업데이트 함수
+  const updateItemQty = async (productId, newQty) => {
+    console.log(`Updating quantity for product ${productId} to ${newQty}`) // 로그 추가
+    try {
+      const response = await fetchExtended(`/api/cart`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, qty: newQty }),
+      })
+
+      if (response.ok) {
+        console.log('Quantity update successful') // 성공 로그
+        fetchCartItems() // 수량 업데이트 후 장바구니 목록 다시 불러오기
+      } else {
+        const errorData = await response.json()
+        console.error('Quantity update failed:', errorData) // 실패 로그
+        throw new Error('수량 업데이트 실패: ' + errorData.message)
+      }
+    } catch (error) {
+      console.error('Error updating item quantity:', error)
+      setMessage(`Update failed for product ID ${productId}: ${error.message}`)
+    }
+  }
+
   const removeItemFromCart = async (productId) => {
     try {
       // DELETE 메소드와 함께 productId를 URL 경로의 일부로 포함하여 요청
@@ -177,17 +204,30 @@ const CartPage = () => {
                     className="mr-2"
                   />
                   <img src={item.image} alt={item.name} className="mr-4 h-20 w-20 object-cover" />
-                  <div className="flex-1">
-                    <h4 className="font-bold">{item.name}</h4>
-                    <p>
-                      {item.qty} 개 {formatNumber(item.price)}원
-                    </p>
+                  <div className="flex flex-1 flex-col">
+                    <div>
+                      <h4 className="font-bold">{item.name}</h4>
+                    </div>
+                    <div>
+                      <select
+                        value={item.qty}
+                        onChange={(e) => updateItemQty(item.productId, parseInt(e.target.value))}
+                        className="h-10 rounded border text-center"
+                      >
+                        <p>{formatNumber(item.price)}원</p>
+                        {Array.from({ length: item.maxQty }, (_, index) => (
+                          <option key={index + 1} value={index + 1}>
+                            {index + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                   <div>
                     <button
                       type="button"
                       onClick={() => removeItemFromCart(item.productId)}
-                      className="mb-10 rounded-lg border border-white bg-white px-1 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
+                      className="mb-10 rounded-lg border border-white bg-white p-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
                     >
                       <IoMdClose />
                     </button>
@@ -207,7 +247,7 @@ const CartPage = () => {
                     </tr>
                     <tr className="flex justify-between text-left">
                       <td className="w-1/2">포인트 사용금액:</td>
-                      <td className="flex w-1/2 items-center justify-end text-right">
+                      <td className="w-1/2 text-right">
                         -
                         <input
                           type="text"
@@ -218,14 +258,17 @@ const CartPage = () => {
                         P
                       </td>
                     </tr>
-                    <tr className="flex justify-between text-left">
+                    <tr className="mb-2 flex items-center justify-between text-left">
                       <td className="w-1/2"></td>
-                      <td className="text-s w-1/2 text-right">
+                      <td className="w-1/2 text-right text-xs">
                         잔여: {formatNumber(remainingPoints - usedPoints)}P
+                        <button
+                          onClick={handleUseAllPoints}
+                          className="ml-1 rounded bg-slate-200 px-3 py-1 text-xs"
+                        >
+                          전액 사용
+                        </button>
                       </td>
-                      <button onClick={handleUseAllPoints} className="rounded bg-slate-200 py-1">
-                        전액 사용
-                      </button>
                     </tr>
                     <tr className="flex justify-between text-left">
                       <td className="w-1/2">총 결제 금액:</td>
