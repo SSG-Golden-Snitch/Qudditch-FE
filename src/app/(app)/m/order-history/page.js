@@ -3,18 +3,20 @@
 import React, { useState, useEffect, forwardRef, Fragment } from 'react'
 import Link from 'next/link'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
-import { HiOutlineTag } from 'react-icons/hi'
-import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
+import ReceiptModal from '@/components/ReceiptModal'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
-  <button onClick={onClick} ref={ref} className="datepicker-button">
+  <button
+    onClick={onClick}
+    ref={ref}
+    className="datepicker-button rounded-lg border border-gray-300 bg-white p-2 text-gray-500 shadow-sm hover:bg-gray-50"
+  >
     {/* <CalendarIcon className="calendar-icon" /> */}
     {value}
   </button>
@@ -27,6 +29,9 @@ const OrderHistory = () => {
   // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   // const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
+
+  const [showReceipt, setShowReceipt] = useState(false)
+  const [activeOrderId, setActiveOrderId] = useState(null)
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -67,11 +72,17 @@ const OrderHistory = () => {
     }
 
     fetchOrders()
-  }, [selectedDate, viewType]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+  }, [selectedDate, viewType, selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
 
   // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
   const handleViewTypeChange = (type) => {
     setViewType(type)
+  }
+
+  // 추가된 부분: 영수증 모달창
+  const handleReceiptOpen = (orderId) => {
+    setActiveOrderId(orderId)
+    setShowReceipt(true)
   }
 
   const formatDateYMD = (date) => {
@@ -107,15 +118,15 @@ const OrderHistory = () => {
   // }
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
-      <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
+    <div className="flex h-screen flex-col bg-gray-100 p-2">
+      <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-2 shadow-md">
         <button
           type="button"
           className="mb-4 flex items-center"
           onClick={() => window.history.back()}
         >
           <IoIosArrowBack className="mr-2" />
-          <h2 className="text-xl font-bold">주문목록</h2>
+          <h2 className="text-xl font-bold">구매목록</h2>
         </button>
         <DatePicker
           selected={selectedDate}
@@ -129,7 +140,7 @@ const OrderHistory = () => {
 
       <div className="mb-4 mt-20 flex w-full justify-center">
         <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
-          판매내역 조회
+          구매내역 조회
         </Button>
         <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
           환불내역 조회
@@ -139,23 +150,24 @@ const OrderHistory = () => {
       <div className="overflow-auto">
         {orders.map((order, index) => (
           <Fragment key={index}>
-            <div className="mb-4 rounded-lg border-2 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+            <div className="mb-4 rounded-lg border-2 bg-white p-4 dark:bg-gray-800">
               <div>
                 <div className="flex justify-between">
                   <span>
                     {formatDateYMD(order.customerOrder.orderedAt)}
-                    <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
-                      <span className="text-blue-500 hover:underline">
-                        [{order.customerOrder.partnerOrderId}]
-                      </span>
-                    </Link>
+                    <button
+                      onClick={() => handleReceiptOpen(order.customerOrder.partnerOrderId)}
+                      className="text-blue-500 hover:underline"
+                    >
+                      [{order.customerOrder.partnerOrderId}]
+                    </button>
                   </span>
-                  <span className="text-right font-bold">
+                  <span className="text-right text-lg font-bold">
                     {formatNumber(order.customerOrder.totalAmount)}
                   </span>
                 </div>
                 <div>
-                  <div className="mt-2">
+                  <div className="mt-2 text-gray-600">
                     {`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}
                   </div>
                 </div>
@@ -164,6 +176,9 @@ const OrderHistory = () => {
           </Fragment>
         ))}
       </div>
+      {showReceipt && (
+        <ReceiptModal partnerOrderId={activeOrderId} onClose={() => setShowReceipt(false)} />
+      )}
     </div>
   )
 }
