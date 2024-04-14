@@ -1,9 +1,15 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
-import React from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, totalPay }) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const pg_token = searchParams ? searchParams.get('pg_token') : null
+  const router = useRouter()
+
   // 금액: 세 자리마다 , 표시
   const formatNumber = (number) => {
     if (!number) return '0'
@@ -52,14 +58,14 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
         const data = await response.json()
 
         if (response.ok) {
-          router.push('/payment/success') // Navigate to success page
+          router.push('/m/payment/success') // Navigate to success page
         } else {
           console.error('Failed to approve payment:', data)
-          router.push('/payment/fail') // Navigate to failure page
+          router.push('/m/payment/fail') // Navigate to failure page
         }
       } catch (error) {
         console.error('Error approving payment:', error)
-        router.push('/payment/fail')
+        router.push('/m/payment/fail')
       }
     }
 
