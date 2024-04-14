@@ -4,6 +4,12 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import React from 'react'
 
 const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, totalPay }) => {
+  // 금액: 세 자리마다 , 표시
+  const formatNumber = (number) => {
+    if (!number) return '0'
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
+  }
+
   const handleInitiatePayment = async () => {
     // initiatePayment 함수 호출 결과를 paymentData에 저장
     const paymentData = initiatePayment()
@@ -30,6 +36,36 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
     }
   }
 
+  // 결제요청에 대한 결과 (성공, 실패)
+  useEffect(() => {
+    const approvePayment = async () => {
+      if (!pg_token) return
+
+      try {
+        const response = await fetchExtended('/api/payment/approve', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ pg_token }),
+        })
+        const data = await response.json()
+
+        if (response.ok) {
+          router.push('/payment/success') // Navigate to success page
+        } else {
+          console.error('Failed to approve payment:', data)
+          router.push('/payment/fail') // Navigate to failure page
+        }
+      } catch (error) {
+        console.error('Error approving payment:', error)
+        router.push('/payment/fail')
+      }
+    }
+
+    approvePayment()
+  }, [pg_token, router])
+
   return (
     <div className="fixed inset-x-0 bottom-0 z-10 bg-gray-100 shadow-md">
       <div className="flex items-center justify-between rounded-t-2xl p-4">
@@ -41,7 +77,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
             className="h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
           />
           <span className="ml-2 font-medium">전체</span>
-          <span className="ml-4 font-bold">총액: {totalPay}원</span>
+          <span className="ml-4 font-bold">총액: {formatNumber(totalPay)}원</span>
         </div>
 
         <button
