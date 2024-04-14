@@ -16,6 +16,9 @@ const CartPage = () => {
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
 
+  const router = useRouter()
+  const { pg_token } = router.query // URL에서 pg_token 추출
+
   // 결제 준비 정보 추가 및 전송 로직
   const preparePaymentInfo = () => {
     const updatedCartItems = cartItems.map((item) => ({
@@ -164,6 +167,37 @@ const CartPage = () => {
     } catch (error) {
       // 에러 처리
       console.error('Error:', error)
+    }
+  }
+
+  // 결제 후 리다이렉션
+  useEffect(() => {
+    // pg_token이 있는 경우, 결제 승인 요청을 수행
+    if (pg_token) {
+      approvePayment(pg_token)
+    }
+  }, [pg_token])
+
+  const approvePayment = async (pg_token) => {
+    try {
+      const response = await fetchExtended('/api/payment/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pg_token }),
+      })
+      const data = await response.json()
+
+      if (response.ok) {
+        router.push('/payment/success') // 결제 성공 페이지로 리다이렉션
+      } else {
+        console.error('Failed to approve payment:', data)
+        router.push('/payment/fail') // 결제 실패 페이지로 리다이렉션
+      }
+    } catch (error) {
+      console.error('Error approving payment:', error)
+      router.push('/payment/fail') // 결제 실패 페이지로 리다이렉션
     }
   }
 
