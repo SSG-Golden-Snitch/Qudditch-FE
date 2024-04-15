@@ -188,8 +188,8 @@ const CartPage = () => {
         {isEmpty ? (
           // 장바구니가 비어있을 때
           <div className="mt-8 text-center">
-            <p>장바구니에 담긴 상품이 없습니다.</p>
-            <p>오늘의 인기상품 보기 &gt;</p>
+            <p className="text-lg">장바구니에 담긴 상품이 없습니다.</p>
+            <p className="mt-4 text-sm">오늘의 인기상품 보기 &gt;</p>
           </div>
         ) : (
           // 장바구니에 상품이 담겨있을 때

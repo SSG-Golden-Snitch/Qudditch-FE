@@ -55,25 +55,21 @@ const CameraPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="mb-4 text-2xl font-bold">제품QR을 인식해주세요</h1>
-      <div className="relative">
-        <QRCodeScanner onScan={handleScan} />
+      <div className="mb-4 flex items-center">
+        <h1 className="text-2xl font-bold">제품QR을 인식해주세요</h1>
+        {/* <div className="relative"> */}
         <Link href={`/m/store-select/cart`}>
-          <FiShoppingCart
-            style={{
-              position: 'absolute',
-              bottom: '13%',
-              left: '80%',
-              transform: 'translateX(-80%)',
-              fontSize: '24px',
-              color: 'white',
-            }}
-          />
-          <span>{cartItemCount}</span>
+          <FiShoppingCart className="text-2xl" />
+          <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-sm font-semibold text-white">
+            {cartItemCount}
+          </span>
         </Link>
+        {/* </div> */}
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}{' '}
         {/* 에러 메시지 표시 */}
       </div>
+
+      <QRCodeScanner onScan={handleScan} />
     </div>
   )
 }
