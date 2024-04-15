@@ -12,7 +12,7 @@ import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
 
-const carouselData = ['1.png', '2.png', '3.png', '4.png', '5.png']
+const carouselData = ['/1.png', '/2.png', '/3.png', '/4.png', '/5.png']
 
 const ProductSearchBar = () => {
   const router = useRouter()

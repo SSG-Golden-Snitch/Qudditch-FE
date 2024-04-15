@@ -107,7 +107,9 @@ export default function LocationStockPage({ id }) {
           className="mr-2 cursor-pointer text-lg"
           onClick={() => window.history.back()}
         />
+
         <Autocomplete
+          className="justify-center"
           label="상품 검색"
           options={products}
           placeholder="상품명을 입력해주세요"

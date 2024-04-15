@@ -9,21 +9,37 @@ import { useSearchParams } from 'next/navigation'
 
 const MapComponent = ({ defaultPosition, stores }) => {
   const [selectStore, setSelectStore] = useState(null)
-  const [openModal, setOpenModal] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const searchParams = useSearchParams()
+  const activeMarkerRef = useRef(null)
   const mapRef = useRef(null)
   const router = useRouter()
   const iconRef = '<div><img src="/mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
+  const userIconRef = '<div><img src="/usericon.png" width="50" height="50" alt="현재 위치"/></div>'
+  const clickIconRef =
+    '<div><img src="/clickicon.png" width="40" height="40" alt="현재 위치"/></div>'
 
   const handleAlert = (message = '') => {
     setAlertMessage(message)
   }
-  const handleMarkerClick = (store) => {
-    console.log(store)
+
+  const handleMarkerClick = (store, marker) => {
+    // 이전 마커의 아이콘을 원래대로 복구
+    if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
+      activeMarkerRef.current.setIcon({
+        content: iconRef,
+        anchor: new window.naver.maps.Point(12, 30),
+      })
+    }
+    // 클릭된 마커의 아이콘 변경
+    marker.setIcon({
+      content: clickIconRef,
+      anchor: new window.naver.maps.Point(19, 37),
+    })
+    activeMarkerRef.current = marker
     setSelectStore(store)
-    setOpenModal(true)
   }
+
   const handleBookMarkClick = (e) => {
     window.updateBookmark(selectStore.id)
     e.stopPropagation()
@@ -36,6 +52,8 @@ const MapComponent = ({ defaultPosition, stores }) => {
       const store = stores.find((s) => s.id.toString() === storeId)
       if (store) {
         setSelectStore(store)
+        // 해당 가게의 마커 아이콘을 변경
+        // handleMarkerClick(store)
       }
     }
   }, [searchParams, stores])
@@ -51,6 +69,19 @@ const MapComponent = ({ defaultPosition, stores }) => {
         }
         mapRef.current = new window.naver.maps.Map('map', mapOptions)
       }
+
+      // 현재위치 마커
+      new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(defaultPosition.latitude, defaultPosition.longitude),
+        map: mapRef.current,
+        title: '현재 위치',
+        icon: {
+          content: userIconRef,
+          anchor: new window.naver.maps.Point(15, 15),
+        },
+      })
+
+      // 현재위치 주위 스토어 마커
       stores.forEach((store) => {
         const markerPosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
         const marker = new window.naver.maps.Marker({
@@ -61,10 +92,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
             anchor: new window.naver.maps.Point(12, 30),
           },
         })
-        // 마커 클릭 이벤트 리스너 추가
-        window.naver.maps.Event.addListener(marker, 'click', () => {
-          handleMarkerClick(store)
-        })
+        window.naver.maps.Event.addListener(marker, 'click', () => handleMarkerClick(store, marker))
       })
     }
 
@@ -79,7 +107,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
     return () => {
       document.body.removeChild(script)
     }
-  }, [defaultPosition, stores, handleMarkerClick])
+  }, [defaultPosition, stores])
 
   useEffect(() => {
     window.updateBookmark = async (storeId) => {
@@ -116,12 +144,14 @@ const MapComponent = ({ defaultPosition, stores }) => {
 
   return (
     <div>
-      <div id="map" style={{ width: '100vw', height: '92vh' }}></div>
+      <div id="map" style={{ width: '100vw', height: '93vh' }}></div>
       {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       {selectStore && (
         <Modal
           show={selectStore !== null}
-          onClose={() => setSelectStore(null)}
+          onClose={() => {
+            setSelectStore(null)
+          }}
           className={'bg-opacity-0'}
         >
           <div
