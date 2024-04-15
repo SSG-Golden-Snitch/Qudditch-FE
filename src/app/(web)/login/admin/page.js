@@ -26,9 +26,8 @@ export default function AdminLogin() {
       if (data.error) {
         alert(data.error)
       } else {
-        alert('로그인 성공')
-        // 추후 토큰 저장 방식 개선 필요
         sessionStorage.setItem('token', data.token)
+        window.location.href = '/manager'
       }
     } catch (error) {
       setLoading(false)
