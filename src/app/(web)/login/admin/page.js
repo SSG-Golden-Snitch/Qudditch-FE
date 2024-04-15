@@ -2,6 +2,7 @@
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,7 @@ export default function AdminLogin() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/admin/login', {
+      const response = await fetchExtended('/admin/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },

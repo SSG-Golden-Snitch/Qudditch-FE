@@ -2,6 +2,7 @@
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 export default function StoreLogin() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,7 @@ export default function StoreLogin() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/store/login', {
+      const response = await fetchExtended('/store/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
