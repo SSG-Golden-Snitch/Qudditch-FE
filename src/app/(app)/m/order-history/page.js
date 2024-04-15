@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
 import ReceiptModal from '@/components/ReceiptModal'
+import Loading from '@/components/ui/Loading'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -32,9 +33,11 @@ const OrderHistory = () => {
 
   const [showReceipt, setShowReceipt] = useState(false)
   const [activeOrderId, setActiveOrderId] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setIsLoading(true) // 데이터 로딩 시작
       const year = selectedDate.getFullYear()
       const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
       const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
@@ -68,6 +71,8 @@ const OrderHistory = () => {
         console.error('주문 내역을 불러오는 중 오류가 발생했습니다.', error)
         setOrders([])
         setTotalSales(0)
+      } finally {
+        setIsLoading(false) // 데이터 로딩 종료
       }
     }
 
@@ -119,6 +124,7 @@ const OrderHistory = () => {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 p-2">
+      {isLoading && <Loading />}
       <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-2 shadow-md">
         <button
           type="button"

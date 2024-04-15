@@ -11,6 +11,7 @@ import BubbleSearch from '/public/BubbleSearch.svg'
 import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
+import { VscBellDot } from 'react-icons/vsc'
 
 const carouselData = ['/1.png', '/2.png', '/3.png', '/4.png', '/5.png']
 
@@ -96,6 +97,7 @@ const ProductSearchBar = () => {
 
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [onNotify, setNotify] = useState(false)
 
   // 알림 권한 요청
   useEffect(() => {
@@ -107,6 +109,38 @@ const MobileMain = () => {
         .catch(function (error) {
           console.error('Permission error:', error)
         })
+    }
+  }, [])
+
+  // SSE 이벤트 핸들러(알림이 왔을때 알림 아이콘 변경을 위함)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = sessionStorage.getItem('token')
+      const base64Payload = token.split('.')[1]
+      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+      const decodedJWT = JSON.parse(
+        decodeURIComponent(
+          window
+            .atob(base64)
+            .split('')
+            .map(function (c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            })
+            .join(''),
+        ),
+      )
+
+      let userEmail = decodedJWT.sub
+
+      const sse = new EventSource(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`,
+      )
+
+      sse.addEventListener('connect', function (e) {
+        if (e != null && e.data === 'NOTIFY_FCM') {
+          setNotify(true)
+        }
+      })
     }
   }, [])
 
@@ -146,7 +180,11 @@ const MobileMain = () => {
           </div>
           <div className="col-start-3 col-end-4 flex justify-end pr-4">
             <Link href="/m/alert">
-              <AiFillBell className="text-2xl text-amber-400 dark:text-gray-200" />
+              {onNotify ? (
+                <VscBellDot className="text-2xl text-amber-400 dark:text-gray-200" />
+              ) : (
+                <AiFillBell className="text-2xl text-amber-400 dark:text-gray-200" />
+              )}
             </Link>
           </div>
         </div>

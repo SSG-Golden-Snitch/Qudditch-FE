@@ -15,7 +15,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
   const mapRef = useRef(null)
   const router = useRouter()
   const iconRef = '<div><img src="/mapicon.png" width="30" height="30" alt="현재 위치"/></div>'
-  const userIconRef = '<div><img src="/usericon.png" width="50" height="50" alt="현재 위치"/></div>'
+  const userIconRef = '<div><img src="/usericon.png" width="35" height="35" alt="현재 위치"/></div>'
   const clickIconRef =
     '<div><img src="/clickicon.png" width="40" height="40" alt="현재 위치"/></div>'
 
@@ -24,6 +24,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
   }
 
   const handleMarkerClick = (store, marker) => {
+    mapRef.current.panTo(marker.getPosition())
     // 이전 마커의 아이콘을 원래대로 복구
     if (activeMarkerRef.current && activeMarkerRef.current !== marker) {
       activeMarkerRef.current.setIcon({
@@ -34,7 +35,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
     // 클릭된 마커의 아이콘 변경
     marker.setIcon({
       content: clickIconRef,
-      anchor: new window.naver.maps.Point(19, 37),
+      anchor: new window.naver.maps.Point(19, 35),
     })
     activeMarkerRef.current = marker
     setSelectStore(store)
@@ -48,15 +49,25 @@ const MapComponent = ({ defaultPosition, stores }) => {
   // main에서 storeId 받은 후 바로 모달창 띄우기 위한
   useEffect(() => {
     const storeId = searchParams.get('storeId')
-    if (storeId && stores) {
+    if (storeId && stores && mapRef.current) {
       const store = stores.find((s) => s.id.toString() === storeId)
       if (store) {
         setSelectStore(store)
-        // 해당 가게의 마커 아이콘을 변경
-        // handleMarkerClick(store)
+
+        const storePosition = new window.naver.maps.LatLng(store.wgs84Y, store.wgs84X)
+
+        new window.naver.maps.Marker({
+          position: storePosition,
+          map: mapRef.current,
+          icon: {
+            content: clickIconRef,
+            anchor: new window.naver.maps.Point(19, 37),
+          },
+        })
+        mapRef.current.panTo(storePosition)
       }
     }
-  }, [searchParams, stores])
+  }, [searchParams, stores, mapRef.current])
 
   useEffect(() => {
     const loadMap = async () => {
@@ -65,7 +76,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
       if (!mapRef.current) {
         const mapOptions = {
           center: new window.naver.maps.LatLng(defaultPosition.latitude, defaultPosition.longitude),
-          zoom: 14,
+          zoom: 16,
         }
         mapRef.current = new window.naver.maps.Map('map', mapOptions)
       }
@@ -161,7 +172,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
             <div
               className="overflow-hidden bg-white shadow-xl "
               style={{
-                width: '60%',
+                width: '80%',
                 maxWidth: '20rem',
                 height: 'auto',
                 transform: 'translateY(-30%)',
