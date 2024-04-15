@@ -1,25 +1,41 @@
 'use client'
+import Loading from '@/components/ui/Loading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 
 const PayRequest = () => {
+  const [isLoading, setIsLoading] = useState(false)
   const searchParam = useSearchParams()
   const pg = searchParam.get('pg_token')
 
-  if (pg.length !== 0) {
-    fetchExtended('/api/payment/approve', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        pg,
-      }),
-    })
+  useEffect(() => {
+    if (pg.length !== 0) {
+      setIsLoading(true) // 로딩 시작
+      fetchExtended('/api/payment/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pg,
+        }),
+      })
+        .then(() => {
+          setIsLoading(false) // 로딩 종료
+        })
+        .catch(() => {
+          setIsLoading(false) // 에러 발생 시 로딩 종료
+        })
+    }
+  }, [pg])
+
+  if (isLoading) {
+    return <Loading /> // 로딩 컴포넌트 표시
   }
-  return <div></div>
+
+  return <div>결제가 완료되었습니다.</div>
 }
 
 const PayResult = () => {
@@ -36,13 +52,9 @@ const PayResult = () => {
 
       <div className="flex flex-1 items-center justify-center p-4">
         <div className="w-full max-w-sm rounded-lg bg-white p-6 text-center shadow-lg">
-          <p className="mt-4 text-gray-800">결제가 완료되었습니다.</p>
+          <PayRequest />
         </div>
       </div>
-
-      <Suspense fallback={<Loading />}>
-        <PayRequest />
-      </Suspense>
     </div>
   )
 }
