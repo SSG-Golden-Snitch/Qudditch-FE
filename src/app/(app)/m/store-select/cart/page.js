@@ -289,12 +289,14 @@ const CartPage = () => {
 
       <EmotionRecommend></EmotionRecommend>
 
-      <CartNavbar
-        allSelected={allSelected}
-        handleSelectAllChange={handleSelectAllChange}
-        initiatePayment={preparePaymentInfo}
-        totalPay={totalPay}
-      />
+      <Suspense fallback={<Loading />}>
+        <CartNavbar
+          allSelected={allSelected}
+          handleSelectAllChange={handleSelectAllChange}
+          initiatePayment={preparePaymentInfo}
+          totalPay={totalPay}
+        />
+      </Suspense>
     </div>
   )
 }
