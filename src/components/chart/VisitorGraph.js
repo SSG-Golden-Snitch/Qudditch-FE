@@ -1,7 +1,7 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
 import React, { useEffect, useRef, useState } from 'react'
-// import Chart from 'chart.js/auto'
+// import chart from 'chart.js/auto'
 import { Chart, registerables } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { graphColors } from './graphColors'
@@ -119,8 +119,16 @@ export const VisitorGraph = ({ dateInput }) => {
               display: true,
               text: '일일 방문자 현황',
               font: {
-                size: 30,
+                size: 25,
               },
+            },
+          },
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              top: 20,
+              bottom: 10,
             },
           },
         },

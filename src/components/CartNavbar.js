@@ -32,7 +32,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
       const data = await response.json()
       if (response.ok) {
         // 결제 페이지로 리다이렉트
-        window.location.href = data.next_redirect_pc_url
+        window.location.href = data.redirectUrl
       } else {
         // 오류 처리
         console.error('Failed to initiate payment:', data)
@@ -53,9 +53,15 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ pg_token }),
+          body: JSON.stringify({
+            pg_token,
+            order_id: partnerOrderId,
+          }),
         })
+
         const data = await response.json()
+
+        console.log(data)
 
         if (response.ok) {
           router.push('/m/payment/success') // Navigate to success page

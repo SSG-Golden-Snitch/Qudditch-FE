@@ -56,7 +56,7 @@ export default function AlertListPage() {
                   throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
                 }
               } catch (error) {
-                alert(error.message)
+                console.log(error.message)
               }
             }
 
@@ -95,46 +95,7 @@ function AlertList({ list }) {
 
   const renderList = list.map((alertLog, i) => {
     return (
-      <li
-        key={i}
-        id={alertLog.id}
-        onClick={() => {
-          let deleteId = alertLog.id
-
-          const deleteAlert = async () => {
-            const endpoint = `/api/fcm/alert`
-
-            try {
-              const response = await fetchExtended(endpoint, {
-                method: 'DELETE',
-                body: JSON.stringify({
-                  alertId: deleteId,
-                }),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-              })
-
-              if (response.ok) {
-                // SUCCESS
-                const idx = list.findIndex(function (item) {
-                  return item.id === deleteId
-                }) // findIndex = find + indexOf
-                // 리스트에서 해당 객체 삭제
-                if (idx > -1) list.splice(idx, 1)
-
-                setRender(!renderEffect)
-              } else {
-                throw new Error('푸시 알림 정보를 삭제하는데 실패했습니다.')
-              }
-            } catch (error) {
-              alert(error.message)
-            }
-          }
-
-          deleteAlert()
-        }}
-      >
+      <li key={i} id={alertLog.id}>
         <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
           <div className="flex items-center justify-between">
             <h3 className="max-w-60 text-lg font-medium leading-6 text-gray-900">
@@ -146,7 +107,45 @@ function AlertList({ list }) {
           </div>
           <div className="mt-4 flex items-center justify-between">
             <p className="max-w-80 text-sm font-medium text-gray-500">{alertLog.body}</p>
-            <ImCancelCircle className="ml-2 text-3xl text-gray-700" />
+            <ImCancelCircle
+              onClick={() => {
+                let deleteId = alertLog.id
+
+                const deleteAlert = async () => {
+                  const endpoint = `/api/fcm/alert`
+
+                  try {
+                    const response = await fetchExtended(endpoint, {
+                      method: 'DELETE',
+                      body: JSON.stringify({
+                        alertId: deleteId,
+                      }),
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    })
+
+                    if (response.ok) {
+                      // SUCCESS
+                      const idx = list.findIndex(function (item) {
+                        return item.id === deleteId
+                      }) // findIndex = find + indexOf
+                      // 리스트에서 해당 객체 삭제
+                      if (idx > -1) list.splice(idx, 1)
+
+                      setRender(!renderEffect)
+                    } else {
+                      throw new Error('푸시 알림 정보를 삭제하는데 실패했습니다.')
+                    }
+                  } catch (error) {
+                    alert(error.message)
+                  }
+                }
+
+                deleteAlert()
+              }}
+              className="ml-2 text-3xl text-gray-700"
+            />
           </div>
         </div>
       </li>

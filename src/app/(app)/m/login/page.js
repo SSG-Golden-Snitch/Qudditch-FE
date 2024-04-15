@@ -79,7 +79,7 @@ function Component() {
 
             const resp = await loginDeviceHandler()
 
-            if (resp != null && resp.status !== 200) {
+            if (resp == null || (resp != null && resp.status !== 200)) {
               alert('LOGIN DEVICE FAIL')
               return
             }
