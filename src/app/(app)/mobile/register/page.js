@@ -176,15 +176,16 @@ export default function Register() {
           email,
           password,
           name,
-          //state: emailVerified ? 1 : 0 // emailVerified가 true이면 state를 1로 설정
+          state: emailVerified ? 1 : 0, // emailVerified가 true이면 state를 1로 설정
         }),
       })
       const data = await response.json()
       setLoading(false)
       if (response.ok) {
-        alert('회원가입 성공: 인증 이메일이 발송되었습니다. 이메일을 확인해주세요.')
-        router.push('/login')
+        alert('회원가입 성공: 이메일 인증이 완료되었습니다.')
+        router.push('/login') // 로그인 페이지로 리디렉션
       } else {
+        // 서버 응답 메시지에 따라 적절한 에러 핸들링
         alert(data.message || '회원가입 실패')
       }
     } catch (error) {
@@ -193,25 +194,28 @@ export default function Register() {
     }
   }
 
+  // 계정 인증 요청 함수
   const handleVerifyCode = async () => {
     setLoading(true)
     try {
-      // '/verify-code' 엔드포인트 호출 대신 '/verify-account' 엔드포인트 사용
-      const res = await fetch(`http://localhost:8080/verify-account?code=${verificationCode}`, {
+      const res = await fetch(`http://localhost:8080/verify-account`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code: verificationCode }),
       })
-      const data = await res.json()
+      const text = await res.text()
       setLoading(false)
       if (res.ok) {
-        setVerificationStatus('인증에 성공했습니다.')
-        setEmailVerified(true)
-        setVerificationCode('') // 인증 후 코드 필드 비우기
+        setVerificationStatus(text)
+        setEmailVerified(true) // 여기서 인증 상태를 true로 설정합니다.
+        setVerificationCode('')
       } else {
-        setVerificationStatus('인증에 실패했습니다.')
+        setVerificationStatus('인증에 실패하였습니다: ' + text)
+        setEmailVerified(false) // 인증에 실패하면 false로 설정합니다.
       }
     } catch (error) {
       setLoading(false)
-      setVerificationStatus('서버 에러가 발생했습니다.')
+      setVerificationStatus('서버 에러가 발생하였습니다: ' + error.message)
     }
   }
 
