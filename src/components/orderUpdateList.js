@@ -1,12 +1,15 @@
-'use cliet'
+'use client'
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import { Table } from 'flowbite-react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
+import { fetchExtended } from '@/utils/fetchExtended'
+import { CustomAlert } from '@/components/CustomAlert'
+import Loading from '@/components/ui/Loading'
 
 async function searchProductByName(productName) {
-  const URL = `http://localhost:8080/api/product/find/${productName}`
-  const response = await fetch(URL)
+  const URL = `/api/product/find/${productName}`
+  const response = await fetchExtended(URL)
   if (!response.ok) {
     throw new Error('제품 검색에 실패했습니다.')
   }
@@ -19,10 +22,15 @@ export default function GetDetail({ id }) {
   const [order, setOrder] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
+  const [alertMessage, setAlertMessage] = useState('')
+
+  const handleAlert = (message = '') => {
+    setAlertMessage(message)
+  }
 
   useEffect(() => {
     const getOrder = async () => {
-      const response = await fetch(`http://localhost:8080/api/store/order/detail/${id}`)
+      const response = await fetchExtended(`/api/store/order/detail/${id}`)
       const data = await response.json()
       setOrder(data)
     }
@@ -44,7 +52,7 @@ export default function GetDetail({ id }) {
   const addToOrder = (product) => {
     const existingProduct = order.products.find((p) => p.id === product.id)
     if (existingProduct) {
-      alert(`${existingProduct.name}은(는) 이미 주문에 추가된 제품입니다.`)
+      setAlertMessage(`${existingProduct.name}은(는) 이미 주문에 추가된 제품입니다.`)
       return
     }
 
@@ -65,7 +73,7 @@ export default function GetDetail({ id }) {
       qty: qty,
     }))
 
-    const response = await fetch(`http://localhost:8080/api/store/order/detail/update/${id}`, {
+    const response = await fetchExtended(`/api/store/order/detail/update/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,15 +82,19 @@ export default function GetDetail({ id }) {
     })
 
     if (response.ok) {
-      alert('수정 성공!!')
+      setAlertMessage('수정 성공')
       router.push(`/order/detail/${id}`)
     } else {
-      alert('수정 실패!!')
+      setAlertMessage('수정 실패')
     }
   }
 
   if (!order) {
-    return <div>Loading...</div>
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
   }
 
   const removeFromOrder = async (index) => {
@@ -90,7 +102,7 @@ export default function GetDetail({ id }) {
     const removedProduct = updatedOrder.products.splice(index, 1)[0]
     setOrder(updatedOrder)
 
-    const response = await fetch(`http://localhost:8080/api/store/order/detail/update/${id}`, {
+    const response = await fetchExtended(`/api/store/order/detail/update/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -106,7 +118,8 @@ export default function GetDetail({ id }) {
   }
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-5">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+      {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       <form
         className="relative mx-auto max-w-md"
         onSubmit={(e) => {

@@ -5,8 +5,8 @@ import Chart from 'chart.js/auto'
 
 const RANK_VIEW = 4
 
-const CategoryGraph = () => {
-  const yearMonth = '2024-03'
+const CategoryGraph = ({ dateInput }) => {
+  const yearMonth = dateInput
   const [labels, setLabels] = useState([])
   const [productDataSet, setProductDataSet] = useState([])
 
@@ -42,6 +42,7 @@ const CategoryGraph = () => {
           list[list.length] = etcData
         }
 
+        list = list.filter((category) => category['sales'] !== 0)
         setLabels(list.map((category) => category.categoryName))
         setProductDataSet(list.map((category) => category.sales))
       } catch (error) {
@@ -49,63 +50,62 @@ const CategoryGraph = () => {
       }
     }
     getCategorys()
-  }, [])
+  }, [yearMonth])
 
   const chartRef = useRef(null)
   const [chartInstance, setChartInstance] = useState(null)
 
   useEffect(() => {
-    if (labels.length !== 0) {
-      if (chartInstance) {
-        chartInstance.destroy()
-      }
-      const ctx = chartRef.current.getContext('2d')
-      const newChartInstance = new Chart(ctx, config)
-      setChartInstance(newChartInstance)
-
-      return () => {
-        newChartInstance.destroy()
-      }
+    if (chartInstance) {
+      chartInstance.destroy()
     }
-  }, [labels, productDataSet])
 
-  const config = {
-    type: 'doughnut',
-    options: {
-      plugins: {
-        legend: {
-          display: true,
-          position: 'right',
-          align: 'center',
-        },
-        title: {
-          display: true,
-          position: 'top',
-          text: 'Top 5 카테고리',
-          font: {
-            size: 30,
+    const config = {
+      type: 'doughnut',
+      options: {
+        plugins: {
+          legend: {
+            display: true,
+            position: 'right',
+            align: 'center',
+          },
+          title: {
+            display: true,
+            position: 'top',
+            text: 'Top 5 카테고리(월)',
+            font: {
+              size: 30,
+            },
           },
         },
       },
-    },
-    data: {
-      labels,
-      datasets: [
-        {
-          label: '카테고리',
-          data: productDataSet,
-          backgroundColor: [
-            'rgb(232, 232, 232)',
-            'rgb(100, 100, 100)',
-            'rgb(86, 86, 86)',
-            'rgb(145, 145, 145)',
-            'rgb(200, 200, 200)',
-          ],
-          hoverOffset: 4,
-        },
-      ],
-    },
-  }
+      data: {
+        labels,
+        datasets: [
+          {
+            label: '카테고리',
+            data: productDataSet,
+            backgroundColor: [
+              'rgb(232, 232, 232)',
+              'rgb(100, 100, 100)',
+              'rgb(86, 86, 86)',
+              'rgb(145, 145, 145)',
+              'rgb(200, 200, 200)',
+            ],
+            hoverOffset: 4,
+          },
+        ],
+      },
+    }
+
+    const ctx = chartRef.current.getContext('2d')
+    const newChartInstance = new Chart(ctx, config)
+    setChartInstance(newChartInstance)
+
+    return () => {
+      newChartInstance.destroy()
+    }
+  }, [labels, productDataSet])
 
   return (
     <div>
