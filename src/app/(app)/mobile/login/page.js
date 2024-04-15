@@ -8,29 +8,29 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function MobileUserLogin() {
+  // 이메일과 비밀번호 상태 관리
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const router = useRouter() // Next.js 라우터 인스턴스를 가져옵니다.
+  const [loading, setLoading] = useState(false) // 로딩 상태 관리
+  const [message, setMessage] = useState('') // 메시지 상태 관리
+  const router = useRouter()
 
+  // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
-
     try {
       const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // 쿠키를 포함시키기 위해 credentials 추가
+        body: JSON.stringify({ email, password }),
+        credentials: 'include', // 쿠키를 포함시키기 위해 설정
       })
       const data = await response.json()
       setLoading(false)
-
       if (response.ok) {
         setMessage('로그인 성공')
-        setTimeout(() => router.push('/main'), 1000) // Redirect after a second
+        setTimeout(() => router.push('/main'), 1000) // 로그인 성공시 메인 페이지로 리다이렉트
       } else {
         setMessage(data.message || '로그인 실패')
       }
@@ -41,10 +41,15 @@ export default function MobileUserLogin() {
   }
 
   // 소셜 로그인 처리 함수
-  const handleSocialSignIn = (provider) => async (e) => {
-    e.preventDefault()
-    // Fetch API로 백엔드에 소셜 로그인 요청 보내기
-    await signIn(provider)
+  const handleSocialSignIn = async (provider) => {
+    setLoading(true)
+    const result = await signIn(provider, { redirect: false, callbackUrl: '/main' })
+    if (result.error) {
+      setMessage(result.error)
+      setLoading(false)
+    } else if (result.url) {
+      window.location.href = result.url // 성공적으로 인증된 경우 리다이렉트
+    }
   }
 
   return (
@@ -83,17 +88,18 @@ export default function MobileUserLogin() {
             아이디/비밀번호 찾기
           </Link>
         </div>
-        {/* 소셜 로그인 버튼 */}
-        <Button onClick={handleSocialSignIn('google')} disabled={loading}>
+        {/* Social Login Buttons */}
+        <Button onClick={() => handleSocialSignIn('google')} disabled={loading}>
           Google로 로그인
         </Button>
-        <Button onClick={handleSocialSignIn('kakao')} disabled={loading}>
+        <Button onClick={() => handleSocialSignIn('kakao')} disabled={loading}>
           Kakao로 로그인
         </Button>
-        <Button onClick={handleSocialSignIn('naver')} disabled={loading}>
+        <Button onClick={() => handleSocialSignIn('naver')} disabled={loading}>
           Naver로 로그인
         </Button>
       </form>
+      {message && <div className="alert">{message}</div>}
     </div>
   )
 }
