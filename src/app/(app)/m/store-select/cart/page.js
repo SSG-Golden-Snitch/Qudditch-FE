@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { IoMdClose, IoIosArrowBack } from 'react-icons/io'
 import CartNavbar from '@/components/CartNavbar'
 import EmotionRecommend from '@/components/EmotionRecommend'
+import Loading from '@/components/ui/Loading'
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([])
