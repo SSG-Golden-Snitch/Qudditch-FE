@@ -3,23 +3,25 @@
 import React, { useState, useEffect } from 'react'
 import MobileNavbar from '@/components/MobileNavbar'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { IoIosArrowBack } from 'react-icons/io'
 
 const Point = () => {
   const [pointData, setPointData] = useState([])
   const [displayType, setDisplayType] = useState('전체')
   const [totalUsedPoint, setTotalUsedPoint] = useState(0)
   const [totalEarnPoint, setTotalEarnPoint] = useState(0)
-  const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
+  const [startIndex, setStartIndex] = useState(0)
   const [fetchingData, setFetchingData] = useState(false)
-  const [dataLoaded, setDataLoaded] = useState(false) // 데이터를 한 번만 로드하도록 제어하는 상태
-  const [showAllData, setShowAllData] = useState(false) // 전체 데이터를 보여줄지 여부를 제어하는 상태
+  const [dataLoaded, setDataLoaded] = useState(false)
+  const [showAllData, setShowAllData] = useState(false)
+  const [showMoreButton, setShowMoreButton] = useState(true)
 
   useEffect(() => {
     if (!dataLoaded) {
       fetchPointData()
-      setDataLoaded(true) // 데이터 로드 상태 업데이트
+      setDataLoaded(true)
     }
-  }, [dataLoaded]) // dataLoaded 상태가 변경될 때마다 데이터 로드
+  }, [dataLoaded])
 
   const fetchPointData = async () => {
     try {
@@ -28,7 +30,6 @@ const Point = () => {
       const data = await response.json()
       setFetchingData(false)
 
-      // 날짜 순으로 정렬
       data.sort((a, b) => new Date(a.orderedAt) - new Date(b.orderedAt))
 
       let totalUsed = 0
@@ -42,110 +43,123 @@ const Point = () => {
       setTotalUsedPoint(totalUsed)
       setTotalEarnPoint(totalEarn)
 
-      // 새로운 데이터를 설정
       setPointData(data)
     } catch (error) {
       console.error('error', error)
     }
   }
 
-  // 전체, 사용, 적립 버튼 클릭 핸들러
   const handleDisplayTypeChange = (type) => {
     setDisplayType(type)
   }
 
-  // 더보기 버튼 클릭 핸들러
   const handleLoadMore = () => {
-    setShowAllData(true) // 전체 데이터 표시 상태 업데이트
+    setShowAllData(true)
+    setShowMoreButton(false)
   }
 
-  // 사용 내역 렌더링 함수
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    return `${year}.${month}.${day}`
+  }
+
   const renderTransactionHistory = () => {
-    // 선택된 표시 타입에 따라 데이터 필터링
-    let filteredData = []
+    let filteredData = pointData.slice(0, showAllData ? pointData.length : 6)
+
     if (displayType === '전체') {
-      filteredData = pointData.filter((item) => item.usedPoint !== 0 || item.earnPoint !== 0)
+      filteredData = filteredData.filter((item) => item.usedPoint !== 0 || item.earnPoint !== 0)
     } else if (displayType === '사용') {
-      filteredData = pointData.filter((item) => item.usedPoint !== 0 && item.usedPoint !== null)
+      filteredData = filteredData.filter((item) => item.usedPoint !== 0 && item.usedPoint !== null)
     } else if (displayType === '적립') {
-      filteredData = pointData.filter((item) => item.earnPoint !== 0 && item.earnPoint !== null)
+      filteredData = filteredData.filter((item) => item.earnPoint !== 0 && item.earnPoint !== null)
     }
 
-    // 전체 데이터를 보여줄지 여부에 따라 출력
-    if (showAllData) {
-      return (
+    return (
+      <div className="mb-4">
+        {' '}
+        {/* Added mb-4 class */}
         <ul style={{ marginBottom: '100px' }}>
           {filteredData.map((item, index) => (
-            <li key={index} className="mb-2">
-              <p>주문일: {item.orderedAt}</p>
-              {(displayType === '전체' || displayType === '사용') && item.usedPoint !== null && (
-                <p>사용 포인트: {item.usedPoint}</p>
-              )}
-              {(displayType === '전체' || displayType === '적립') && item.earnPoint !== null && (
-                <p>적립 포인트: {item.earnPoint}</p>
-              )}
+            <li
+              key={index}
+              className="mb-2"
+              style={{ borderBottom: '1px solid #E5E7EB', paddingBottom: '8px' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ fontSize: '0.8rem', color: '#888888' }}>
+                    {formatDate(item.orderedAt)}
+                  </p>
+                  <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{item.name}</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  {displayType === '전체' && item.usedPoint !== null && item.usedPoint !== 0 && (
+                    <p style={{ color: 'red', fontSize: '1.2rem' }}>- {item.usedPoint}</p>
+                  )}
+                  {displayType === '전체' && item.earnPoint !== null && item.earnPoint !== 0 && (
+                    <p style={{ color: 'green', fontSize: '1.2rem' }}>+ {item.earnPoint}</p>
+                  )}
+                  {displayType === '사용' && item.usedPoint !== null && item.usedPoint !== 0 && (
+                    <p style={{ color: 'red', fontSize: '1.2rem' }}>
+                      <br /> - {item.usedPoint}
+                    </p>
+                  )}
+                  {displayType === '적립' && item.earnPoint !== null && item.earnPoint !== 0 && (
+                    <p style={{ color: 'green', fontSize: '1.2rem' }}>
+                      <br /> + {item.earnPoint}
+                    </p>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
         </ul>
-      )
-    } else {
-      // 6개까지만 출력
-      return (
-        <ul>
-          {filteredData.slice(0, 6).map((item, index) => (
-            <li key={index} className="mb-2">
-              <p>주문일: {item.orderedAt}</p>
-              {(displayType === '전체' || displayType === '사용') && item.usedPoint !== null && (
-                <p>사용 포인트: {item.usedPoint}</p>
-              )}
-              {(displayType === '전체' || displayType === '적립') && item.earnPoint !== null && (
-                <p>적립 포인트: {item.earnPoint}</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )
-    }
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <MobileNavbar />
       <div className="container mx-auto px-4 py-8">
         <div>
-          <h1 className="mb-2 text-2xl font-bold">SSGmart포인트 확인</h1>
-          <div className="mb-2">
-            <p className="text-gray-600">총 포인트: {totalEarnPoint - totalUsedPoint}</p>
-            <p className="text-gray-600">총 적립 포인트: {totalEarnPoint}</p>
-            <p className="text-gray-600">총 사용 포인트: {totalUsedPoint}</p>
+          <button
+            type="button"
+            className="mb-4 flex items-center"
+            onClick={() => window.history.back()}
+          >
+            <IoIosArrowBack className="mr-2" />
+            <h2 className="text-xl font-bold">포인트</h2>
+          </button>
+          <div className="mb-6 text-center">
+            <p className="text-3xl font-bold">{totalEarnPoint - totalUsedPoint} P</p>
           </div>
         </div>
-        <h2 className="mb-2 text-xl font-bold">포인트 사용 내역</h2>
-        {/* 버튼 영역 */}
-        <div className="mb-2">
+        <div className="mb-4 text-center">
           <button
-            className="mr-2 rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            className="mr-3 rounded-md border bg-gray-100 px-4 py-2 text-black hover:bg-gray-300"
             onClick={() => handleDisplayTypeChange('전체')}
           >
             전체
           </button>
           <button
-            className="mr-2 rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            className="mr-3 rounded-md border bg-gray-100 px-4 py-2 text-black hover:bg-gray-300"
             onClick={() => handleDisplayTypeChange('사용')}
           >
             사용
           </button>
           <button
-            className="rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            className="rounded-md border bg-gray-100 px-4 py-2 text-black hover:bg-gray-300"
             onClick={() => handleDisplayTypeChange('적립')}
           >
             적립
           </button>
         </div>
-        {/* 사용 내역 출력 */}
         {renderTransactionHistory()}
-        {/* 더보기 버튼 */}
-        {!showAllData && (
+        {showMoreButton && !showAllData && (
           <button
             className="w-full rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
             onClick={handleLoadMore}
