@@ -28,7 +28,7 @@ export default function AdminLogin() {
       } else {
         alert('로그인 성공')
         // 추후 토큰 저장 방식 개선 필요
-        localStorage.setItem('admin-token', data.token)
+        sessionStorage.setItem('token', data.token)
       }
     } catch (error) {
       setLoading(false)
