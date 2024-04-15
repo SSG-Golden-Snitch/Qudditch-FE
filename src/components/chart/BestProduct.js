@@ -44,8 +44,15 @@ const BestProduct = () => {
             position: 'top',
             text: 'Best 5 제품',
             font: {
-              size: 30,
+              size: 25,
             },
+          },
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 10,
           },
         },
       },
@@ -77,11 +84,7 @@ const BestProduct = () => {
     }
   }, [labels, productDataSet])
 
-  return (
-    <div>
-      <canvas style={{ maxHeight: '100%' }} ref={chartRef} />
-    </div>
-  )
+  return <canvas style={{ maxHeight: '85%' }} ref={chartRef} />
 }
 
 export default BestProduct
