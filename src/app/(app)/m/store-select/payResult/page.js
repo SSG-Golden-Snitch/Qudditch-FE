@@ -2,7 +2,7 @@
 import Loading from '@/components/ui/Loading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { useState } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 
 const PayRequest = () => {
