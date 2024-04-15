@@ -3,10 +3,8 @@
 import Loading from '@/components/ui/Loading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
-import { AiFillBell } from 'react-icons/ai'
-import { FaCheck } from 'react-icons/fa'
+import { ImCancelCircle } from 'react-icons/im'
 
-import { Button, Modal } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
 
 export default function AlertListPage() {
@@ -31,6 +29,40 @@ export default function AlertListPage() {
         const data = await response.json()
         setIsLoading(false)
         setAlerts(data)
+
+        data.forEach((alert) => {
+          if (alert.readedAt == null) {
+            // 디바이스 정보 조회 API
+            const setAlertReadedAt = async (readId) => {
+              const endpoint = `/api/fcm/alert/readed-at`
+              let currentDateTime = getCurrentDateTime()
+
+              try {
+                const response = await fetchExtended(endpoint, {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    alertId: readId,
+                    readedAt: currentDateTime,
+                  }),
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                })
+
+                if (response.ok) {
+                  // SUCCESS
+                  alertLog.readedAt = readedAt
+                } else {
+                  throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+                }
+              } catch (error) {
+                console.log(error.message)
+              }
+            }
+
+            setAlertReadedAt(alert.id)
+          }
+        })
       } else {
         throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
       }
@@ -40,7 +72,7 @@ export default function AlertListPage() {
   }
 
   return (
-    <div className="bg-gray-100 px-3 pb-3">
+    <div className="min-h-full bg-gray-100 px-3 pb-3">
       <div className="p-3">
         <button
           type="button"
@@ -59,56 +91,11 @@ export default function AlertListPage() {
 }
 
 function AlertList({ list }) {
-  const [modalAlertInfo, setModalAlertInfo] = useState()
-  const [openModal, setOpenModal] = useState(false)
+  const [renderEffect, setRender] = useState(false)
 
   const renderList = list.map((alertLog, i) => {
     return (
-      <li
-        key={alertLog.id}
-        id={alertLog.id}
-        onClick={async () => {
-          await (async () => {
-            let readId = alertLog.id
-            let readedAt = getCurrentDateTime()
-
-            if (alertLog.readedAt != null) {
-              return
-            }
-
-            // 디바이스 정보 조회 API
-            const setAlertReadedAt = async () => {
-              const endpoint = `/api/fcm/alert/readed-at`
-
-              try {
-                const response = await fetchExtended(endpoint, {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    alertId: readId,
-                    readedAt: readedAt,
-                  }),
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                })
-
-                if (response.ok) {
-                  // SUCCESS
-                  alertLog.readedAt = readedAt
-                } else {
-                  throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
-                }
-              } catch (error) {
-                alert(error.message)
-              }
-            }
-            await setAlertReadedAt()
-          })()
-
-          setModalAlertInfo(alertLog)
-          setOpenModal(true)
-        }}
-      >
+      <li key={i} id={alertLog.id}>
         <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
           <div className="flex items-center justify-between">
             <h3 className="max-w-60 text-lg font-medium leading-6 text-gray-900">
@@ -120,46 +107,9 @@ function AlertList({ list }) {
           </div>
           <div className="mt-4 flex items-center justify-between">
             <p className="max-w-80 text-sm font-medium text-gray-500">{alertLog.body}</p>
-            {alertLog.readedAt == null ? (
-              <AiFillBell className="ml-2 text-3xl text-gray-700" />
-            ) : (
-              <FaCheck className="ml-2 text-3xl text-gray-700" />
-            )}
-          </div>
-        </div>
-      </li>
-    )
-  })
-
-  return (
-    <>
-      {renderList}
-      <Modal dismissible show={openModal} onClose={() => setOpenModal(false)}>
-        <Modal.Header>
-          <div className="flex justify-between">
-            <div>{modalAlertInfo && modalAlertInfo.title}</div>
-          </div>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="space-y-6">
-            <p className="text-base leading-relaxed text-gray-500">
-              {modalAlertInfo && modalAlertInfo.body}
-            </p>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => {
-              setOpenModal(false)
-            }}
-          >
-            확인
-          </Button>
-          <Button
-            color="gray"
-            onClick={async () => {
-              await (async () => {
-                let deleteId = modalAlertInfo.id
+            <ImCancelCircle
+              onClick={() => {
+                let deleteId = alertLog.id
 
                 const deleteAlert = async () => {
                   const endpoint = `/api/fcm/alert`
@@ -182,31 +132,27 @@ function AlertList({ list }) {
                       }) // findIndex = find + indexOf
                       // 리스트에서 해당 객체 삭제
                       if (idx > -1) list.splice(idx, 1)
+
+                      setRender(!renderEffect)
                     } else {
-                      throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+                      throw new Error('푸시 알림 정보를 삭제하는데 실패했습니다.')
                     }
                   } catch (error) {
                     alert(error.message)
                   }
                 }
-                await deleteAlert()
-              })()
-              setOpenModal(false)
-            }}
-          >
-            삭제
-          </Button>
-          <div
-            className="flex-grow text-center text-xs font-bold leading-relaxed text-gray-800"
-            style={{ fontSize: '0.65rem' }}
-          >
-            <div>createdAt : {modalAlertInfo && modalAlertInfo.createdAt}</div>
-            <div>readedAt : {modalAlertInfo && modalAlertInfo.readedAt}</div>
+
+                deleteAlert()
+              }}
+              className="ml-2 text-3xl text-gray-700"
+            />
           </div>
-        </Modal.Footer>
-      </Modal>
-    </>
-  )
+        </div>
+      </li>
+    )
+  })
+
+  return <div>{renderList}</div>
 }
 
 // 2023-04-04 14:40:43 => 그외는 2023년 4월 4일

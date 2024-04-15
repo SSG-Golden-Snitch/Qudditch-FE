@@ -1,4 +1,5 @@
 import '@/app/globals.css'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import CustomSidebar from '@/components/CustomSidebar'
 
 export default function WebRootLayout({ children }) {
@@ -10,6 +11,7 @@ export default function WebRootLayout({ children }) {
         <title>App</title>
       </head>
       <body className={'flex h-screen w-screen flex-row'}>
+        <SpeedInsights />
         <CustomSidebar />
         <main className={'h-full w-full grow'}>{children}</main>
       </body>

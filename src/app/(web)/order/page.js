@@ -5,6 +5,7 @@ import OrderList from '@/components/storeOrder'
 import { Pagination } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { fetchExtended } from '@/utils/fetchExtended'
+import Loading from '@/components/ui/Loading'
 
 async function getorderList(page = 1, recordSize = 10) {
   const response = await fetchExtended(`/api/store/order?page=${page}&recordSize=${recordSize}`)
@@ -45,7 +46,7 @@ export default function OrderListPage() {
     router.push('order/insert')
   }
 
-  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+  if (isLoading) return <Loading />
   if (!orderData.pagination) return <div>데이터를 불러오지 못했습니다.</div>
 
   return (
