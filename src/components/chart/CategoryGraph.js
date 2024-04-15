@@ -73,12 +73,16 @@ const CategoryGraph = ({ dateInput }) => {
             display: true,
             position: 'top',
             text: 'Top 5 카테고리(월)',
-            padding: {
-              bottom: 30,
-            },
             font: {
-              size: 30,
+              size: 25,
             },
+          },
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 10,
           },
         },
       },

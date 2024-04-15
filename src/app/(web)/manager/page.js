@@ -76,7 +76,7 @@ export default function Home() {
         }
         className={'h-[calc(100vh-9.5rem)] shrink-0 pb-4'}
       >
-        <div className="grid h-full grid-cols-2 gap-4">
+        <div className="mb-4 grid h-full grid-cols-2 gap-4 ">
           <div className="flex h-[calc(((100vh-9.5rem)/2)-1rem)] items-center justify-center bg-gray-50 px-6">
             <VisitorGraph dateInput={date.substring(0, 7)} />
           </div>
