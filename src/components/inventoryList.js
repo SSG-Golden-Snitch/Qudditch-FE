@@ -9,6 +9,7 @@ import { Autocomplete, Loader, View } from '@aws-amplify/ui-react'
 import Image from 'next/image'
 
 import { useTheme } from '@aws-amplify/ui-react'
+import Loading from './ui/Loading'
 
 export async function getData(id) {
   const response = await fetchExtended(`/api/store/location/stock?userStoreId=${id}`)
@@ -83,7 +84,7 @@ export default function LocationStockPage({ id }) {
   }, [id])
 
   if (loading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   if (!data || !data.list || data.list.length === 0) {
