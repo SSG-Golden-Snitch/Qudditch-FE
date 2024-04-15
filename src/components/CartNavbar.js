@@ -53,7 +53,10 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ pg_token }),
+          body: JSON.stringify({
+            pg_token: pg_token,
+            order_id: activeOrderId,
+          }),
         })
         const data = await response.json()
 
