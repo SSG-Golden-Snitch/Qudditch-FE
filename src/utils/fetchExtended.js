@@ -22,7 +22,7 @@ export const fetchExtended = returnFetch({
       }
       if (getUserToken() === null) {
         console.log('no token')
-        window.location.href = '/login'
+        window.location.href = '/m/login'
       }
       return args
     },
