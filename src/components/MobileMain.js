@@ -61,8 +61,8 @@ const ProductSearchBar = () => {
     setProducts([])
   }
 
-  const renderOption = (option, value) => {
-    const { id, brand, name, image } = option
+  const renderOption = (option) => {
+    const { name, image } = option
     return (
       <Flex alignItems="center">
         <Image src={image} alt={name} width="60" height="60" />
@@ -175,10 +175,10 @@ const MobileMain = () => {
     <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
       <div className=" grid   items-center  justify-items-center  bg-stone-600 pt-10">
         <div className="grid grid-cols-3 items-center justify-items-stretch text-center">
-          <div className="col-start-2 col-end-3 w-auto max-w-full">
+          <div className="col-start-2 col-end-3 flex justify-center">
             <AppLogo />
           </div>
-          <div className="col-start-3 col-end-4 flex justify-end pr-4">
+          <div className="col-start-3 col-end-4 flex justify-end pr-5">
             <Link href="/m/alert">
               {onNotify ? (
                 <VscBellDot className="text-2xl text-amber-400 dark:text-gray-200" />
