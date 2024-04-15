@@ -58,7 +58,10 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
             order_id: activeOrderId,
           }),
         })
+
         const data = await response.json()
+
+        console.log(data)
 
         if (response.ok) {
           router.push('/m/payment/success') // Navigate to success page
