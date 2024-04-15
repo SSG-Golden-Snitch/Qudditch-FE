@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { IoMdClose, IoIosArrowBack } from 'react-icons/io'
 import CartNavbar from '@/components/CartNavbar'
+import EmotionRecommend from '@/components/EmotionRecommend'
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([])
@@ -285,6 +286,8 @@ const CartPage = () => {
           </div>
         )}
       </div>
+
+      <EmotionRecommend></EmotionRecommend>
 
       <CartNavbar
         allSelected={allSelected}

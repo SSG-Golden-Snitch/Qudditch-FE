@@ -40,7 +40,7 @@ const ReceiptModal = ({ partnerOrderId, onClose }) => {
         {orderDetails.map((detail, index) => (
           <div key={index} className="mb-4">
             <h2 className="text-lg font-semibold">제품: {detail.productName}</h2>
-            <p>가격: ${detail.productPrice.toFixed(2)}</p>
+            <p>가격: {detail.productPrice}</p>
             <p>수량: {detail.quantity}</p>
             <p>매장: {detail.storeName}</p>
             <p>주소: {detail.storeAddress}</p>
