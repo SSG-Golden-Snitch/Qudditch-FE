@@ -2,7 +2,16 @@
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { Button, FileInput, Label, Modal, Pagination, Table, TextInput } from 'flowbite-react'
+import {
+  Button,
+  FileInput,
+  Label,
+  Modal,
+  Pagination,
+  Table,
+  TextInput,
+  Spinner,
+} from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import {
@@ -31,9 +40,8 @@ function Component() {
   const [text, setText] = useState('')
   const [emailColor, setEmailColor] = useState('gray')
   const [stores, setStores] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  const [ocr, setOcr] = useState('')
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
 
@@ -68,7 +76,6 @@ function Component() {
 
   const handleStore = async (page = 1, keyword = '') => {
     setError(null)
-    setLoading(true)
 
     const storeReqUrl = new URL(apiUrl + `/api/userstore/search?page=${page}&name=${keyword}`)
     await fetchExtended(storeReqUrl, {
@@ -96,7 +103,7 @@ function Component() {
         setError(error.message)
       })
       .finally(() => {
-        setLoading(false)
+        setIsLoading(false)
       })
   }
 
@@ -106,6 +113,7 @@ function Component() {
   }
 
   const handleOCRUpload = (e) => {
+    setIsLoading(true)
     const file = e.target.files[0]
     const ocrReqUrl = new URL(apiUrl + `/business-number`)
 
@@ -120,6 +128,7 @@ function Component() {
       .then((res) => {
         console.log(res)
         setBusinessRegistrationNumber(res['businessNumber'])
+        setIsLoading(false)
       })
       .catch((error) => {
         console.log(error)
@@ -388,8 +397,8 @@ function Component() {
                 <TextInput
                   id="business-registration-number"
                   type="text"
-                  placeholder="파일을 첨부해주세요"
-                  icon={HiOutlinePaperClip}
+                  placeholder={isLoading ? '확인중입니다 ...' : '사업자 등록증을 첨부해주세요'}
+                  icon={isLoading ? Spinner : HiOutlinePaperClip}
                   value={businessRegistrationNumber}
                   readOnly
                   className="w-96"
