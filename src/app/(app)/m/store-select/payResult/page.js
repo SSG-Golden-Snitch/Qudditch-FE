@@ -1,7 +1,6 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
-
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 
@@ -24,14 +23,12 @@ const PayRequest = () => {
 }
 
 const PayResult = () => {
+  const router = useRouter()
+
   return (
     <div className="flex h-screen flex-col justify-between bg-gray-100">
       <div className="fixed left-0 top-0 z-10 flex w-full justify-between bg-white p-4 shadow-md">
-        <button
-          type="button"
-          className="mb-4 flex items-center"
-          onClick={() => window.history.back()}
-        >
+        <button type="button" className="mb-4 flex items-center" onClick={() => router.push('/m')}>
           <IoIosArrowBack className="mr-2" />
           <h2 className="text-xl font-bold">장바구니</h2>
         </button>
@@ -43,7 +40,7 @@ const PayResult = () => {
         </div>
       </div>
 
-      <Suspense fallback={<div>Loading</div>}>
+      <Suspense fallback={<Loading />}>
         <PayRequest />
       </Suspense>
     </div>
