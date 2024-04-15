@@ -118,12 +118,17 @@ export const VisitorGraph = ({ dateInput }) => {
             title: {
               display: true,
               text: '일일 방문자 현황',
-              padding: {
-                bottom: 30,
-              },
               font: {
-                size: 30,
+                size: 25,
               },
+            },
+          },
+          layout: {
+            padding: {
+              left: 0,
+              right: 0,
+              top: 20,
+              bottom: 10,
             },
           },
         },

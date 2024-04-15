@@ -24,8 +24,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-full flex-col bg-gray-100 p-4 dark:border-gray-700">
-      <div className="flex h-20 justify-between">
+    <div className="flex h-screen flex-col bg-gray-100 px-4 dark:border-gray-700">
+      <div className="flex h-14 items-center justify-between">
         <p className="m-2 text-2xl font-bold">Dashboard</p>
         <div className="mr-20">
           <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
@@ -45,17 +45,17 @@ export default function Home() {
           <DailySales dateInput={date} />
         </div>
       </div>
-      <div className="mb-4 grid h-full grid-cols-2 gap-4">
-        <div className="bg-gray-50 px-6">
+      <div className="mb-4 grid h-full grid-cols-2 gap-4 ">
+        <div className="flex h-[calc(((100vh-9.5rem)/2)-1rem)] items-center justify-center bg-gray-50 px-6">
           <VisitorGraph dateInput={date.substring(0, 7)} />
         </div>
-        <div className="bg-gray-50 px-6">
+        <div className="flex h-[calc(((100vh-9.5rem)/2)-1rem)] items-center justify-center bg-gray-50 px-6">
           <SalesGraph dateInput={date.substring(0, 7)} />
         </div>
-        <div className="bg-gray-50 px-6">
+        <div className="flex h-[calc(((100vh-9.5rem)/2)-1rem)] items-center justify-center bg-gray-50 px-6">
           <BestProduct />
         </div>
-        <div className="bg-gray-50 px-6">
+        <div className="flex h-[calc(((100vh-9.5rem)/2)-1rem)] items-center justify-center bg-gray-50 px-6">
           <CategoryGraph dateInput={date.substring(0, 7)} />
         </div>
       </div>

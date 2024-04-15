@@ -43,12 +43,16 @@ const BestProduct = () => {
             display: true,
             position: 'top',
             text: 'Best 5 제품',
-            padding: {
-              bottom: 30,
-            },
             font: {
-              size: 30,
+              size: 25,
             },
+          },
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 0,
+            bottom: 10,
           },
         },
       },
