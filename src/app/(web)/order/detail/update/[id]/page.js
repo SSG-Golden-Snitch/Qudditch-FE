@@ -1,16 +1,8 @@
-'use client'
 import GetDetail from '@/components/orderUpdateList'
-
-export async function getData({ params: { id } }) {
-  const storeOrder = await getStoreOrder(id)
-  return {
-    id: storeOrder.id,
-  }
-}
 
 export default function OrderUpdate({ params: { id } }) {
   return (
-    <div className="flex flex-col bg-gray-100 py-16">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-5">
       <GetDetail id={id} />
     </div>
   )
