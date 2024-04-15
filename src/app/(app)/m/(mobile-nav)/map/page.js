@@ -26,9 +26,6 @@ const HomePage = () => {
         console.error(error)
       }
     }
-    const onErrorGeolocation = () => {
-      console.error('Geolocation 실패')
-    }
 
     navigator.geolocation.getCurrentPosition((position) => {
       const pos = {
