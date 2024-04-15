@@ -31,6 +31,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
         content: iconRef,
         anchor: new window.naver.maps.Point(12, 30),
       })
+      console.log(store)
     }
     // 클릭된 마커의 아이콘 변경
     marker.setIcon({
