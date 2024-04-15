@@ -1,9 +1,10 @@
 'use client'
 
+import { CustomAlert } from '@/components/CustomAlert'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { Button, FileInput, Label, Modal, Table, TextInput, Pagination } from 'flowbite-react'
+import { Button, FileInput, Label, Modal, Pagination, Table, TextInput } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   HiLockClosed,
   HiMail,
@@ -33,6 +34,9 @@ function Component() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [ocr, setOcr] = useState('')
+  const [color, setColor] = useState('')
+  const [message, setMessage] = useState('')
+
   const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('')
   const [agree, setAgree] = useState(false)
 
@@ -96,6 +100,11 @@ function Component() {
       })
   }
 
+  const handleAlert = (type, message) => {
+    setColor(type)
+    setMessage(message)
+  }
+
   const handleOCRUpload = (e) => {
     const file = e.target.files[0]
     const ocrReqUrl = new URL(apiUrl + `/business-number`)
@@ -130,9 +139,9 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert(res['message'])
+          handleAlert('failure', res['message'])
         } else {
-          alert('인증번호가 전송되었습니다.')
+          handleAlert('success', '인증번호가 발송되었습니다.')
           setVerify(true)
           const interval = setInterval(() => {
             setTimer((prev) => prev - 1)
@@ -162,7 +171,7 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert(res['message'])
+          handleAlert('failure', res['message'])
         } else {
           alert('회원가입이 완료되었습니다.')
           router.push(`/login`)
@@ -220,9 +229,9 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert(res['message'])
+          handleAlert('failure', res['message'])
         } else {
-          alert(res['message'])
+          handleAlert('success', '이메일 인증이 완료되었습니다')
           setVerify(false)
           setPermitEmail(true)
           setEmailColor('success')
@@ -243,7 +252,7 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert(res['message'])
+          alert('이미 사용중인 이메일입니다')
         } else {
           setEmailColor('success')
           setText('사용가능한 이메일입니다')
@@ -253,6 +262,7 @@ function Component() {
 
   return (
     <div className="h-full">
+      {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
       <div className="flex flex-col items-center justify-center   pt-10">
         <div className="flex  items-center justify-center ">
           <form className="  flex w-full max-w-full flex-col gap-4">
