@@ -10,6 +10,7 @@ import { TbCalendarSmile } from 'react-icons/tb'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
+import Loading from '@/components/ui/Loading'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -27,6 +28,7 @@ const Sales = () => {
   // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
   const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -44,6 +46,7 @@ const Sales = () => {
       const endpoint = `/api/order/history?${queryString}`
 
       try {
+        setIsLoading(false)
         const response = await fetchExtended(endpoint, {
           method: 'GET', // HTTP 요청 메서드 지정
           // credentials: 'include', // 인증 정보(쿠키, 인증 헤더 등) 포함 옵션
@@ -105,13 +108,11 @@ const Sales = () => {
   // const handleNextMonth = () => {
   //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
   // }
-
+  if (isLoading) return <Loading />
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
       <div className="flex justify-between">
-        <div className="flex items-center">
-          <h1 className="mb-4 text-3xl font-bold">판매</h1>
-
+        <div className="flex items-center justify-start">
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
@@ -121,111 +122,113 @@ const Sales = () => {
             className="ml-4"
           />
         </div>
+
+        <div className="mb-4 flex w-full justify-center">
+          <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+            판매내역 조회
+          </Button>
+          <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+            환불내역 조회
+          </Button>
+        </div>
       </div>
 
-      {/* <button onClick={handlePreviousMonth}>&lt;</button>
-      <span> {formatDateYM(currentDate)} </span>
-      <button onClick={handleNextMonth}>&gt;</button> */}
+      <div className="max-h-[calc(100vh-200px)] overflow-auto">
+        <table className="w-full max-w-4xl divide-y divide-gray-200 overflow-auto">
+          <thead className="bg-gray-100">
+            <tr>
+              {['No', '결제 일자', '상품 정보', '수량', '가격', '결제 금액'].map((header) => (
+                <th
+                  key={header}
+                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
 
-      <div className="mb-4 flex w-full justify-center">
-        <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
-          판매내역 조회
-        </Button>
-        <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
-          환불내역 조회
-        </Button>
-      </div>
+          <tbody className="divide-y divide-gray-200 bg-white">
+            {orders.map((order, index) => (
+              <Fragment key={index}>
+                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <td className="flex items-center px-6 py-4">
+                    <button
+                      onClick={() => setOpenDetails(openDetails === index ? null : index)}
+                      className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    >
+                      {openDetails === index ? (
+                        <ChevronUpIcon className="h-5 w-5" />
+                      ) : (
+                        <ChevronDownIcon className="h-5 w-5" />
+                      )}
+                    </button>
+                    {index + 1}
+                  </td>
+                  {/* <td className="px-6 py-4">{index + 1}</td> */}
+                  <td className="px-6 py-4">
+                    <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
 
-      <table className="w-full max-w-4xl divide-y divide-gray-200">
-        <thead className="bg-gray-100">
-          <tr>
-            {['No', '결제 일자', '상품 정보', '수량', '가격', '결제 금액'].map((header) => (
-              <th
-                key={header}
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {orders.map((order, index) => (
-            <Fragment key={index}>
-              <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                <td className="flex items-center px-6 py-4">
-                  <button
-                    onClick={() => setOpenDetails(openDetails === index ? null : index)}
-                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                  >
-                    {openDetails === index ? (
-                      <ChevronUpIcon className="h-5 w-5" />
-                    ) : (
-                      <ChevronDownIcon className="h-5 w-5" />
-                    )}
-                  </button>
-                  {index + 1}
-                </td>
-                {/* <td className="px-6 py-4">{index + 1}</td> */}
-                <td className="px-6 py-4">
-                  <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-
-                  <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
-                    [{order.customerOrder.partnerOrderId}]
-                  </Link>
-                </td>
-                <td className="px-6 py-4">
-                  {order.customerOrderProducts && order.customerOrderProducts.length > 0
-                    ? `${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`
-                    : '상품 정보 없음'}
-                </td>
-                <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
-                <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
-                <td className="px-6 text-right">{formatNumber(order.customerOrder.totalAmount)}</td>
-              </tr>
-              {openDetails === index && (
-                <tr className="bg-gray-50 dark:bg-gray-700">
-                  <td colSpan="6" className="px-6 py-4">
-                    <table className="w-full">
-                      <tbody>
-                        {order.customerOrderProducts.map((product, prodIndex) => {
-                          // 주문 상품의 총액 계산
-                          const productTotalAmount = product.qty * product.price
-                          return (
-                            <tr key={prodIndex} className="border-b">
-                              <td className="flex items-center px-6 py-4">
-                                <HiOutlineTag />
-                              </td>
-                              <td className="px-6 py-4">
-                                {formatDateYMD(order.customerOrder.orderedAt)}
-                              </td>
-                              <td className="px-6 py-4 text-left">{product.productName}</td>
-                              <td className="px-6 py-4 text-right">{product.qty}</td>
-                              <td className="px-6 py-4 text-right">
-                                {formatNumber(product.price)}
-                              </td>
-                              <td className="px-6 text-right">
-                                {formatNumber(productTotalAmount)}
-                              </td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
+                    <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
+                      [{order.customerOrder.partnerOrderId}]
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">
+                    {order.customerOrderProducts && order.customerOrderProducts.length > 0
+                      ? `${order.customerOrderProducts[0].productName} 외 ${
+                          order.customerOrderProducts.length - 1
+                        }개`
+                      : '상품 정보 없음'}
+                  </td>
+                  <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
+                  <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
+                  <td className="px-6 text-right">
+                    {formatNumber(order.customerOrder.totalAmount)}
                   </td>
                 </tr>
-              )}
-            </Fragment>
-          ))}
-          <tr className="bg-gray-50 dark:bg-gray-700">
-            <td colSpan="5" className="px-6 py-4 text-right">
-              합계
-            </td>
-            <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
-          </tr>
-        </tbody>
-      </table>
+                {openDetails === index && (
+                  <tr className="bg-gray-50 dark:bg-gray-700">
+                    <td colSpan="6" className="px-6 py-4">
+                      <table className="w-full">
+                        <tbody>
+                          {order.customerOrderProducts.map((product, prodIndex) => {
+                            // 주문 상품의 총액 계산
+                            const productTotalAmount = product.qty * product.price
+                            return (
+                              <tr key={prodIndex} className="border-b">
+                                <td className="flex items-center px-6 py-4">
+                                  <HiOutlineTag />
+                                </td>
+                                <td className="px-6 py-4">
+                                  {formatDateYMD(order.customerOrder.orderedAt)}
+                                </td>
+                                <td className="px-6 py-4 text-left">{product.productName}</td>
+                                <td className="px-6 py-4 text-right">{product.qty}</td>
+                                <td className="px-6 py-4 text-right">
+                                  {formatNumber(product.price)}
+                                </td>
+                                <td className="px-6 text-right">
+                                  {formatNumber(productTotalAmount)}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            ))}
+            <tr className="bg-gray-50 dark:bg-gray-700">
+              <td colSpan="5" className="px-6 py-4 text-right">
+                합계
+              </td>
+              <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
