@@ -55,7 +55,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           },
           body: JSON.stringify({
             pg_token,
-            order_id: activeOrderId,
+            order_id: partnerOrderId,
           }),
         })
 
