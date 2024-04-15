@@ -12,12 +12,33 @@ import {
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { HiMiniVideoCamera } from 'react-icons/hi2'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const CustomSidebar = () => {
-  const [isAdmin, setIsAdmin] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token')
+    if (typeof window !== 'undefined' && token) {
+      const base64Payload = token.split('.')[1]
+      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+      const decodedJWT = JSON.parse(
+        decodeURIComponent(
+          window
+            .atob(base64)
+            .split('')
+            .map(function (c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+            })
+            .join(''),
+        ),
+      )
+
+      decodedJWT['roles'].includes('ROLE_ADMIN') ? setIsAdmin(true) : setIsAdmin(false)
+    }
+  }, [])
 
   const navItems = [
     {
