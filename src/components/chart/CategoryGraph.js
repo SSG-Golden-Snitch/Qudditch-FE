@@ -73,6 +73,9 @@ const CategoryGraph = ({ dateInput }) => {
             display: true,
             position: 'top',
             text: 'Top 5 카테고리(월)',
+            padding: {
+              bottom: 30,
+            },
             font: {
               size: 30,
             },
@@ -107,11 +110,7 @@ const CategoryGraph = ({ dateInput }) => {
     }
   }, [labels, productDataSet])
 
-  return (
-    <div>
-      <canvas style={{ maxHeight: '100%' }} ref={chartRef} />
-    </div>
-  )
+  return <canvas style={{ maxHeight: '85%' }} ref={chartRef} />
 }
 
 export default CategoryGraph

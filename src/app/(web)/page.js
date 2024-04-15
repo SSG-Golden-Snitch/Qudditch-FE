@@ -1,13 +1,13 @@
 'use client'
 
-import BestProduct from '@/components/BestProduct'
-import CategoryGraph from '@/components/CategoryGraph'
+import BestProduct from '@/components/chart/BestProduct'
+import CategoryGraph from '@/components/chart/CategoryGraph'
 import DailySales from '@/components/DailySales'
 import DailyVisitor from '@/components/DailyVisitor'
 import MonthlySales from '@/components/MonthlySales'
 import MonthlyVisitor from '@/components/MonthlyVisitor'
-import SalesGraph from '@/components/SalesGraph'
-import VisitorGraph from '@/components/VisitorGraph'
+import SalesGraph from '@/components/chart/SalesGraph'
+import VisitorGraph from '@/components/chart/VisitorGraph'
 import { useState } from 'react'
 
 import Datepicker from 'tailwind-datepicker-react'

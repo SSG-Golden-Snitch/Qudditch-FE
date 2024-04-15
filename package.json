@@ -33,6 +33,7 @@
     "next-qrcode": "^2.5.1",
     "qr-scanner": "^1.4.2",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^6.6.0",
     "react-dom": "^18",
     "react-icons": "^5.0.1",

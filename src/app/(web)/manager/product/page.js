@@ -81,13 +81,13 @@ export default function Product() {
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
-      <div className="flex flex-col items-center pt-10">
+      <div className="flex h-screen flex-col items-center overflow-y-scroll pt-10">
         {error ? (
           <div className="text-red-500">{error}</div>
         ) : (
           <>
             <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
-              <Table.Head className="text-m whitespace-nowrap text-gray-900 dark:text-white">
+              <Table.Head className="text-m  whitespace-nowrap text-gray-900 dark:text-white">
                 <Table.HeadCell>id</Table.HeadCell>
                 <Table.HeadCell>image</Table.HeadCell>
                 <Table.HeadCell>brand</Table.HeadCell>
