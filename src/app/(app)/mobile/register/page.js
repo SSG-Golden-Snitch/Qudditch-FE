@@ -177,12 +177,14 @@ export default function Register() {
           password,
           name,
           state: emailVerified ? 1 : 0, // emailVerified가 true이면 state를 1로 설정
+          verificationCode, // 사용자가 입력한 인증 코드를 요청에 포함시킵니다.
         }),
       })
       const data = await response.json()
       setLoading(false)
       if (response.ok) {
         alert('회원가입 성공: 이메일 인증이 완료되었습니다.')
+        setVerificationCode('')
         router.push('/login') // 로그인 페이지로 리디렉션
       } else {
         // 서버 응답 메시지에 따라 적절한 에러 핸들링
@@ -207,11 +209,10 @@ export default function Register() {
       setLoading(false)
       if (res.ok) {
         setVerificationStatus(text)
-        setEmailVerified(true) // 여기서 인증 상태를 true로 설정합니다.
-        setVerificationCode('')
+        setEmailVerified(true)
       } else {
         setVerificationStatus('인증에 실패하였습니다: ' + text)
-        setEmailVerified(false) // 인증에 실패하면 false로 설정합니다.
+        setEmailVerified(false)
       }
     } catch (error) {
       setLoading(false)
