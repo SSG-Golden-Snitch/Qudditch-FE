@@ -59,7 +59,6 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           },
           body: JSON.stringify({
             pg_token,
-            order_id: partnerOrderId,
           }),
         })
 
@@ -82,7 +81,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
     }
 
     approvePayment()
-  }, [pg_token, partnerOrderId, router])
+  }, [pg_token, router])
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-10 bg-gray-100 shadow-md">
