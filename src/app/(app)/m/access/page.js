@@ -22,7 +22,7 @@ export default function Access() {
   useEffect(() => {
     function getUsername() {
       if (typeof window !== 'undefined') {
-        const token = sessionStorage.getItem('token')
+        const token = localStorage.getItem('token')
 
         if (!token) {
           router.push('/mobile/login')

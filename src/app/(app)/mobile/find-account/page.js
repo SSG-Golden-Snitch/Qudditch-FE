@@ -5,6 +5,7 @@
 import { Alert, Button, Label, TextInput } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 export default function FindAccountPage() {
   const [name, setName] = useState('')
@@ -16,7 +17,7 @@ export default function FindAccountPage() {
   //  이름을 이용해서 이메일 찾기
   const findEmail = async () => {
     try {
-      const response = await fetch('http://localhost:8080/find-email', {
+      const response = await fetchExtended('/find-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ export default function FindAccountPage() {
   // 이메일을 이용해서 비밀번호 재설정 요청
   const resetPassword = async () => {
     try {
-      const response = await fetch('http://localhost:8080/reset-password', {
+      const response = await fetchExtended('/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ export default function FindAccountPage() {
     setMessage('')
     if (name) {
       try {
-        const response = await fetch('http://localhost:8080/find-email', {
+        const response = await fetchExtended('/find-email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ export default function FindAccountPage() {
     setMessage('')
     if (email) {
       try {
-        const response = await fetch('http://localhost:8080/reset-password', {
+        const response = await fetchExtended('/reset-password', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,5 +1,4 @@
 // src/app/mobile/login/page.js
-//http://localhost:3000/mobile/login
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
@@ -30,7 +29,7 @@ export default function MobileUserLogin() {
 
       if (response.ok) {
         setMessage('로그인 성공')
-        sessionStorage.set('token', response['token'].replaceAll('"', ''))
+        localStorage.set('token', response['token'].replaceAll('"', ''))
         window.location.href = '/m'
       } else {
         setMessage(data.message || '로그인 실패')

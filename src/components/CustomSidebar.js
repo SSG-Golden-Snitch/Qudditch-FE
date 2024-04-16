@@ -20,7 +20,7 @@ const CustomSidebar = () => {
   const pathname = usePathname()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem('token')
     if (typeof window !== 'undefined' && token) {
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')

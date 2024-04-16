@@ -27,7 +27,7 @@ export default function AdminLogin() {
         alert(data.error)
       } else {
         if (typeof window === 'undefined') return
-        sessionStorage.setItem('token', data.token)
+        localStorage.setItem('token', data.token)
         window.location.href = '/manager'
       }
     } catch (error) {

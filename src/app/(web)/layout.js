@@ -11,7 +11,7 @@ export default function WebRootLayout({ children }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('token')
+      const token = localStorage.getItem('token')
       if (!token) {
         window.location.href = '/login/store'
       } else {
