@@ -1,5 +1,7 @@
 import '@/app/globals.css'
+import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
 
 export default function WebRootLayout({ children }) {
   return (
@@ -10,6 +12,7 @@ export default function WebRootLayout({ children }) {
         <title>App</title>
       </head>
       <body className={'flex h-screen w-screen flex-row'}>
+        <Analytics />
         <SpeedInsights />
         <main className={'h-full w-full grow'}>{children}</main>
       </body>

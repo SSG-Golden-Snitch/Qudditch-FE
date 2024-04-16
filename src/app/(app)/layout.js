@@ -1,7 +1,7 @@
 import '@/app/globals.css'
 import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-
+import { Analytics } from '@vercel/analytics/react'
 const APP_NAME = 'PWA App'
 const APP_DEFAULT_TITLE = 'My Awesome PWA App'
 const APP_TITLE_TEMPLATE = '%s - PWA App'
@@ -56,6 +56,7 @@ export default function AppRootLayout({ children }) {
         <title>App</title>
       </head>
       <body className={'flex h-screen w-screen flex-row'}>
+        <Analytics />
         <SpeedInsights />
         <main className={'h-full w-full grow'}>{children}</main>
       </body>

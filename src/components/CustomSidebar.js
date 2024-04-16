@@ -20,7 +20,7 @@ const CustomSidebar = () => {
   const pathname = usePathname()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem('token')
     if (typeof window !== 'undefined' && token) {
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
@@ -106,8 +106,8 @@ const CustomSidebar = () => {
 
   return (
     <Sidebar aria-label={'Sidebar'}>
-      <Sidebar.Logo href={isAdmin ? '/manager' : '/'} img={''}>
-        <span className={'self-center whitespace-nowrap text-xl font-semibold'}>Qudditch</span>
+      <Sidebar.Logo href={'/'} img={'/WebLogo.svg'} style={{ padding: '20px' }}>
+        {/* <span className={'self-center whitespace-nowrap text-xl font-semibold'}></span> */}
       </Sidebar.Logo>
 
       <Sidebar.Items>

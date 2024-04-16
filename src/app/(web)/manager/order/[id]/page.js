@@ -26,7 +26,6 @@ export default function AdminOrderDetail({ params: { id } }) {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
@@ -59,7 +58,6 @@ export default function AdminOrderDetail({ params: { id } }) {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
       body: JSON.stringify(approvalReqBody),
     })
