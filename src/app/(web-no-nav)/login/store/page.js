@@ -5,6 +5,7 @@ import { Button, Label, TextInput, Checkbox } from 'flowbite-react'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { HiMail } from 'react-icons/hi'
+import AppLogo from '/public/AppLogo.svg'
 import { HiLockClosed } from 'react-icons/hi2'
 import goldesnitch from '/public/goldesnitch.png'
 import Image from 'next/image'
@@ -41,41 +42,35 @@ export default function StoreLogin() {
   }
 
   return (
-    <section className="flex min-h-screen items-center justify-center bg-gray-50 ">
-      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
-        <a href="#" className="mb-6 flex items-center text-2xl font-semibold text-gray-900 ">
-          <Image src={goldesnitch} className="mr-2 h-8 w-8" alt="logo" />
-          Qudditch
-        </a>
-        <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
+    <section className="flex min-h-screen  items-center justify-center bg-gray-50 ">
+      <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
+        <div className="grid  pb-10 text-center">
+          <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
+          <AppLogo />
+        </div>
+        <div className="w-full rounded-lg  bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
           <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Sign in to your account
-            </h1>
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-800 md:text-2xl"></h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
               <div>
-                <label htmlFor="email" className="mb-2 block text-sm font-bold text-gray-900">
-                  이메일
-                </label>
+                <div className="mb-2 block">
+                  <Label htmlFor="email">이메일</Label>
+                </div>
                 <TextInput
                   autoComplete="off"
                   type="text"
                   name="email"
                   id="email"
                   icon={HiMail}
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
-                  placeholder="Email address"
+                  placeholder="kdt4@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-bold text-gray-900 dark:text-white"
-                >
-                  비밀번호
-                </label>
+                <div className="mb-2 block">
+                  <Label htmlFor="password">비밀번호</Label>
+                </div>
                 <TextInput
                   autoComplete="off"
                   type="password"
@@ -83,7 +78,6 @@ export default function StoreLogin() {
                   id="password"
                   icon={HiLockClosed}
                   placeholder="Password"
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -95,7 +89,6 @@ export default function StoreLogin() {
                       id="remember"
                       aria-describedby="remember"
                       type="checkbox"
-                      className="focus:ring-3 h-3 w-3 rounded border border-gray-300 bg-gray-50 focus:ring-cyan-600"
                       required=""
                     />
                   </div>
@@ -105,20 +98,19 @@ export default function StoreLogin() {
                     </label>
                   </div>
                 </div>
-                <a href="#" className="text-sm font-medium text-cyan-700 hover:underline">
+                <a href="#" className="text-sm font-medium text-stone-600 hover:underline">
                   비밀번호 찾기
                 </a>
               </div>
               <button
                 type="submit"
-                className="w-full rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                className="w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
               >
                 로그인
               </button>
               <p className="text-sm font-light text-gray-500">
-                관리자로 로그인 하기{'  '}
-                <a href="#" className="font-medium text-cyan-700 hover:underline">
-                  Login
+                <a href="#" className="font-medium text-stone-400 underline hover:underline">
+                  관리자 로그인
                 </a>
               </p>
             </form>
