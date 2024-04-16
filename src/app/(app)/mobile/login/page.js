@@ -1,5 +1,4 @@
 // src/app/mobile/login/page.js
-//http://localhost:3000/mobile/login
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
@@ -19,26 +18,21 @@ export default function MobileUserLogin() {
     e.preventDefault()
     setLoading(true)
 
-    try {
-      const response = await fetchExtended('/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: { 'Content-Type': 'application/json' },
+    await fetchExtended('/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res['token'].length > 0) {
+          localStorage.setItem('token', res['token'].replaceAll('"', ''))
+          router.back()
+        }
       })
-      const data = await response.json()
-      setLoading(false)
-
-      if (response.ok) {
-        setMessage('로그인 성공')
-        sessionStorage.set('token', response['token'].replaceAll('"', ''))
-        window.location.href = '/m'
-      } else {
-        setMessage(data.message || '로그인 실패')
-      }
-    } catch (error) {
-      setLoading(false)
-      setMessage('서버와의 연결에 실패했습니다.')
-    }
+      .catch((err) => {
+        setMessage('로그인 실패')
+      })
   }
 
   // 소셜 로그인 처리 함수
@@ -50,7 +44,7 @@ export default function MobileUserLogin() {
 
   return (
     <div>
-      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4">
         <div>
           <Label htmlFor="email">이메일</Label>
           <TextInput
@@ -72,7 +66,7 @@ export default function MobileUserLogin() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" disabled={loading}>
+        <Button type="button" onClick={handleLogin} disabled={loading}>
           {loading ? '로그인 중...' : '로그인'}
         </Button>
         <div className="space-y-2 text-center">

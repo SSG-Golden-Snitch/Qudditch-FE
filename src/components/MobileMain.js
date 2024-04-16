@@ -115,10 +115,10 @@ const MobileMain = () => {
   // SSE 이벤트 핸들러(알림이 왔을때 알림 아이콘 변경을 위함)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('token')
-      if (!token) return
-      const base64Payload = token.split('.')[1]
-      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+      const token = localStorage.getItem('token')
+      if (token == null) return
+      const base64Payload = token?.split('.')[1]
+      const base64 = base64Payload?.replace(/-/g, '+')?.replace(/_/g, '/')
       const decodedJWT = JSON.parse(
         decodeURIComponent(
           window
