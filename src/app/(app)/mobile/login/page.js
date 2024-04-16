@@ -6,6 +6,7 @@ import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
@@ -19,18 +20,19 @@ export default function MobileUserLogin() {
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:8080/login', {
+      const response = await fetchExtended('/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // 쿠키를 포함시키기 위해 credentials 추가
       })
       const data = await response.json()
       setLoading(false)
 
       if (response.ok) {
         setMessage('로그인 성공')
-        setTimeout(() => router.push('/main'), 1000) // Redirect after a second
+        if (typeof window === 'undefined') return
+        sessionStorage.setItem('token', JSON.stringify(data['token']).replaceAll('"', ''))
+        window.location.href = '/m'
       } else {
         setMessage(data.message || '로그인 실패')
       }
