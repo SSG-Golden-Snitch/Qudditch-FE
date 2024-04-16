@@ -30,7 +30,7 @@ export default function MobileUserLogin() {
 
       if (response.ok) {
         setMessage('로그인 성공')
-        setTimeout(() => router.push('/main'), 1000) // Redirect after a second
+        setTimeout(() => router.push('/m'), 1000) // Redirect after a second
       } else {
         setMessage(data.message || '로그인 실패')
       }
