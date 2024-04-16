@@ -106,8 +106,8 @@ const CustomSidebar = () => {
 
   return (
     <Sidebar aria-label={'Sidebar'}>
-      <Sidebar.Logo href={isAdmin ? '/manager' : '/'} img={''}>
-        <span className={'self-center whitespace-nowrap text-xl font-semibold'}>Qudditch</span>
+      <Sidebar.Logo href={'/'} img={'/AppLogo.svg'} style={{ padding: '10px' }}>
+        {/* <span className={'self-center whitespace-nowrap text-xl font-semibold'}></span> */}
       </Sidebar.Logo>
 
       <Sidebar.Items>

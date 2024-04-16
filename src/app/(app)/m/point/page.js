@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import MobileNavbar from '@/components/MobileNavbar'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { IoIosArrowBack } from 'react-icons/io'
+import Loading from '@/components/ui/Loading'
 
 const Point = () => {
   const [pointData, setPointData] = useState([])
