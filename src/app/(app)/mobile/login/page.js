@@ -31,12 +31,11 @@ export default function MobileUserLogin() {
           window.location.href = '/m'
         } else {
           setMessage(data.message || '로그인 실패')
-          // 로그인 실패 시에만 알림창 띄우기
-          alert(message)
         }
       })
       .catch((err) => {
-        setMessage('로그인 실패')
+        alert('아이디와 비밀번호를 확인하세요')
+        window.location.reload()
       })
   }
 
