@@ -79,13 +79,13 @@ function Component() {
 
             const resp = await loginDeviceHandler()
 
-            if (resp != null && resp.status !== 200) {
+            if (resp == null || (resp != null && resp.status !== 200)) {
               alert('LOGIN DEVICE FAIL')
               return
             }
 
             alert('Login success')
-            sessionStorage.setItem('token', data['token'])
+            localStorage.setItem('token', data['token'])
 
             // 메인페이지 이동
             window.location.href = '/m'

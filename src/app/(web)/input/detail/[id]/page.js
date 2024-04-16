@@ -4,6 +4,7 @@ import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 import { CustomAlert } from '@/components/CustomAlert'
+import Loading from '@/components/ui/Loading'
 
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
@@ -24,7 +25,6 @@ export default function InputDetail({ params: { id } }) {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
@@ -48,7 +48,7 @@ export default function InputDetail({ params: { id } }) {
     handleData()
   }, [])
 
-  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+  if (isLoading) return <Loading />
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">

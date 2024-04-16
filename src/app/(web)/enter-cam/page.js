@@ -186,7 +186,11 @@ const Home = () => {
                     }}
                     onUserMedia={cloneStream}
                   />
-                  <CloneVideo mediaStream={stream} enteredCustomers setEnteredCustomers />
+                  <CloneVideo
+                    mediaStream={stream}
+                    enteredCustomers={enteredCustomers}
+                    setEnteredCustomers={setEnteredCustomers}
+                  />
                   <canvas
                     id="3d canvas"
                     ref={canvas3dRefCallback}

@@ -1,22 +1,26 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
 import React, { useEffect, useRef, useState } from 'react'
-// import Chart from 'chart.js/auto'
-import { Chart, registerables } from 'chart.js'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
+
+import {
+  Chart as ChartJS,
+  BarElement,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Title,
+  Legend,
+} from 'chart.js'
+import { Line } from 'react-chartjs-2'
+
+ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
+
 import { graphColors } from './graphColors'
 
-const colors = [
-  'rgba(200, 200, 200, 0.5)', // 연한 회색
-  'rgba(255, 200, 200, 0.5)', // 연한 분홍색
-  'rgba(200, 255, 200, 0.5)', // 연한 녹색
-  'rgba(200, 200, 255, 0.5)', // 연한 파란색
-]
-
 export const VisitorGraph = ({ dateInput }) => {
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] })
   const yearMonth = dateInput
-
-  const chartRef = useRef(null)
   const [currentList, setCurrentList] = useState([])
   // dataset, 시간대별 날짜 데이터
   const [bindingObj, setBindingObj] = useState({
@@ -26,7 +30,41 @@ export const VisitorGraph = ({ dateInput }) => {
     '18-24': {},
   })
 
-  let chartInstance = null
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: '일일 방문자 현황',
+        font: {
+          size: 25,
+        },
+        padding: {
+          bottom: 20,
+        },
+      },
+    },
+    layout: {
+      padding: {
+        left: 0,
+        right: 0,
+        top: 20,
+        bottom: 10,
+      },
+    },
+    maintainAspectRatio: false,
+  }
 
   // 데이터 불러오기
   useEffect(() => {
@@ -44,6 +82,7 @@ export const VisitorGraph = ({ dateInput }) => {
 
   useEffect(() => {
     if (currentList == null) {
+      setChartData({ labels: [], datasets: [] })
       return
     }
 
@@ -73,16 +112,13 @@ export const VisitorGraph = ({ dateInput }) => {
 
   // 차트 그리기
   useEffect(() => {
-    const destroyChart = () => {
-      if (chartInstance) {
-        chartInstance.destroy()
-        chartInstance = null
-      }
+    if (currentList == null) {
+      setChartData({
+        labels: [],
+        datasets: [{ label: '0-6' }, { label: '6-12' }, { label: '12-18' }, { label: '18-24' }],
+      })
+      return
     }
-
-    destroyChart() // 기존 차트 파괴
-
-    const ctx = chartRef.current.getContext('2d')
 
     const data = {
       labels: currentList.map((itm) => Number(itm.date.split('-')[2]) + '일'),
@@ -108,33 +144,10 @@ export const VisitorGraph = ({ dateInput }) => {
       }),
     }
 
-    const createChart = () => {
-      Chart.register(...registerables)
-      chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: {
-          plugins: {
-            title: {
-              display: true,
-              text: '일일 방문자 현황',
-              font: {
-                size: 30,
-              },
-            },
-          },
-        },
-      })
-    }
-
-    createChart() // 새로운 차트 생성
-
-    return () => {
-      destroyChart() // 컴포넌트가 unmount될 때 차트 파괴
-    }
+    setChartData(data)
   }, [bindingObj])
 
-  return <canvas ref={chartRef}></canvas>
+  return <Line options={options} data={chartData} />
 }
 
 export default VisitorGraph

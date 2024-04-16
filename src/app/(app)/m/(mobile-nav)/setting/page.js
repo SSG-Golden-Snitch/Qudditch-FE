@@ -48,7 +48,7 @@ const WebSettingPage = () => {
 
       function getUsername() {
         if (typeof window !== 'undefined') {
-          const token = sessionStorage.getItem('token')
+          const token = localStorage.getItem('token')
           const base64Payload = token.split('.')[1]
           const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
           const decodedJWT = JSON.parse(
@@ -286,7 +286,7 @@ function MiniLoading() {
 function getNameFromToken() {
   if (typeof window !== 'undefined') {
     // JWT 토큰 가져오기
-    const token = sessionStorage.getItem('token') // 세션 스토리지에서 토큰을 가져옵니다.
+    const token = localStorage.getItem('token') // 세션 스토리지에서 토큰을 가져옵니다.
     const base64Payload = token.split('.')[1]
     const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
     const decodedJWT = JSON.parse(

@@ -41,7 +41,6 @@ export default function Store() {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
