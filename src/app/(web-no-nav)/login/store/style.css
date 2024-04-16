@@ -1,0 +1,5 @@
+.bg-store-login {
+  background-image: url('/store.png');
+  background-size: contain;
+  background-position: center;
+}
