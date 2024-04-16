@@ -1,6 +1,6 @@
 'use client'
-
 import '@/app/globals.css'
+import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import CustomSidebar from '@/components/CustomSidebar'
 import { useEffect, useState } from 'react'
@@ -15,10 +15,9 @@ export default function WebRootLayout({ children }) {
       if (!token) {
         window.location.href = '/login/store'
       } else {
-        // 1초 후에 로딩을 끝낸다.
         setTimeout(() => {
           setIsLoading(false)
-        }, 1000)
+        }, 800)
       }
     }
   }, [])

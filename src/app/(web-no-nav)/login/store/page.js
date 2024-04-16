@@ -49,6 +49,8 @@ export default function StoreLogin() {
                 <div className="relative">
                   <input
                     autoComplete="off"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     id="email"
                     name="email"
                     type="text"
@@ -65,6 +67,8 @@ export default function StoreLogin() {
                 <div className="relative">
                   <input
                     autoComplete="off"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     id="password"
                     name="password"
                     type="password"
@@ -79,7 +83,12 @@ export default function StoreLogin() {
                   </label>
                 </div>
                 <div className="relative">
-                  <button className="rounded-md bg-cyan-500 px-2 py-1 text-white">Submit</button>
+                  <button
+                    onClick={handleLogin}
+                    className="rounded-md bg-cyan-500 px-2 py-1 text-white"
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
             </div>
