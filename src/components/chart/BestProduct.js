@@ -46,6 +46,11 @@ const BestProduct = () => {
       legend: {
         position: 'right',
         align: 'center',
+        labels: {
+          font: {
+            size: 18,
+          },
+        },
       },
       title: {
         display: true,
