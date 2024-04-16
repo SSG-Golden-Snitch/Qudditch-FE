@@ -22,6 +22,7 @@ import {
   HiUser,
 } from 'react-icons/hi'
 import { HiBuildingStorefront } from 'react-icons/hi2'
+import WebLogo from '/public/WebLogo.svg'
 
 function Component() {
   const router = useRouter()
@@ -271,6 +272,10 @@ function Component() {
   return (
     <div className="h-full">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+      <div className="grid  items-center justify-items-center pb-5 pt-10 text-center">
+        <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
+        <WebLogo />
+      </div>
       <div className="flex flex-col items-center justify-center   pt-10">
         <div className="flex  items-center justify-center ">
           <form className="  flex w-full max-w-full flex-col gap-4">
@@ -302,8 +307,12 @@ function Component() {
                     className="w-2/3"
                     color={emailColor}
                   />
-                  <Button onClick={() => handleEmailDuple()}>중복체크</Button>
-                  <Button onClick={() => sendVerifyCode()}>인증번호 전송</Button>
+                  <Button color="warning" onClick={() => handleEmailDuple()}>
+                    중복체크
+                  </Button>
+                  <Button color="warning" onClick={() => sendVerifyCode()}>
+                    인증번호 전송
+                  </Button>
                 </div>
                 <div className="flex items-center pt-1 text-sm text-green-500">{text}</div>
               </div>
@@ -320,7 +329,9 @@ function Component() {
                       className="w-2/3"
                     />
                     <div className="flex content-center items-center gap-5 text-center">
-                      <Button onClick={() => handleConfirmVerify()}>인증번호 확인</Button>
+                      <Button color="warning" onClick={() => handleConfirmVerify()}>
+                        인증번호 확인
+                      </Button>
                       <div>{timerFormat(timer)}</div>
                     </div>
                   </div>
@@ -383,7 +394,9 @@ function Component() {
                     readOnly
                     className="w-96"
                   />
-                  <Button onClick={() => handleOpenModal()}>매장 선택 </Button>
+                  <Button color="warning" onClick={() => handleOpenModal()}>
+                    매장 선택{' '}
+                  </Button>
                 </div>
               </div>
             </div>
