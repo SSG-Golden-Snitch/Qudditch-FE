@@ -2,6 +2,7 @@
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/CustomTable'
+import Loading from '@/components/ui/Loading'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination, Select } from 'flowbite-react'
 import { useEffect, useState } from 'react'
@@ -50,7 +51,6 @@ export default function Stock() {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
@@ -93,7 +93,7 @@ export default function Stock() {
     setKeyword('')
   }
 
-  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+  if (isLoading) return <Loading />
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
@@ -102,20 +102,20 @@ export default function Stock() {
           <Select
             className="w-32"
             id="categories"
-            // required
             onChange={handleCategoryChange}
             value={categoryId}
           >
             <option value={0}>전체</option>
             <option value={1}>과자</option>
-            <option value={2}>아이스크림</option>
-            <option value={3}>초콜릿</option>
-            <option value={4}>젤리/푸딩</option>
-            <option value={5}>시리얼</option>
-            <option value={6}>음료수</option>
-            <option value={7}>생수</option>
-            <option value={8}>우유</option>
-            <option value={9}>라면</option>
+            <option value={2}>빵</option>
+            <option value={3}>우유</option>
+            <option value={4}>라면</option>
+            <option value={5}>커피</option>
+            <option value={6}>생수</option>
+            <option value={7}>음료수</option>
+            <option value={9}>즉석밥</option>
+            <option value={10}>아이스크림</option>
+            <option value={11}>젤리</option>
           </Select>
         </div>
 
@@ -148,7 +148,7 @@ export default function Stock() {
               <input
                 type="search"
                 id="default-search"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
                 placeholder="검색할 제품명을 입력하세요"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -156,7 +156,7 @@ export default function Stock() {
               />
               <button
                 type="submit"
-                className="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="absolute bottom-2.5 end-2.5 rounded-lg bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               >
                 Search
               </button>
