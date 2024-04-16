@@ -21,7 +21,7 @@ export default function ProductRank() {
     handleRank()
 
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('token')
+      const token = localStorage.getItem('token')
       if (!token) {
         console.log('token is null')
         return

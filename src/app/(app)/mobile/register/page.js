@@ -1,9 +1,9 @@
 // src/app/mobile/register/page.js
-//http://localhost:3000/mobile/register
 'use client'
 import { Alert, Button, Label, TextInput } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { fetchExtended } from '@/utils/fetchExtended'
 
 export default function Register() {
   // 상태 관리를 위한 훅 선언
@@ -63,7 +63,7 @@ export default function Register() {
     setEmailError('')
     setEmailStatus('')
     try {
-      const response = await fetch('http://localhost:8080/check-email', {
+      const response = await fetchExtended('/check-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -101,7 +101,7 @@ export default function Register() {
     setLoading(true)
     setVerificationStatus('')
     try {
-      const response = await fetch('http://localhost:8080/request-verification', {
+      const response = await fetchExtended('/request-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -126,7 +126,7 @@ export default function Register() {
   const verifyAccount = async (code) => {
     setLoading(true)
     try {
-      const response = await fetch(`http://localhost:8080/verify-account?code=${code}`)
+      const response = await fetchExtended(`/verify-account?code=${code}`)
       const data = await response.json()
       setLoading(false)
       if (data.verificationStatus) {
@@ -169,7 +169,7 @@ export default function Register() {
 
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:8080/register/customer', {
+      const response = await fetchExtended('/register/customer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -200,7 +200,7 @@ export default function Register() {
   const handleVerifyCode = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`http://localhost:8080/verify-account`, {
+      const res = await fetchExtended(`/verify-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code: verificationCode }),

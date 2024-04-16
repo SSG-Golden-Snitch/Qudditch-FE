@@ -2,6 +2,7 @@
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/CustomTable'
+import Loading from '@/components/ui/Loading'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
 import { useEffect, useState } from 'react'
@@ -39,7 +40,6 @@ export default function Input() {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
@@ -72,7 +72,7 @@ export default function Input() {
     handleStoreInput(page)
   }
 
-  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+  if (isLoading) return <Loading />
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">

@@ -1,8 +1,26 @@
+'use client'
 import '@/app/globals.css'
+import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import CustomSidebar from '@/components/CustomSidebar'
+import { useEffect, useState } from 'react'
+import Loading from '@/components/ui/Loading'
 
 export default function WebRootLayout({ children }) {
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        window.location.href = '/login/store'
+      } else {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 800)
+      }
+    }
+  }, [])
   return (
     <html lang="ko">
       <head>
@@ -10,10 +28,16 @@ export default function WebRootLayout({ children }) {
         <meta charSet="UTF-8" />
         <title>App</title>
       </head>
-      <body className={'flex h-screen w-screen flex-row'}>
+      <body className={'flex h-screen w-screen flex-row items-center justify-center'}>
         <SpeedInsights />
-        <CustomSidebar />
-        <main className={'h-full w-full grow'}>{children}</main>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <CustomSidebar />
+            <main className={'h-full w-full grow'}>{children}</main>
+          </>
+        )}
       </body>
     </html>
   )

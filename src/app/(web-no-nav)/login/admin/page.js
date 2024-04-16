@@ -1,10 +1,10 @@
-// src/app/web/login/store/page.js
+// src/app/web/login/admin/page.js
 'use client'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 
-export default function StoreLogin() {
+export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -14,7 +14,7 @@ export default function StoreLogin() {
     setLoading(true)
 
     try {
-      const response = await fetchExtended('/store/login', {
+      const response = await fetchExtended('/admin/login', {
         method: 'POST',
         body: JSON.stringify({ email, password }),
         headers: { 'Content-Type': 'application/json' },
@@ -26,9 +26,9 @@ export default function StoreLogin() {
       if (data.error) {
         alert(data.error)
       } else {
-        alert('로그인 성공')
-        // 추후 토큰 저장 방식 개선 필요
-        sessionStorage.setItem('token', data.token)
+        if (typeof window === 'undefined') return
+        localStorage.setItem('token', data.token)
+        window.location.href = '/manager'
       }
     } catch (error) {
       setLoading(false)
@@ -44,7 +44,7 @@ export default function StoreLogin() {
           <TextInput
             id="email"
             type="email"
-            placeholder="store@example.com"
+            placeholder="admin@example.com"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}

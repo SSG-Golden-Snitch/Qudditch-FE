@@ -18,7 +18,6 @@ export function StockEditBtn({ item, handleAlert, handleData }) {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
       body: JSON.stringify({
         storeStockId: item['id'],
