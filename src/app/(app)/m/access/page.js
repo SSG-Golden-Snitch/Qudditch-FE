@@ -20,13 +20,18 @@ export default function Access() {
   const { Canvas } = useQRCode()
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = sessionStorage.get('token')
-      if (!token) {
-        router.push('/mobile/login')
+    function getUsername() {
+      if (typeof window !== 'undefined') {
+        const token = sessionStorage.getItem('token')
+
+        if (!token) {
+          router.push('/mobile/login')
+        }
       }
     }
-  })
+
+    getUsername()
+  }, [])
 
   const accessReqUrl = new URL(apiUrl + '/api/access/qrcode/request')
 
