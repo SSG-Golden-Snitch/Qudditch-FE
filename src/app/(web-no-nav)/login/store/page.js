@@ -1,14 +1,10 @@
-// src/app/web/login/store/page.js
 'use client'
-import React from 'react'
-import { Button, Label, TextInput, Checkbox } from 'flowbite-react'
-import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Checkbox, Label, TextInput } from 'flowbite-react'
+import { useState } from 'react'
 import { HiMail } from 'react-icons/hi'
-import AppLogo from '/public/AppLogo.svg'
 import { HiLockClosed } from 'react-icons/hi2'
-import goldesnitch from '/public/goldesnitch.png'
-import Image from 'next/image'
+import WebLogo from '/public/WebLogo.svg'
 
 export default function StoreLogin() {
   const [email, setEmail] = useState('')
@@ -47,7 +43,7 @@ export default function StoreLogin() {
       <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
         <div className="grid  pb-10 text-center">
           <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
-          <AppLogo />
+          <WebLogo />
         </div>
         <div className="w-full rounded-lg  bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
           <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
