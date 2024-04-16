@@ -29,7 +29,7 @@ export default function StoreLogin() {
         alert(data.error)
       } else {
         if (typeof window === 'undefined') return
-        localStorage.setItem('token', data.token)
+        sessionStorage.setItem('token', data.token)
         window.location.href = '/'
       }
     } catch (error) {
