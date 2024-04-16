@@ -116,6 +116,7 @@ const MobileMain = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('token')
+      if (!token) return
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
       const decodedJWT = JSON.parse(

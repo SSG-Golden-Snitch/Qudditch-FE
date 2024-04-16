@@ -1,4 +1,5 @@
 import '@/app/globals.css'
+import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export default function WebRootLayout({ children }) {
