@@ -19,6 +19,15 @@ export default function Access() {
   const [expired, setExpired] = useState(false)
   const { Canvas } = useQRCode()
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = sessionStorage.get('token')
+      if (!token) {
+        router.push('/mobile/login')
+      }
+    }
+  })
+
   const accessReqUrl = new URL(apiUrl + '/api/access/qrcode/request')
 
   const handleAccess = async () => {
