@@ -110,12 +110,20 @@ export default function AdminLogin() {
               </button>
               <p className="text-sm font-light text-gray-500">
                 <a
-                  href="/login/admin"
+                  href="/login/store"
                   className="font-medium text-stone-400 underline hover:underline"
                 >
                   사업자 로그인
                 </a>
               </p>
+              <div className="flex w-full justify-center">
+                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                  아직 회원이 아니신가요?{' '}
+                  <a href="/register" className=" font-medium text-amber-400 hover:underline">
+                    회원가입
+                  </a>
+                </p>
+              </div>
             </form>
           </div>
         </div>
