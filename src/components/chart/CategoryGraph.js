@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
+import { doughnutChartColor } from './doughnutChartColor'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
 
@@ -105,13 +106,7 @@ const CategoryGraph = ({ dateInput }) => {
         {
           label: '카테고리',
           data: productDataSet,
-          backgroundColor: [
-            'rgb(232, 232, 232)',
-            'rgb(100, 100, 100)',
-            'rgb(86, 86, 86)',
-            'rgb(145, 145, 145)',
-            'rgb(200, 200, 200)',
-          ],
+          backgroundColor: doughnutChartColor,
           hoverOffset: 4,
         },
       ],

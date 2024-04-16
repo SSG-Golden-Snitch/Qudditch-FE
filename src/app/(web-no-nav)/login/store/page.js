@@ -1,8 +1,13 @@
 // src/app/web/login/store/page.js
 'use client'
-import { Button, Label, TextInput } from 'flowbite-react'
+import React from 'react'
+import { Button, Label, TextInput, Checkbox } from 'flowbite-react'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { HiMail } from 'react-icons/hi'
+import { HiLockClosed } from 'react-icons/hi2'
+import goldesnitch from '/public/goldesnitch.png'
+import Image from 'next/image'
 
 export default function StoreLogin() {
   const [email, setEmail] = useState('')
@@ -37,65 +42,90 @@ export default function StoreLogin() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-center bg-gray-100 py-6 sm:py-12">
-      <div className="relative py-3 sm:mx-auto sm:max-w-xl">
-        <div className="absolute inset-0 -skew-y-6 transform bg-gradient-to-r from-cyan-400 to-sky-500 shadow-lg sm:-rotate-6 sm:skew-y-0 sm:rounded-3xl"></div>
-        <div className="relative bg-white px-4 py-10 shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="mx-auto max-w-md">
-            <div>
-              <h1 className="text-2xl font-semibold">Login</h1>
-            </div>
-            <div className="divide-y divide-gray-200">
-              <div className="space-y-4 py-8 text-base leading-6 text-gray-700 sm:text-lg sm:leading-7">
-                <div className="relative">
-                  <input
-                    autoComplete="off"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="email"
-                    name="email"
-                    type="text"
-                    className="focus:borer-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none"
-                    placeholder="Email address"
-                  />
-                  <label
-                    htmlFor="email"
-                    className="peer-placeholder-shown:text-gray-440 absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Email Address
-                  </label>
-                </div>
-                <div className="relative">
-                  <input
-                    autoComplete="off"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="password"
-                    name="password"
-                    type="password"
-                    className="focus:borer-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none"
-                    placeholder="Password"
-                  />
-                  <label
-                    htmlFor="password"
-                    className="peer-placeholder-shown:text-gray-440 absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Password
-                  </label>
-                </div>
-                <div className="relative">
-                  <button
-                    onClick={handleLogin}
-                    className="rounded-md bg-cyan-500 px-2 py-1 text-white"
-                  >
-                    Submit
-                  </button>
-                </div>
+    <section className="flex min-h-screen items-center justify-center bg-gray-50 ">
+      <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+        <a href="#" className="mb-6 flex items-center text-2xl font-semibold text-gray-900 ">
+          <Image src={goldesnitch} className="mr-2 h-8 w-8" alt="logo" />
+          Qudditch
+        </a>
+        <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
+          <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              Sign in to your account
+            </h1>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
+              <div>
+                <label htmlFor="email" className="mb-2 block text-sm font-bold text-gray-900">
+                  이메일
+                </label>
+                <TextInput
+                  autoComplete="off"
+                  type="text"
+                  name="email"
+                  id="email"
+                  icon={HiMail}
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
-            </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="mb-2 block text-sm font-bold text-gray-900 dark:text-white"
+                >
+                  비밀번호
+                </label>
+                <TextInput
+                  autoComplete="off"
+                  type="password"
+                  name="password"
+                  id="password"
+                  icon={HiLockClosed}
+                  placeholder="Password"
+                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-primary-600 focus:ring-primary-600 sm:text-sm"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-start">
+                  <div className="flex h-5 items-center">
+                    <TextInput
+                      id="remember"
+                      aria-describedby="remember"
+                      type="checkbox"
+                      className="focus:ring-3 h-3 w-3 rounded border border-gray-300 bg-gray-50 focus:ring-cyan-600"
+                      required=""
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="remember" className="text-gray-500">
+                      ID Check
+                    </label>
+                  </div>
+                </div>
+                <a href="#" className="text-sm font-medium text-cyan-700 hover:underline">
+                  비밀번호 찾기
+                </a>
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-primary-300"
+              >
+                로그인
+              </button>
+              <p className="text-sm font-light text-gray-500">
+                관리자로 로그인 하기{'  '}
+                <a href="#" className="font-medium text-cyan-700 hover:underline">
+                  Login
+                </a>
+              </p>
+            </form>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
