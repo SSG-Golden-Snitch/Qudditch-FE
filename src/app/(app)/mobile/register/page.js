@@ -4,6 +4,9 @@ import { Alert, Button, Label, TextInput } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import WebLogo from '/public/WebLogo.svg'
+import { HiMail } from 'react-icons/hi'
+import { HiKey, HiLockClosed, HiUser } from 'react-icons/hi2'
 
 export default function Register() {
   // 상태 관리를 위한 훅 선언
@@ -221,104 +224,138 @@ export default function Register() {
   }
 
   return (
-    <div className="space-y-4">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
-          <Label htmlFor="email">이메일</Label>
-          <div className="flex items-center gap-2">
+    <section className="flex min-h-screen  items-center justify-center bg-gray-50 ">
+      <div
+        className="mx-auto flex 
+       flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0"
+      >
+        <div className="grid  pb-10 text-center">
+          <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
+          <WebLogo />
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+          <div>
+            <Label htmlFor="name">이름</Label>
             <TextInput
-              id="email"
-              type="email"
-              placeholder="이메일을 입력하세요"
+              id="name"
+              type="text"
+              placeholder="이름을 입력하세요"
+              icon={HiUser}
               required
-              value={email}
-              onChange={handleEmailChange}
-              className="flex-1"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
-            <Button onClick={checkEmail} disabled={loading || !email || emailError}>
-              {loading ? '확인 중...' : '이메일 중복 체크'}
+          </div>
+          <div>
+            <Label htmlFor="email">이메일</Label>
+            <div className="flex items-center gap-2">
+              <TextInput
+                id="email"
+                type="email"
+                placeholder="kdt4@ssg.com"
+                icon={HiMail}
+                required
+                value={email}
+                onChange={handleEmailChange}
+                className="flex-1"
+              />
+              <Button
+                onClick={checkEmail}
+                disabled={loading || !email || emailError}
+                className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+              >
+                {loading ? '확인 중...' : '이메일 중복 체크'}
+              </Button>
+            </div>
+            {emailError && <Alert color="failure">{emailError}</Alert>}
+            {emailStatus && !emailError && (
+              <Alert color={emailVerified ? 'success' : 'failure'}>{emailStatus}</Alert>
+            )}
+          </div>
+          <Button
+            onClick={sendVerificationEmail}
+            disabled={loading}
+            className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+          >
+            {loading ? '보내는 중...' : '인증 이메일 보내기'}
+          </Button>
+          {verificationStatus && (
+            <Alert color={verificationStatus?.startsWith('인증 완료') ? 'success' : 'failure'}>
+              {verificationStatus}
+            </Alert>
+          )}
+          <div>
+            <Label htmlFor="verificationCode">인증 코드</Label>
+            <TextInput
+              id="verificationCode"
+              type="text"
+              placeholder="인증 코드를 입력하세요"
+              icon={HiKey}
+              required
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+            />
+            <Button
+              onClick={handleVerifyCode}
+              className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+            >
+              인증하기
             </Button>
           </div>
-          {emailError && <Alert color="failure">{emailError}</Alert>}
-          {emailStatus && !emailError && (
-            <Alert color={emailVerified ? 'success' : 'failure'}>{emailStatus}</Alert>
-          )}
-        </div>
-        <Button onClick={sendVerificationEmail} disabled={loading}>
-          {loading ? '보내는 중...' : '인증 이메일 보내기'}
-        </Button>
+          <div>
+            <Label htmlFor="password">비밀번호</Label>
+            <TextInput
+              id="password"
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+              icon={HiLockClosed}
+              required
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                setPasswordError('')
+              }}
+            />
+          </div>
+          <div>
+            <Label htmlFor="confirmPassword">비밀번호 확인</Label>
+            <TextInput
+              id="confirmPassword"
+              type="password"
+              placeholder="비밀번호를 다시 입력하세요"
+              icon={HiLockClosed}
+              required
+              value={confirmPassword}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value)
+              }}
+              onBlur={validatePassword} // 입력란에서 포커스가 벗어날 때 검증을 실행합니다.
+            />
+            {/* 비밀번호 일치 여부에 따른 메시지 표시 */}
+            {passwordError && (
+              <Alert
+                color={passwordError === '사용 가능한 비밀번호입니다.' ? 'success' : 'failure'}
+              >
+                {passwordError}
+              </Alert>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+          >
+            {loading ? '회원가입 중...' : '회원가입'}
+          </Button>
+        </form>
         {verificationStatus && (
-          <Alert color={verificationStatus?.startsWith('인증 완료') ? 'success' : 'failure'}>
+          <Alert color={verificationStatus.startsWith('인증 완료') ? 'success' : 'failure'}>
             {verificationStatus}
           </Alert>
         )}
-        <div>
-          <Label htmlFor="verificationCode">인증 코드</Label>
-          <TextInput
-            id="verificationCode"
-            type="text"
-            placeholder="인증 코드를 입력하세요"
-            required
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-          />
-          <Button onClick={handleVerifyCode}>인증하기</Button>
-        </div>
-        <div>
-          <Label htmlFor="password">비밀번호</Label>
-          <TextInput
-            id="password"
-            type="password"
-            placeholder="비밀번호를 입력하세요"
-            required
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-              setPasswordError('')
-            }}
-          />
-        </div>
-        <div>
-          <Label htmlFor="confirmPassword">비밀번호 확인</Label>
-          <TextInput
-            id="confirmPassword"
-            type="password"
-            placeholder="비밀번호를 다시 입력하세요"
-            required
-            value={confirmPassword}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value)
-            }}
-            onBlur={validatePassword} // 입력란에서 포커스가 벗어날 때 검증을 실행합니다.
-          />
-          {/* 비밀번호 일치 여부에 따른 메시지 표시 */}
-          {passwordError && (
-            <Alert color={passwordError === '사용 가능한 비밀번호입니다.' ? 'success' : 'failure'}>
-              {passwordError}
-            </Alert>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="name">이름</Label>
-          <TextInput
-            id="name"
-            type="text"
-            placeholder="이름을 입력하세요"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <Button type="submit" disabled={loading}>
-          {loading ? '회원가입 중...' : '회원가입'}
-        </Button>
-      </form>
-      {verificationStatus && (
-        <Alert color={verificationStatus.startsWith('인증 완료') ? 'success' : 'failure'}>
-          {verificationStatus}
-        </Alert>
-      )}
-      {loading && <Alert color="info">처리 중...</Alert>}
-    </div>
+        {loading && <Alert color="info">처리 중...</Alert>}
+      </div>
+    </section>
   )
 }
