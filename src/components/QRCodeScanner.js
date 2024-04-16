@@ -21,8 +21,10 @@ const QRCodeScanner = ({ onScan }) => {
       .listVideoInputDevices()
       .then((videoInputDevices) => {
         if (videoInputDevices.length > 0) {
-          selectedDeviceId = videoInputDevices[0].deviceId
-          startScan()
+          // 후면 카메라를 선택하도록 변경
+          const rearCamera = videoInputDevices.find((device) => /back|rear/i.test(device.label))
+          selectedDeviceId = rearCamera ? rearCamera.deviceId : videoInputDevices[0].deviceId // 후면 카메라가 없다면 첫번째 장치 사용
+          startScan(selectedDeviceId)
         }
       })
       .catch((error) => console.error('Error listing video devices:', error))
