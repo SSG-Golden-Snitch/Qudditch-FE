@@ -115,10 +115,10 @@ const MobileMain = () => {
   // SSE 이벤트 핸들러(알림이 왔을때 알림 아이콘 변경을 위함)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const token = sessionStorage.getItem('token')
-      if (!token) return
-      const base64Payload = token.split('.')[1]
-      const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+      const token = localStorage.getItem('token')
+      if (token == null) return
+      const base64Payload = token?.split('.')[1]
+      const base64 = base64Payload?.replace(/-/g, '+')?.replace(/_/g, '/')
       const decodedJWT = JSON.parse(
         decodeURIComponent(
           window
@@ -133,9 +133,12 @@ const MobileMain = () => {
 
       let userEmail = decodedJWT.sub
 
-      const sse = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`,
-      )
+      const sse_url = `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`
+      console.info('sse url', sse_url)
+
+      const sse = new EventSource(sse_url, {
+        withCredentials: true,
+      })
 
       sse.addEventListener('connect', function (e) {
         if (e != null && e.data === 'NOTIFY_FCM') {

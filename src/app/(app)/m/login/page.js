@@ -85,7 +85,7 @@ function Component() {
             }
 
             alert('Login success')
-            sessionStorage.setItem('token', data['token'])
+            localStorage.setItem('token', data['token'])
 
             // 메인페이지 이동
             window.location.href = '/m'

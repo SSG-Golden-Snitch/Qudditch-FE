@@ -311,7 +311,7 @@ function Component() {
                     placeholder="name@ssg.com"
                     icon={HiMail}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-2/3"
+                    className="w-96"
                     color={emailColor}
                   />
                   <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleEmailDuple()}>
@@ -336,7 +336,10 @@ function Component() {
                       className="w-2/3"
                     />
                     <div className="flex content-center items-center gap-5 text-center">
-                      <Button color="warning" onClick={() => handleConfirmVerify()}>
+                      <Button
+                        style={{ backgroundColor: '#FBBF24' }}
+                        onClick={() => handleConfirmVerify()}
+                      >
                         인증번호 확인
                       </Button>
                       <div>{timerFormat(timer)}</div>

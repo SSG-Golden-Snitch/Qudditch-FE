@@ -5,7 +5,7 @@ import { Button, Label, TextInput, Checkbox } from 'flowbite-react'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { HiMail } from 'react-icons/hi'
-import AppLogo from '/public/AppLogo.svg'
+import WebLogo from '/public/WebLogo.svg'
 import { HiLockClosed } from 'react-icons/hi2'
 
 export default function AdminLogin() {
@@ -31,7 +31,7 @@ export default function AdminLogin() {
         alert(data.error)
       } else {
         if (typeof window === 'undefined') return
-        sessionStorage.setItem('token', data.token)
+        localStorage.setItem('token', data.token)
         window.location.href = '/manager'
       }
     } catch (error) {
@@ -45,7 +45,7 @@ export default function AdminLogin() {
       <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
         <div className="grid  pb-10 text-center">
           <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
-          <AppLogo />
+          <WebLogo />
         </div>
         <div className="w-full rounded-lg  bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
           <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
@@ -84,11 +84,12 @@ export default function AdminLogin() {
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex h-5 items-center">
-                    <TextInput
+                    <Checkbox
                       id="remember"
                       aria-describedby="remember"
                       type="checkbox"
                       required=""
+                      color="yellow"
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -115,6 +116,14 @@ export default function AdminLogin() {
                   사업자 로그인
                 </a>
               </p>
+              <div className="flex w-full justify-center">
+                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                  아직 회원이 아니신가요?{' '}
+                  <a href="/register" className=" font-medium text-amber-400 hover:underline">
+                    회원가입
+                  </a>
+                </p>
+              </div>
             </form>
           </div>
         </div>
