@@ -18,6 +18,11 @@ const CartPage = () => {
   const [message, setMessage] = useState('')
   const [allSelected, setAllSelected] = useState(true)
 
+  useEffect(() => {
+    fetchCartItems()
+    fetchPoints()
+  }, [])
+
   // 결제 준비 정보 추가 및 전송 로직
   const preparePaymentInfo = () => {
     const updatedCartItems = cartItems.map((item) => ({
@@ -32,12 +37,6 @@ const CartPage = () => {
 
   // 장바구니가 비었는지 확인하는 상태 추가
   const isEmpty = cartItems.length === 0
-
-  useEffect(() => {
-    console.log(cartItems)
-    // 페이지 로드 시, customerId 장바구니 아이템 조회 (userStoreId, userCustomerId, productId 고려)
-    fetchCartItems()
-  }, [])
 
   // 장바구니 조회 API
   const fetchCartItems = async (userCustomerId) => {
@@ -61,6 +60,19 @@ const CartPage = () => {
       }
     } catch (error) {
       setMessage(error.message)
+    }
+  }
+
+  const fetchPoints = async () => {
+    const response = await fetchExtended('/api/order/history/point?startIndex=0')
+    if (response.ok) {
+      const data = await response.json()
+      const totalEarned = data.reduce((acc, item) => acc + item.earnPoint, 0)
+      const totalUsed = data.reduce((acc, item) => acc + item.usedPoint, 0)
+      setEarnPoints(totalEarned)
+      setRemainingPoints(totalEarned - totalUsed)
+    } else {
+      setMessage('Error fetching points.')
     }
   }
 
@@ -101,13 +113,14 @@ const CartPage = () => {
   }
 
   const calculateTotalPay = (totalAmount, usedPoints) => {
-    const totalPay = totalAmount - usedPoints
-    setTotalPay(totalPay)
+    const effectivePoints = Math.min(usedPoints, totalAmount)
+    const totalPay = totalAmount - effectivePoints
+    setTotalPay(Math.max(0, totalPay))
     calculateEarnPoints(totalPay) // 포인트 적립금액 계산
   }
 
   const calculateEarnPoints = (totalPay) => {
-    const earnPoints = Math.round(totalPay * 0.01)
+    const earnPoints = Math.round(totalPay * 0.001)
     setEarnPoints(earnPoints)
   }
 
@@ -120,8 +133,9 @@ const CartPage = () => {
   // 포인트 입력 처리
   const handlePointsChange = (e) => {
     const value = parseInt(e.target.value, 10) || 0
-    setUsedPoints(Math.min(value, remainingPoints))
-    calculateTotalPay(totalAmount, value)
+    const effectivePoints = Math.min(value, remainingPoints, totalAmount) // 입력된 포인트가 총 금액과 잔여 포인트를 초과하지 않도록 처리
+    setUsedPoints(effectivePoints)
+    calculateTotalPay(totalAmount, effectivePoints)
   }
 
   // 수량 업데이트 함수
@@ -207,7 +221,7 @@ const CartPage = () => {
                   />
                   <img src={item.image} alt={item.name} className="mr-4 h-20 w-20 object-cover" />
                   <div className="flex flex-1 flex-col">
-                    <div>
+                    <div className="flex w-full justify-between">
                       <h4 className="font-bold">{item.name}</h4>
                     </div>
                     <div>
