@@ -1,7 +1,19 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
-import React, { useEffect, useRef, useState } from 'react'
-import Chart from 'chart.js/auto'
+import React, { useEffect, useState } from 'react'
+
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+} from 'chart.js'
+import { Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
 
 const RANK_VIEW = 4
 
@@ -9,6 +21,35 @@ const CategoryGraph = ({ dateInput }) => {
   const yearMonth = dateInput
   const [labels, setLabels] = useState([])
   const [productDataSet, setProductDataSet] = useState([])
+  const [chartData, setChartData] = useState({ labels, datasets: [] })
+
+  const options = {
+    plugins: {
+      legend: {
+        position: 'right',
+        align: 'center',
+      },
+      title: {
+        display: true,
+        text: 'Top 5 카테고리(월)',
+        font: {
+          size: 25,
+        },
+        padding: {
+          bottom: 20,
+        },
+      },
+    },
+    layout: {
+      padding: {
+        left: 0,
+        right: 0,
+        top: 20,
+        bottom: 10,
+      },
+    },
+    maintainAspectRatio: false,
+  }
 
   useEffect(() => {
     const getCategorys = async () => {
@@ -17,6 +58,11 @@ const CategoryGraph = ({ dateInput }) => {
         const data = await response.json()
 
         let currentList = data.currentList
+
+        if (currentList == null) {
+          return
+        }
+
         let list = []
 
         let etcData = null
@@ -52,69 +98,28 @@ const CategoryGraph = ({ dateInput }) => {
     getCategorys()
   }, [yearMonth])
 
-  const chartRef = useRef(null)
-  const [chartInstance, setChartInstance] = useState(null)
-
   useEffect(() => {
-    if (chartInstance) {
-      chartInstance.destroy()
-    }
-
-    const config = {
-      type: 'doughnut',
-      options: {
-        plugins: {
-          legend: {
-            display: true,
-            position: 'right',
-            align: 'center',
-          },
-          title: {
-            display: true,
-            position: 'top',
-            text: 'Top 5 카테고리(월)',
-            font: {
-              size: 25,
-            },
-          },
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: '카테고리',
+          data: productDataSet,
+          backgroundColor: [
+            'rgb(232, 232, 232)',
+            'rgb(100, 100, 100)',
+            'rgb(86, 86, 86)',
+            'rgb(145, 145, 145)',
+            'rgb(200, 200, 200)',
+          ],
+          hoverOffset: 4,
         },
-        layout: {
-          padding: {
-            left: 0,
-            right: 0,
-            bottom: 10,
-          },
-        },
-      },
-      data: {
-        labels,
-        datasets: [
-          {
-            label: '카테고리',
-            data: productDataSet,
-            backgroundColor: [
-              'rgb(232, 232, 232)',
-              'rgb(100, 100, 100)',
-              'rgb(86, 86, 86)',
-              'rgb(145, 145, 145)',
-              'rgb(200, 200, 200)',
-            ],
-            hoverOffset: 4,
-          },
-        ],
-      },
+      ],
     }
-
-    const ctx = chartRef.current.getContext('2d')
-    const newChartInstance = new Chart(ctx, config)
-    setChartInstance(newChartInstance)
-
-    return () => {
-      newChartInstance.destroy()
-    }
+    setChartData(data)
   }, [labels, productDataSet])
 
-  return <canvas style={{ maxHeight: '85%' }} ref={chartRef} />
+  return <Doughnut options={options} data={chartData} />
 }
 
 export default CategoryGraph

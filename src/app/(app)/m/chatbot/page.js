@@ -8,12 +8,14 @@ import Image from 'next/image'
 import { CiMicrophoneOn } from 'react-icons/ci'
 import { BsStopCircle } from 'react-icons/bs'
 import Link from 'next/link'
+import Loading from '@/components/ui/Loading'
 
 function Chatbot() {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [transcript, setTranscript] = useState('')
   const [listening, setListening] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -26,6 +28,7 @@ function Chatbot() {
 
   useEffect(() => {
     if (transcript !== '') {
+      setIsLoading(true)
       setInputValue(transcript)
       setTranscript('')
     }
@@ -171,6 +174,7 @@ function Chatbot() {
     return formattedTime
   }
 
+  if (isLoading) return <Loading />
   return (
     <div className="chat-app mx-auto flex h-screen max-w-md flex-col rounded-lg border bg-gray-200 font-sans">
       <header className="chat-header flex items-center justify-between rounded-t-lg bg-gray-800 p-2 text-white">

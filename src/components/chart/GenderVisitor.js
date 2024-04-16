@@ -56,6 +56,7 @@ const GenderVisitor = () => {
               {
                 label: 'Visitor',
                 data: [],
+                backgroundColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
               },
             ],
           },
