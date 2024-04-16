@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { Message } from '@aws-amplify/ui-react'
+import { CustomAlert } from '@/components/CustomAlert'
 
 export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
@@ -15,6 +15,9 @@ export default function MobileUserLogin() {
   const [message, setMessage] = useState('')
   const router = useRouter()
 
+  const handleAlert = (message = '') => {
+    setMessage(message)
+  }
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -34,8 +37,8 @@ export default function MobileUserLogin() {
         }
       })
       .catch((err) => {
-        alert('아이디와 비밀번호를 확인하세요')
-        window.location.reload()
+        setMessage('아이디와 비밀번호를 확인하세요')
+        // window.location.reload()
       })
   }
 
@@ -46,6 +49,7 @@ export default function MobileUserLogin() {
   }
   return (
     <section className="flex h-screen max-w-screen-xl items-center justify-center bg-white">
+      {message && <CustomAlert message={message} handleDismiss={handleAlert} />}
       <div className="flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
         <span className="pb-1 text-gray-500">딜리셔스 아이디어</span>
         <img className="h-50 w-50 mr-2" src="/WebLogo.svg" alt="logo"></img>
