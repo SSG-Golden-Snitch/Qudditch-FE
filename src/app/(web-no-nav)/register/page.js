@@ -11,6 +11,7 @@ import {
   Table,
   TextInput,
   Spinner,
+  Checkbox,
 } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -23,6 +24,7 @@ import {
 } from 'react-icons/hi'
 import { HiBuildingStorefront } from 'react-icons/hi2'
 import WebLogo from '/public/WebLogo.svg'
+import PrivacyModal from '@/components/PrivacyModal'
 
 function Component() {
   const router = useRouter()
@@ -45,6 +47,7 @@ function Component() {
   const [error, setError] = useState('')
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
+  const [openPrivacyModal, setOpenPrivacyModal] = useState(false)
 
   const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('')
   const [agree, setAgree] = useState(false)
@@ -55,6 +58,10 @@ function Component() {
       paginationParam: { ...pagination.paginationParam, page },
     })
     handleStore(page)
+  }
+
+  const handleOpenPrivacyModal = () => {
+    setOpenPrivacyModal(true)
   }
 
   const [pagination, setPagination] = useState({
@@ -272,7 +279,7 @@ function Component() {
   return (
     <div className="h-full">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
-      <div className="grid  items-center justify-items-center pb-5 pt-10 text-center">
+      <div className="grid  items-center justify-items-center pb-5 pt-20 text-center">
         <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
         <WebLogo />
       </div>
@@ -425,7 +432,8 @@ function Component() {
             </div>
 
             <div className="flex items-center gap-2 pt-16">
-              <TextInput
+              <Checkbox
+                color={'warning'}
                 id="agree"
                 type="checkbox"
                 checked={agree}
@@ -433,15 +441,13 @@ function Component() {
                 required
               />
               <Label htmlFor="agree" className="flex">
-                동의합니다. &nbsp;
-                <a href="#" className="text-cyan-600 hover:underline">
-                  이용약관 및 개인정보 처리방침
-                </a>
+                개인정보 처리방침에 동의합니다. &nbsp;
+                <PrivacyModal />
               </Label>
             </div>
           </form>
         </div>
-        <Button type="submit" className="mb-10 mt-16 w-72" onClick={() => handleSubmit()}>
+        <Button color="warning" className="mb-10 mt-16 w-72" onClick={() => handleSubmit()}>
           회원가입
         </Button>
 
