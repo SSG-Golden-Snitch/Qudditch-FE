@@ -28,8 +28,6 @@ const OrderHistory = () => {
   const [orders, setOrders] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [totalSales, setTotalSales] = useState(0)
-  // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
-  // const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
 
   const [showReceipt, setShowReceipt] = useState(false)
@@ -126,64 +124,67 @@ const OrderHistory = () => {
   const router = useRouter()
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 p-2">
-      {isLoading && <Loading />}
-      <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-2 shadow-md">
-        <button type="button" className="mb-4 flex items-center" onClick={() => router.push('/m')}>
-          <IoIosArrowBack className="mr-2" />
-          <h2 className="text-xl font-bold">구매목록</h2>
-        </button>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-          dateFormat="yyyy/MM"
-          showMonthYearPicker
-          customInput={<CustomInput />}
-          className="ml-4"
-        />
-      </div>
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto px-4 py-8">
+        <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
+          <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
+            <IoIosArrowBack className="mr-2" />
+            <h2 className="text-xl font-bold">구매목록</h2>
+          </button>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="yyyy/MM"
+            showMonthYearPicker
+            customInput={<CustomInput />}
+            className="ml-4"
+          />
+        </div>
 
-      <div className="mb-4 mt-20 flex w-full justify-center">
-        <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
-          구매내역 조회
-        </Button>
-        <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
-          환불내역 조회
-        </Button>
-      </div>
+        {isLoading && <Loading />}
 
-      <div className="overflow-auto">
-        {orders.map((order, index) => (
-          <Fragment key={index}>
-            <div className="mb-4 rounded-lg border-2 bg-white p-4 dark:bg-gray-800">
-              <div>
-                <div className="flex justify-between">
-                  <span>
-                    {formatDateYMD(order.customerOrder.orderedAt)}
-                    <button
-                      onClick={() => handleReceiptOpen(order.customerOrder.partnerOrderId)}
-                      className="text-blue-500 hover:underline"
-                    >
-                      [{order.customerOrder.partnerOrderId}]
-                    </button>
-                  </span>
-                  <span className="text-right text-lg font-bold">
-                    {formatNumber(order.customerOrder.totalAmount)}
-                  </span>
-                </div>
+        <div className="mt-20 flex w-full justify-center">
+          <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+            구매내역 조회
+          </Button>
+          <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+            환불내역 조회
+          </Button>
+        </div>
+
+        <div className="overflow-auto">
+          {orders.map((order, index) => (
+            <Fragment key={index}>
+              <div className="mb-4 border-b-2 bg-white p-4">
                 <div>
-                  <div className="mt-2 text-gray-600">
-                    {`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}
+                  <div className="flex justify-between">
+                    <span>
+                      {formatDateYMD(order.customerOrder.orderedAt)}
+                      <button
+                        onClick={() => handleReceiptOpen(order.customerOrder.partnerOrderId)}
+                        className="text-blue-500 hover:underline"
+                      >
+                        [{order.customerOrder.partnerOrderId}]
+                      </button>
+                    </span>
+                    <span className="text-right text-lg font-bold">
+                      {formatNumber(order.customerOrder.totalAmount)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="mt-2 text-gray-600">
+                      {`${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Fragment>
-        ))}
+            </Fragment>
+          ))}
+        </div>
+        {showReceipt && (
+          <ReceiptModal partnerOrderId={activeOrderId} onClose={() => setShowReceipt(false)} />
+        )}
       </div>
-      {showReceipt && (
-        <ReceiptModal partnerOrderId={activeOrderId} onClose={() => setShowReceipt(false)} />
-      )}
     </div>
   )
 }

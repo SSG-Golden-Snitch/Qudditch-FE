@@ -54,14 +54,12 @@ const ReceiptModal = ({ partnerOrderId, onClose }) => {
 
         {orderDetails.map((detail, index) => (
           <div key={index} className="mb-4 rounded-lg bg-white p-4 shadow">
-            <div className="flex justify-between">
-              <p className="text-sm">매장 {detail.storeName}</p>
-              <p className="text-sm">주소 {detail.storeAddress}</p>
-            </div>
-            <p className="text-sm">전화번호 {formatPhoneNumber(detail.storePhone)}</p>
-            <p className="text-sm">사업자 번호 {formatBusinessNumber(detail.businessNumber)}</p>
+            <p className="text-sm">매장: {detail.storeName}</p>
+            <p className="text-sm">주소: {detail.storeAddress}</p>
+            <p className="text-sm">전화번호: {formatPhoneNumber(detail.storePhone)}</p>
+            <p className="text-sm">사업자 번호: {formatBusinessNumber(detail.businessNumber)}</p>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
 
             <div className="mb-2 flex items-center justify-between">
               <div className="flex-1">
@@ -74,14 +72,14 @@ const ReceiptModal = ({ partnerOrderId, onClose }) => {
               </div>
             </div>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
 
             <div className="flex items-center justify-between">
               <p className="text-base">합계</p>
               <p className="text-base">{formatNumber(detail.productPrice * detail.qty)}</p>
             </div>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
 
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">결제금액</p>
@@ -95,12 +93,12 @@ const ReceiptModal = ({ partnerOrderId, onClose }) => {
               </p>
             </div>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
 
             <p className="text-sm">주문번호 {partnerOrderId}</p>
             <p className="text-sm">결제수단 카카오페이</p>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
 
             <div className="text-sm">
               <p>사용 포인트: {detail.usedPoint}</p>
@@ -108,7 +106,7 @@ const ReceiptModal = ({ partnerOrderId, onClose }) => {
               {/* <p>포인트 잔액: {detail.earnPoint - detail.usedPoint}</p> */}
             </div>
 
-            <hr className="my-2 border-dotted" />
+            <hr className="borderb-4 my-2 border-dashed border-slate-600" />
           </div>
         ))}
       </div>
