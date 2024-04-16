@@ -65,9 +65,9 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
 
         const data = await response.json()
 
-        console.log(pg_token)
+        // console.log(pg_token)
 
-        console.log(data)
+        // console.log(data)
 
         if (response.ok) {
           router.push('/m/store-select/payResult') // Navigate to success page
@@ -82,7 +82,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
     }
 
     approvePayment()
-  }, [pg_token, router])
+  }, [pg_token, partnerOrderId, router])
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-10 bg-gray-100 shadow-md">
