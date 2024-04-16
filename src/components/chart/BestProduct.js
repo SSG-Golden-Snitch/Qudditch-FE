@@ -32,8 +32,17 @@ const BestProduct = () => {
   const [productDataSet, setProductDataSet] = useState([])
   const [chartData, setChartData] = useState({ labels, datasets: [] })
 
+  const tooltip = {
+    callbacks: {
+      label: function (context) {
+        return `판매량: ${context.formattedValue}개`
+      },
+    },
+  }
+
   const options = {
     plugins: {
+      tooltip: tooltip,
       legend: {
         position: 'right',
         align: 'center',
