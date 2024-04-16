@@ -26,6 +26,7 @@ export default function StoreLogin() {
       if (data.error) {
         alert(data.error)
       } else {
+        if (typeof window === 'undefined') return
         sessionStorage.setItem('token', data.token)
         window.location.href = '/'
       }
