@@ -28,6 +28,10 @@ export default function MobileUserLogin() {
         if (res['token'].length > 0) {
           localStorage.setItem('token', res['token'].replaceAll('"', ''))
           window.location.href = '/m'
+        } else {
+          setMessage(data.message || '로그인 실패')
+          // 로그인 실패 시에만 알림창 띄우기
+          alert(message)
         }
       })
       .catch((err) => {
