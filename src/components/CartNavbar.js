@@ -70,14 +70,14 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
         console.log(data)
 
         if (response.ok) {
-          router.push('/m/payment/success') // Navigate to success page
+          router.push('/m/store-select/payResult') // Navigate to success page
         } else {
           console.error('Failed to approve payment:', data)
-          router.push('/m/payment/fail') // Navigate to failure page
+          router.push('/m/store-select/payResult') // Navigate to failure page
         }
       } catch (error) {
         console.error('Error approving payment:', error)
-        router.push('/m/payment/fail')
+        router.push('/m/store-select/payResult')
       }
     }
 
