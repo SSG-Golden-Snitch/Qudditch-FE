@@ -1,7 +1,7 @@
 import '@/app/globals.css'
 import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/dist/react/index'
+import { Analytics } from '@vercel/analytics/react'
 
 export default function WebRootLayout({ children }) {
   return (

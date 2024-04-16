@@ -4,7 +4,7 @@ export const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 const getUserToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('token').replaceAll('"', '')
+    return localStorage.getItem('token')?.replaceAll('"', '')
   }
 }
 
