@@ -10,20 +10,16 @@ const getUserToken = () => {
 
 export const fetchExtended = returnFetch({
   baseUrl: apiUrl,
-  headers: { Accept: 'application/json', Authorization: 'Bearer ' + getUserToken() },
+  headers: {
+    Accept: 'application/json',
+    Authorization: 'Bearer ' + getUserToken(),
+  },
   interceptors: {
     request: async (args) => {
       console.log('********* before sending request *********')
       console.log('url:', args[0].toString())
       console.log('requestInit:', args[1], '\n\n')
-      if (args[0].pathname.includes('login')) {
-        args[1].headers.delete('Authorization')
-        return args
-      }
-      // if (getUserToken() === null) {
-      //   console.log('no token')
-      //   window.location.href = '/m/login'
-      // }
+      args.at(1).credentials = 'include'
       return args
     },
 

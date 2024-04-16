@@ -63,7 +63,6 @@ export default function Input() {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
       body: JSON.stringify({
         productId: result,
@@ -94,7 +93,6 @@ export default function Input() {
       headers: {
         Accept: 'application/json',
         'Access-Control-Allow-Origin': '*',
-        credentials: 'include',
       },
     })
       .then((res) => res.json())
