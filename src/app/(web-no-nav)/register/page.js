@@ -314,10 +314,10 @@ function Component() {
                     className="w-2/3"
                     color={emailColor}
                   />
-                  <Button color="warning" onClick={() => handleEmailDuple()}>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleEmailDuple()}>
                     중복체크
                   </Button>
-                  <Button color="warning" onClick={() => sendVerifyCode()}>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => sendVerifyCode()}>
                     인증번호 전송
                   </Button>
                 </div>
@@ -401,7 +401,7 @@ function Component() {
                     readOnly
                     className="w-96"
                   />
-                  <Button color="warning" onClick={() => handleOpenModal()}>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleOpenModal()}>
                     매장 선택{' '}
                   </Button>
                 </div>
@@ -447,7 +447,11 @@ function Component() {
             </div>
           </form>
         </div>
-        <Button color="warning" className="mb-10 mt-16 w-72" onClick={() => handleSubmit()}>
+        <Button
+          style={{ backgroundColor: '#FBBF24' }}
+          className="mb-10 mt-16 w-72"
+          onClick={() => handleSubmit()}
+        >
           회원가입
         </Button>
 
