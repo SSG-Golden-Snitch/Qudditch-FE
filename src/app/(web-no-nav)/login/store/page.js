@@ -85,11 +85,12 @@ export default function StoreLogin() {
               <div className="flex items-center justify-between">
                 <div className="flex items-start">
                   <div className="flex h-5 items-center">
-                    <TextInput
+                    <Checkbox
                       id="remember"
                       aria-describedby="remember"
                       type="checkbox"
                       required=""
+                      color="yellow"
                     />
                   </div>
                   <div className="ml-3 text-sm">
