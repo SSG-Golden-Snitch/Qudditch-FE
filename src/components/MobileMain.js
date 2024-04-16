@@ -179,7 +179,7 @@ const MobileMain = () => {
           <div className="col-start-2 col-end-3 flex justify-center">
             <AppLogo />
           </div>
-          <div className="absolute  right-5 top-10">
+          <div className="fixed right-5 top-10">
             <Link href="/m/alert">
               {onNotify ? (
                 <VscBellDot className="text-2xl text-amber-400 dark:text-gray-200" />
