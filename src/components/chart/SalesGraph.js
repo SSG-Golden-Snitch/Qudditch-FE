@@ -1,26 +1,63 @@
 'use client'
 import { fetchExtended } from '@/utils/fetchExtended'
 import React, { useEffect, useRef, useState } from 'react'
-// import chart from 'chart.js/auto'
-import { Chart, registerables } from 'chart.js'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { graphColors } from './graphColors'
 
-const RANK_VIEW = 4
-const categoryColor = [
-  'rgb(255, 99, 132)',
-  'rgb(54, 162, 235)',
-  'rgb(255, 205, 86)',
-  'rgb(204, 0, 204)',
-  'rgb(153, 255, 255)',
-]
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Title,
+  Legend,
+} from 'chart.js'
+import { Line } from 'react-chartjs-2'
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
+
+import { graphColors } from './graphColors'
 
 const SalesGraph = ({ dateInput }) => {
   const yearMonth = dateInput
-  const chartRef = useRef(null)
   const [currentList, setCurrentList] = useState([])
   const [bindingList, setBindingList] = useState([])
-  let chartInstance = null
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] })
+
+  const options = {
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+      },
+    },
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: '일일 매출 현황',
+        font: {
+          size: 25,
+        },
+        padding: {
+          bottom: 20,
+        },
+      },
+    },
+    layout: {
+      padding: {
+        left: 0,
+        right: 0,
+        top: 20,
+        bottom: 10,
+      },
+    },
+    maintainAspectRatio: false,
+  }
 
   // 데이터 불러오기
   useEffect(() => {
@@ -28,6 +65,10 @@ const SalesGraph = ({ dateInput }) => {
       try {
         const response = await fetchExtended(`/api/graph/sales?yearMonth=${yearMonth}`)
         const data = await response.json()
+
+        if (data['list'] == null) {
+          return
+        }
 
         setCurrentList(data['list'].filter((itm) => itm.sales !== 0))
       } catch (error) {
@@ -48,17 +89,6 @@ const SalesGraph = ({ dateInput }) => {
 
   // 차트 그리기
   useEffect(() => {
-    const destroyChart = () => {
-      if (chartInstance) {
-        chartInstance.destroy()
-        chartInstance = null
-      }
-    }
-
-    destroyChart() // 기존 차트 파괴
-
-    const ctx = chartRef.current.getContext('2d')
-
     const data = {
       labels: bindingList.map((itm) => {
         return Number(itm.date.split('-')[2]) + '일'
@@ -74,49 +104,10 @@ const SalesGraph = ({ dateInput }) => {
       ],
     }
 
-    const createChart = () => {
-      Chart.register(...registerables)
-      chartInstance = new Chart(ctx, {
-        plugins: [ChartDataLabels],
-        type: 'line',
-        data: data,
-        options: {
-          plugins: {
-            datalabels: {
-              display: false,
-              align: 200,
-              formatter: function (value, context) {
-                return value
-              },
-            },
-            title: {
-              display: true,
-              text: '일일 매출현황',
-              font: {
-                size: 25,
-              },
-            },
-          },
-          layout: {
-            padding: {
-              left: 0,
-              right: 0,
-              top: 20,
-              bottom: 10,
-            },
-          },
-        },
-      })
-    }
-
-    createChart() // 새로운 차트 생성
-
-    return () => {
-      destroyChart() // 컴포넌트가 unmount될 때 차트 파괴
-    }
+    setChartData(data)
   }, [bindingList])
 
-  return <canvas ref={chartRef}></canvas>
+  return <Line options={options} data={chartData} />
 }
 
 export default SalesGraph
