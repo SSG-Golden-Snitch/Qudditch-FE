@@ -176,9 +176,12 @@ function Chatbot() {
 
   if (isLoading) return <Loading />
   return (
-    <div className="chat-app mx-auto flex h-screen max-w-md flex-col rounded-lg border bg-gray-200 font-sans">
-      <header className="chat-header flex items-center justify-between rounded-t-lg bg-gray-800 p-2 text-white">
-        <h1 className="text-lg font-semibold">SSGmart24</h1>
+    <div className="chat-app mx-auto flex h-screen max-w-md flex-col rounded-lg  bg-gray-200 font-sans">
+      <header className="chat-header flex items-center justify-between  bg-gray-800 p-2 text-white">
+        <div className="flex">
+          <Image src={dobbyImage} alt="도비" className="h-8 w-8 rounded-full" />
+          <h1 className="pl-3 text-lg font-semibold">Dobby Chat</h1>
+        </div>
         <button className="home-button text-xl" aria-label="Home">
           <Link href="/m">
             <HiOutlineHome />
@@ -228,7 +231,7 @@ function Chatbot() {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="chat-input flex items-center rounded-b-lg bg-gray-300 p-3">
+      <div className="chat-input flex items-center  bg-gray-300 p-3">
         <button
           onClick={listening ? stopListening : startListening}
           className="mr-2 rounded-full bg-gray-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-600 focus:outline-none"

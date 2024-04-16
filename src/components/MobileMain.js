@@ -133,9 +133,12 @@ const MobileMain = () => {
 
       let userEmail = decodedJWT.sub
 
-      const sse = new EventSource(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`,
-      )
+      const sse_url = `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`
+      console.info('sse url', sse_url)
+
+      const sse = new EventSource(sse_url, {
+        withCredentials: true,
+      })
 
       sse.addEventListener('connect', function (e) {
         if (e != null && e.data === 'NOTIFY_FCM') {
