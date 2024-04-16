@@ -6,13 +6,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Message } from '@aws-amplify/ui-react'
 
 export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const router = useRouter() // Next.js 라우터 인스턴스를 가져옵니다.
+  const router = useRouter()
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -33,20 +34,21 @@ export default function MobileUserLogin() {
         window.location.href = '/m'
       } else {
         setMessage(data.message || '로그인 실패')
+        // 로그인 실패 시에만 알림창 띄우기
+        alert(message)
       }
     } catch (error) {
       setLoading(false)
       setMessage('서버와의 연결에 실패했습니다.')
+      alert(message)
     }
   }
 
   // 소셜 로그인 처리 함수
   const handleSocialSignIn = (provider) => async (e) => {
     e.preventDefault()
-    // Fetch API로 백엔드에 소셜 로그인 요청 보내기
     await signIn(provider)
   }
-
   return (
     <div>
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
