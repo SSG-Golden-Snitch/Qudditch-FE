@@ -174,19 +174,19 @@ const MobileMain = () => {
 
   return (
     <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
-      <div className="    items-center  justify-items-center  bg-stone-600 pt-10">
-        <div className="items-center justify-items-stretch text-center">
-          <div className="col-start-2 col-end-3 flex justify-center">
+      <div className="   items-center  justify-items-center  bg-stone-600 pt-10">
+        <div className=" items-center justify-items-stretch text-center">
+          <div className="flex justify-center pl-24">
             <AppLogo />
-          </div>
-          <div className="fixed right-5 top-10">
-            <Link href="/m/alert">
-              {onNotify ? (
-                <VscBellDot className="text-2xl text-amber-400 dark:text-gray-200" />
-              ) : (
-                <AiFillBell className="text-2xl text-amber-400 dark:text-gray-200" />
-              )}
-            </Link>
+            <div className="pl-16">
+              <Link href="/m/alert">
+                {onNotify ? (
+                  <VscBellDot className="text-2xl text-amber-400 dark:text-gray-200" />
+                ) : (
+                  <AiFillBell className="text-2xl text-amber-400 dark:text-gray-200" />
+                )}
+              </Link>
+            </div>
           </div>
         </div>
 
