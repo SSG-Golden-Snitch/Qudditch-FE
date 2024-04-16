@@ -25,8 +25,8 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-4 dark:border-gray-700">
-      <div className="flex h-14 items-center justify-between">
-        <p className="m-2 text-2xl font-bold">Dashboard</p>
+      <div className="items-right flex h-14 justify-end">
+        {/* <p className="m-2 text-2xl font-bold">Dashboard</p> */}
         <div className="mr-20">
           <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
         </div>
