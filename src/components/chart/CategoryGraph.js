@@ -24,8 +24,17 @@ const CategoryGraph = ({ dateInput }) => {
   const [productDataSet, setProductDataSet] = useState([])
   const [chartData, setChartData] = useState({ labels, datasets: [] })
 
+  const tooltip = {
+    callbacks: {
+      label: function (context) {
+        return `매출: ₩${context.formattedValue}`
+      },
+    },
+  }
+
   const options = {
     plugins: {
+      tooltip: tooltip,
       legend: {
         position: 'right',
         align: 'center',
@@ -104,7 +113,7 @@ const CategoryGraph = ({ dateInput }) => {
       labels,
       datasets: [
         {
-          label: '카테고리',
+          label: '매출',
           data: productDataSet,
           backgroundColor: doughnutChartColor,
           hoverOffset: 4,
