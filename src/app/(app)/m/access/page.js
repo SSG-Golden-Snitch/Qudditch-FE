@@ -20,6 +20,7 @@ export default function Access() {
   const { Canvas } = useQRCode()
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const token = sessionStorage.get('token')
     if (!token) {
       router.push('/mobile/login')
