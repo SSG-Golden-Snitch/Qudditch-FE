@@ -4,7 +4,7 @@
 import { signIn } from 'next-auth/react'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { Message } from '@aws-amplify/ui-react'
 
@@ -14,6 +14,13 @@ export default function MobileUserLogin() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const router = useRouter()
+
+  const kakaoLogin = () => {
+    console.log(window.Kakao.Auth)
+    window.Kakao.Auth.authorize({
+      redirectUri: `${window.location.origin}/mobile/login/kakao`,
+    })
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -95,52 +102,45 @@ export default function MobileUserLogin() {
           >
             로그인
           </button>
-
-          <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300 ">
-            <p className="mx-4 mb-0 text-center font-semibold ">OR</p>
-          </div>
-          <div className="mt-4">
-            <a href="#" className="block">
-              <button
-                onClick={() => handleSocialSignIn('google')}
-                disabled={loading}
-                className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
-              >
-                <img src="/btn_google.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-                <span className="dark:text-gray-300">Login with Google</span>
-              </button>
-            </a>
-
-            <a href="#" className="block">
-              <button
-                onClick={() => handleSocialSignIn('kakao')}
-                disabled={loading}
-                className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
-              >
-                <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-                <span className="dark:text-gray-300">Login with Kakao</span>
-              </button>
-            </a>
-            <a href="#" className="block">
-              <button
-                onClick={() => handleSocialSignIn('naver')}
-                disabled={loading}
-                className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
-              >
-                <img src="/btn_naver.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-                <span className="dark:text-gray-300">Login with Naver</span>
-              </button>
-            </a>
-          </div>
-          <div className="flex w-full justify-center">
-            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-              아직 회원이 아니신가요?{' '}
-              <a href="/mobile/register" className=" font-medium text-amber-400 hover:underline">
-                회원가입
-              </a>
-            </p>
-          </div>
         </form>
+        <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300 ">
+          <p className="mx-4 mb-0 text-center font-semibold ">OR</p>
+        </div>
+        <div className="mt-4">
+          <button
+            onClick={() => handleSocialSignIn('google')}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_google.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Google</span>
+          </button>
+
+          <button
+            onClick={() => kakaoLogin()}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Kakao</span>
+          </button>
+          <button
+            onClick={() => handleSocialSignIn('naver')}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_naver.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Naver</span>
+          </button>
+        </div>
+        <div className="flex w-full justify-center">
+          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+            아직 회원이 아니신가요?{' '}
+            <a href="/mobile/register" className=" font-medium text-amber-400 hover:underline">
+              회원가입
+            </a>
+          </p>
+        </div>
       </div>
     </section>
   )
