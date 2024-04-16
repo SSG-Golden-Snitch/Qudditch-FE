@@ -1,14 +1,14 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, totalPay }) => {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const pg_token = searchParams ? searchParams.get('pg_token') : null
+  const searchParams = useSearchParams()
+  const pg_token = searchParams.get('pg_token')
   const router = useRouter()
+  const [partnerOrderId, setPartnerOrderId] = useState(0)
 
   // 금액: 세 자리마다 , 표시
   const formatNumber = (number) => {
@@ -30,9 +30,13 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
         body: JSON.stringify(paymentData),
       })
       const data = await response.json()
+
+      setPartnerOrderId(data.partnerOrderId)
+
       if (response.ok) {
+        console.log(data.partnerOrderId)
         // 결제 페이지로 리다이렉트
-        window.location.href = data.redirectUrl
+        window.open(data.redirectUrl, '_blank')
       } else {
         // 오류 처리
         console.error('Failed to initiate payment:', data)
@@ -60,6 +64,8 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
         })
 
         const data = await response.json()
+
+        console.log(pg_token)
 
         console.log(data)
 

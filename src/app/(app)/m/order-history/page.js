@@ -9,6 +9,7 @@ import { Button } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
 import ReceiptModal from '@/components/ReceiptModal'
 import Loading from '@/components/ui/Loading'
+import { useRouter } from 'next/navigation'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -122,15 +123,13 @@ const OrderHistory = () => {
   //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
   // }
 
+  const router = useRouter()
+
   return (
     <div className="flex h-screen flex-col bg-gray-100 p-2">
       {isLoading && <Loading />}
       <div className="fixed left-0 top-0 z-10 flex w-full items-center justify-between bg-white p-2 shadow-md">
-        <button
-          type="button"
-          className="mb-4 flex items-center"
-          onClick={() => window.history.back()}
-        >
+        <button type="button" className="mb-4 flex items-center" onClick={() => router.push('/m')}>
           <IoIosArrowBack className="mr-2" />
           <h2 className="text-xl font-bold">구매목록</h2>
         </button>
