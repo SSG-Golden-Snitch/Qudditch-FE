@@ -17,6 +17,7 @@ import AgeVisitor from '@/components/chart/AgeVisitor'
 import GenderVisitor from '@/components/chart/GenderVisitor'
 import AgeBestProduct from '@/components/chart/AgeBestProduct'
 import GenderBestProduct from '@/components/chart/GenderBestProduct'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
 const customTheme = {
   root: {
@@ -66,12 +67,12 @@ export default function Home() {
         slide={false}
         leftControl={
           <div className={'text-4xl'}>
-            <AiOutlineLeftCircle />
+            <FaChevronLeft />
           </div>
         }
         rightControl={
           <div className={'text-4xl'}>
-            <AiOutlineRightCircle />
+            <FaChevronRight />
           </div>
         }
         className={'h-[calc(100vh-9.5rem)] shrink-0 pb-4'}
