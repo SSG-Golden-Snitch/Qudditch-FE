@@ -4,7 +4,7 @@ export const apiUrl = process.env.NEXT_PUBLIC_API_URL
 
 const getUserToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('token')?.replaceAll('"', '')
+    return localStorage.getItem('token')
   }
 }
 
@@ -12,14 +12,20 @@ export const fetchExtended = returnFetch({
   baseUrl: apiUrl,
   headers: {
     Accept: 'application/json',
-    Authorization: 'Bearer ' + getUserToken(),
   },
   interceptors: {
     request: async (args) => {
       console.log('********* before sending request *********')
       console.log('url:', args[0].toString())
       console.log('requestInit:', args[1], '\n\n')
-      args.at(1).credentials = 'include'
+      const token = getUserToken()
+      if (token) {
+        args[1].headers = {
+          ...args[1].headers,
+          Authorization: `Bearer ${token.replaceAll('"', '')}`,
+        }
+        args.at(1).credentials = 'include'
+      }
       return args
     },
 

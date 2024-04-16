@@ -27,7 +27,7 @@ export default function MobileUserLogin() {
       .then((res) => {
         if (res['token'].length > 0) {
           localStorage.setItem('token', res['token'].replaceAll('"', ''))
-          router.back()
+          window.location.href = '/m'
         }
       })
       .catch((err) => {
