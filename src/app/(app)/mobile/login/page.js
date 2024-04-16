@@ -18,26 +18,21 @@ export default function MobileUserLogin() {
     e.preventDefault()
     setLoading(true)
 
-    try {
-      const response = await fetchExtended('/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: { 'Content-Type': 'application/json' },
+    await fetchExtended('/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res['token'].length > 0) {
+          localStorage.setItem('token', res['token'].replaceAll('"', ''))
+          window.location.href = '/m'
+        }
       })
-      const data = await response.json()
-      setLoading(false)
-
-      if (response.ok) {
-        setMessage('로그인 성공')
-        localStorage.set('token', response['token'].replaceAll('"', ''))
-        window.location.href = '/m'
-      } else {
-        setMessage(data.message || '로그인 실패')
-      }
-    } catch (error) {
-      setLoading(false)
-      setMessage('서버와의 연결에 실패했습니다.')
-    }
+      .catch((err) => {
+        setMessage('로그인 실패')
+      })
   }
 
   // 소셜 로그인 처리 함수
