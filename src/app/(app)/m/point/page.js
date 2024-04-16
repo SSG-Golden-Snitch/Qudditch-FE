@@ -80,8 +80,7 @@ const Point = () => {
     return (
       <div className="mb-4">
         {' '}
-        {/* Added mb-4 class */}
-        <ul style={{ marginBottom: '100px' }}>
+        <ul style={{ marginBottom: '20px' }}>
           {filteredData.map((item, index) => (
             <li
               key={index}
@@ -117,6 +116,14 @@ const Point = () => {
             </li>
           ))}
         </ul>
+        {showMoreButton && !showAllData && (
+          <button
+            className="w-full rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            onClick={handleLoadMore}
+          >
+            더보기
+          </button>
+        )}
       </div>
     )
   }
@@ -158,15 +165,8 @@ const Point = () => {
             적립
           </button>
         </div>
+
         {renderTransactionHistory()}
-        {showMoreButton && !showAllData && (
-          <button
-            className="w-full rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
-            onClick={handleLoadMore}
-          >
-            더보기
-          </button>
-        )}
       </div>
     </div>
   )
