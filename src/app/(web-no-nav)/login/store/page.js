@@ -107,7 +107,10 @@ export default function StoreLogin() {
                 로그인
               </button>
               <p className="text-sm font-light text-gray-500">
-                <a href="#" className="font-medium text-stone-400 underline hover:underline">
+                <a
+                  href="/login/admin"
+                  className="font-medium text-stone-400 underline hover:underline"
+                >
                   관리자 로그인
                 </a>
               </p>
