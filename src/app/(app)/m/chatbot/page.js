@@ -124,6 +124,10 @@ function Chatbot() {
     const decoder = new TextDecoder('utf-8')
 
     try {
+      if (inputValue === '') {
+        return
+      }
+
       if (!navigator.geolocation) {
         console.error('Geolocation not supported')
         return
@@ -250,7 +254,7 @@ function Chatbot() {
           className="flex-grow rounded-full border border-gray-300 px-3 py-2 outline-none focus:border-blue-500"
         />
         <button
-          onClick={handleMessageSend}
+          onTouchStart={handleMessageSend}
           disabled={!inputValue} // inputValue가 비어있을 때 버튼을 비활성화합니다.
           className="ml-2 rounded-full bg-gray-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-600 focus:outline-none"
         >

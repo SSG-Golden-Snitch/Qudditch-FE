@@ -51,7 +51,7 @@ export default function InputDetail({ params: { id } }) {
   if (isLoading) return <Loading />
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] px-10 py-10">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
       <div className="flex flex-col items-center pt-16">

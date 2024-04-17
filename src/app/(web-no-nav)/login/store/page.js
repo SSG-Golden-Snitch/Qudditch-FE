@@ -39,7 +39,7 @@ export default function StoreLogin() {
   }
 
   return (
-    <section className="flex min-h-screen  items-center justify-center bg-gray-50 ">
+    <section className="flex min-h-screen  items-center justify-center bg-[#e4e4e4] ">
       <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
         <div className="grid  pb-10 text-center">
           <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>

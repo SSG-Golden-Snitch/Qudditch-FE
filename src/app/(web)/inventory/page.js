@@ -95,7 +95,7 @@ export default function Stock() {
 
   if (isLoading) return <Loading />
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] px-10 py-5">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
       <div className="grid grid-cols-2">
         <div className="px-3 pb-5 pt-5 text-right">

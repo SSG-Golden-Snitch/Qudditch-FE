@@ -134,12 +134,7 @@ export default function GetDetail({ id }) {
             }}
           >
             <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center pl-3">
-              <svg
-                className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
+              <svg className="h-4 w-4 " aria-hidden="true" fill="none" viewBox="0 0 20 20">
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
