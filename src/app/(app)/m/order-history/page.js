@@ -48,7 +48,7 @@ const OrderHistory = () => {
 
       // 요청할 URL의 queryString 생성
       const queryString = new URLSearchParams(params).toString()
-      const endpoint = `/api/order/history?${queryString}`
+      const endpoint = `/api/order/history/c?${queryString}`
 
       try {
         const response = await fetchExtended(endpoint, {
@@ -76,7 +76,7 @@ const OrderHistory = () => {
     }
 
     fetchOrders()
-  }, [selectedDate, viewType, selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+  }, [selectedDate, viewType]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
 
   // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
   const handleViewTypeChange = (type) => {
@@ -124,7 +124,7 @@ const OrderHistory = () => {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
