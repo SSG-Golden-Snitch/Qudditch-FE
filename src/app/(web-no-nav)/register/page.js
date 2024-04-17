@@ -504,6 +504,7 @@ function Component() {
                     required
                   />
                   <Button
+                    style={{ backgroundColor: '#FBBF24' }}
                     className="absolute bottom-1.5 end-1.5 rounded-lg"
                     onClick={() => handleStore(pagination['page'], keyword)}
                   >
@@ -526,7 +527,11 @@ function Component() {
                         <Table.Cell>{store.name}</Table.Cell>
                         <Table.Cell>{store.address}</Table.Cell>
                         <Table.Cell>
-                          <Button size="xs" onClick={() => handleStoreSelect(store.id, store.name)}>
+                          <Button
+                            style={{ backgroundColor: '#FBBF24' }}
+                            size="xs"
+                            onClick={() => handleStoreSelect(store.id, store.name)}
+                          >
                             선택
                           </Button>
                         </Table.Cell>
