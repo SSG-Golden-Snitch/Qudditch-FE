@@ -50,6 +50,12 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                     h.col_name === 'items' || h.col_name === 'orderItems'
                       ? 'cursor-pointer hover:underline'
                       : ''
+                  } ${
+                    h.col_name === 'expiredAt' &&
+                    item['expiredAt'] &&
+                    new Date(item['expiredAt']) < new Date()
+                      ? 'text-red-500'
+                      : ''
                   }`}
                 >
                   {h.col_name === 'inputAt' || h.col_name === 'createdAt'
