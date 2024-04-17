@@ -17,6 +17,7 @@ import AgeVisitor from '@/components/chart/AgeVisitor'
 import GenderVisitor from '@/components/chart/GenderVisitor'
 import AgeBestProduct from '@/components/chart/AgeBestProduct'
 import GenderBestProduct from '@/components/chart/GenderBestProduct'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
 const customTheme = {
   root: {
@@ -40,9 +41,8 @@ export default function Home() {
 
   return (
     <div className="flex h-screen flex-col bg-gray-100 px-4 dark:border-gray-700">
-      <div className="flex h-14 items-center justify-between">
-        <p className="m-2 text-2xl font-bold">Dashboard</p>
-        <div className="mr-20">
+      <div className="flex h-14 justify-end">
+        <div className={'py-2'}>
           <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
         </div>
       </div>
@@ -66,12 +66,12 @@ export default function Home() {
         slide={false}
         leftControl={
           <div className={'text-4xl'}>
-            <AiOutlineLeftCircle />
+            <FaChevronLeft />
           </div>
         }
         rightControl={
           <div className={'text-4xl'}>
-            <AiOutlineRightCircle />
+            <FaChevronRight />
           </div>
         }
         className={'h-[calc(100vh-9.5rem)] shrink-0 pb-4'}

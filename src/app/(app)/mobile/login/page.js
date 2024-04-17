@@ -1,19 +1,21 @@
 // src/app/mobile/login/page.js
 'use client'
-import { Button, Label, TextInput } from 'flowbite-react'
+
 import { signIn } from 'next-auth/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+
 import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { CustomAlert } from '@/components/CustomAlert'
 
 export default function MobileUserLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const router = useRouter() // Next.js 라우터 인스턴스를 가져옵니다.
 
+  const handleAlert = (message = '') => {
+    setMessage(message)
+  }
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -21,74 +23,122 @@ export default function MobileUserLogin() {
     await fetchExtended('/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-      headers: { 'Content-Type': 'application/json' },
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res['token'].length > 0) {
+        if (res['token'].length > 0 || res['token']) {
           localStorage.setItem('token', res['token'].replaceAll('"', ''))
           window.location.href = '/m'
+        } else {
+          setMessage('아이디와 비밀번호를 확인하세요')
+          setLoading(false)
         }
       })
       .catch((err) => {
         setMessage('로그인 실패')
+        setLoading(false)
       })
   }
 
   // 소셜 로그인 처리 함수
   const handleSocialSignIn = (provider) => async (e) => {
     e.preventDefault()
-    // Fetch API로 백엔드에 소셜 로그인 요청 보내기
     await signIn(provider)
   }
-
   return (
-    <div>
-      <form className="flex flex-col gap-4">
-        <div>
-          <Label htmlFor="email">이메일</Label>
-          <TextInput
-            id="email"
-            type="email"
-            placeholder="이메일을 입력해주세요"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <section className="flex h-screen max-w-full items-center justify-center bg-white">
+      {message && <CustomAlert message={message} handleDismiss={handleAlert} />}
+      <div className="flex w-full flex-col items-center justify-center px-6 py-8 md:h-screen lg:p-0">
+        <span className="pb-1 text-gray-500">딜리셔스 아이디어</span>
+        <img className="h-50 w-50 mr-2" src="/WebLogo.svg" alt="logo"></img>
+        <form onSubmit={handleLogin} className="min-w-full space-y-4 md:space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="mb-10 block text-sm font-medium text-gray-900 dark:text-white"
+            ></label>
+            <input
+              id="email"
+              type="email"
+              placeholder="이메일을 입력해주세요"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 py-2.5 text-gray-900 focus:border-gray-600 focus:ring-gray-600 sm:text-sm"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium text-gray-900"
+            ></label>
+            <input
+              id="password"
+              type="password"
+              required
+              placeholder="비밀번호를 입력해주세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50  py-2.5 text-gray-900 focus:border-gray-600 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500 sm:text-sm"
+            />
+          </div>
+          <div className="justify-left flex w-full">
+            <a
+              href="/mobile/find-account"
+              className="text-sm font-medium text-amber-400 hover:underline"
+            >
+              비밀번호를 잊으셨나요?
+            </a>
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
+          >
+            {loading ? '로그인중...' : '로그인'}
+          </button>
+
+          <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300 ">
+            <p className="mx-4 mb-0 text-center font-semibold ">OR</p>
+          </div>
+        </form>
+        <div className="mt-4 min-w-full">
+          <button
+            onClick={() => handleSocialSignIn('google')}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_google.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Google</span>
+          </button>
+
+          <button
+            onClick={() => handleSocialSignIn('kakao')}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Kakao</span>
+          </button>
+
+          <button
+            onClick={() => handleSocialSignIn('naver')}
+            disabled={loading}
+            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+          >
+            <img src="/btn_naver.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+            <span className="dark:text-gray-300">Login with Naver</span>
+          </button>
         </div>
-        <div>
-          <Label htmlFor="password">비밀번호</Label>
-          <TextInput
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+        <div className="flex w-full justify-center">
+          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+            아직 회원이 아니신가요?{' '}
+            <a href="/mobile/register" className=" font-medium text-amber-400 hover:underline">
+              회원가입
+            </a>
+          </p>
         </div>
-        <Button type="button" onClick={handleLogin} disabled={loading}>
-          {loading ? '로그인 중...' : '로그인'}
-        </Button>
-        <div className="space-y-2 text-center">
-          <Link href="/mobile/register" className="text-blue-500 hover:underline">
-            회원가입
-          </Link>
-          <br />
-          <Link href="/mobile/find-account" className="text-blue-500 hover:underline">
-            아이디/비밀번호 찾기
-          </Link>
-        </div>
-        {/* 소셜 로그인 버튼 */}
-        <Button onClick={handleSocialSignIn('google')} disabled={loading}>
-          Google로 로그인
-        </Button>
-        <Button onClick={handleSocialSignIn('kakao')} disabled={loading}>
-          Kakao로 로그인
-        </Button>
-        <Button onClick={handleSocialSignIn('naver')} disabled={loading}>
-          Naver로 로그인
-        </Button>
-      </form>
-    </div>
+      </div>
+    </section>
   )
 }

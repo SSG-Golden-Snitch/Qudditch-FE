@@ -1,11 +1,12 @@
 'use client'
 
-import { fetchExtended } from '@/utils/fetchExtended'
+import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Button } from 'flowbite-react'
 import { HiDownload } from 'react-icons/hi'
 
 export function DownloadBtn({ inputId, inputAt, handleAlert, handleData }) {
-  const downloadUrl = `/api/store/stock/input/download/${inputId}`
+  const downloadUrl = apiUrl + `/api/store/order/download/${inputId}`
+
   const handleDownload = () => {
     fetchExtended(downloadUrl, {
       method: 'GET',
@@ -14,14 +15,13 @@ export function DownloadBtn({ inputId, inputAt, handleAlert, handleData }) {
         'Access-Control-Allow-Origin': '*',
       },
     })
-      .then(async (res) => {
-        const data = await res.json()
-        if (data['status'] === 'fail') {
-          handleAlert('failure', data['message'])
-          return
+      .then((res) => {
+        if (!res.ok) {
+          handleAlert('error', '엑셀 파일 다운로드에 실패했습니다.')
         }
-
-        const blob = await fetchExtended(downloadUrl).then((r) => r.blob())
+        return res.blob()
+      })
+      .then((blob) => {
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
@@ -30,12 +30,15 @@ export function DownloadBtn({ inputId, inputAt, handleAlert, handleData }) {
         a.click()
         a.remove()
         window.URL.revokeObjectURL(url)
-        handleAlert('success', '다운로드 되었습니다')
+        handleAlert('success', '다운로드 되었습니다.')
       })
       .catch((error) => {
-        handleAlert('failure', '다운로드에 실패했습니다')
+        console.error('Error:', error)
+        handleAlert('error', '엑셀 파일 다운로드에 실패했습니다.')
       })
-      .finally(() => handleData())
+      .finally(() => {
+        handleData()
+      })
   }
 
   return (
