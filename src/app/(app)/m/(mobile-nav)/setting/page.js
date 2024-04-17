@@ -107,7 +107,7 @@ const WebSettingPage = () => {
   }, [])
 
   return (
-    <>
+    <div className={'h-[100vh-4rem] overflow-y-scroll'}>
       {isTopLoading ? (
         <Loading />
       ) : topMessage != null ? (
@@ -176,7 +176,7 @@ const WebSettingPage = () => {
           </div>
         </Link>
       </div>
-    </>
+    </div>
   )
 }
 export default WebSettingPage
