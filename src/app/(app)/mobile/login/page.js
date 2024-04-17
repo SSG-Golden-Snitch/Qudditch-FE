@@ -12,8 +12,6 @@ export default function MobileUserLogin() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false) // 로딩 상태 관리
   const [message, setMessage] = useState('') // 메시지 상태 관리
-  const router = useRouter()
-
   // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
