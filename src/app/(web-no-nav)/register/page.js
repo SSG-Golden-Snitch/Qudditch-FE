@@ -130,6 +130,7 @@ function Component() {
     fetchExtended(ocrReqUrl, {
       method: 'POST',
       body: formData,
+      'content-type': 'multipart/form-data',
     })
       .then((res) => res.json())
       .then((res) => {
@@ -267,12 +268,13 @@ function Component() {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res['status'] === 'fail') {
-          alert('이미 사용중인 이메일입니다')
-        } else {
-          setEmailColor('success')
-          setText('사용가능한 이메일입니다')
-        }
+        // if (res['status'] === 'fail') {
+        //   alert('이미 사용중인 이메일입니다')
+        // } else {
+        //   setEmailColor('success')
+        //   setText('사용가능한 이메일입니다')
+        // }
+        console.log(res)
       })
   }
 
