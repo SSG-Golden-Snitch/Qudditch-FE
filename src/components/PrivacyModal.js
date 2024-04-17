@@ -13,7 +13,7 @@ export default function PrivacyModal() {
       <div onClick={() => setOpenModal(true)} className="text-amber-400 underline">
         개인정보 처리방침
       </div>
-      <Modal show={openModal} size={'3xl'} onClose={handleCloseModal}>
+      <Modal show={openModal} size="7xl" onClose={handleCloseModal}>
         <ModalHeader />
         <ModalBody>
           <div class="in">
@@ -24,7 +24,7 @@ export default function PrivacyModal() {
                   제1조 목적
                   <br />
                   <br />
-                  본 이용약관은 &ldquo;회사이름&rdquo;(이하 &quot;사이트&quot;)의 서비스의
+                  본 이용약관은 &ldquo;골든스니치&rdquo;(이하 &quot;SSGmart24&quot;)의 서비스의
                   이용조건과 운영에 관한 제반 사항 규정을 목적으로 합니다.
                   <br />
                   <br />
@@ -247,7 +247,7 @@ export default function PrivacyModal() {
                   <br />
                   부칙
                   <br />
-                  <br />이 약관은 2020년 00월 00일부터 시행합니다.
+                  <br />이 약관은 2024년 03월 4일부터 시행합니다.
                 </div>
               </div>
             </div>

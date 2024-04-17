@@ -18,7 +18,11 @@ export const fetchExtended = returnFetch({
       console.log('********* before sending request *********')
       console.log('url:', args[0].toString())
       console.log('requestInit:', args[1], '\n\n')
-      if (args[1].headers.get('Content-Type') === 'text/plain;charset=UTF-8') {
+      const contentType = args[1].headers.get('Content-Type')
+      if (
+        contentType === 'text/plain;charset=UTF-8' ||
+        (contentType === null && !(args[1].body instanceof FormData))
+      ) {
         args[1].headers.set('Content-Type', 'application/json')
       }
       return args

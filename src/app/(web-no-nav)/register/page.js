@@ -191,7 +191,7 @@ function Component() {
           handleAlert('failure', res['message'])
         } else {
           alert('회원가입이 완료되었습니다.')
-          router.push(`/login`)
+          router.push(`mobile/login`)
         }
       })
   }
@@ -316,7 +316,7 @@ function Component() {
                   <TextInput
                     id="store"
                     type="email"
-                    placeholder="name@ssg.com"
+                    placeholder="yourmail@mail.com"
                     icon={HiMail}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-96"
@@ -504,6 +504,7 @@ function Component() {
                     required
                   />
                   <Button
+                    style={{ backgroundColor: '#FBBF24' }}
                     className="absolute bottom-1.5 end-1.5 rounded-lg"
                     onClick={() => handleStore(pagination['page'], keyword)}
                   >
@@ -526,7 +527,11 @@ function Component() {
                         <Table.Cell>{store.name}</Table.Cell>
                         <Table.Cell>{store.address}</Table.Cell>
                         <Table.Cell>
-                          <Button size="xs" onClick={() => handleStoreSelect(store.id, store.name)}>
+                          <Button
+                            style={{ backgroundColor: '#FBBF24' }}
+                            size="xs"
+                            onClick={() => handleStoreSelect(store.id, store.name)}
+                          >
                             선택
                           </Button>
                         </Table.Cell>
