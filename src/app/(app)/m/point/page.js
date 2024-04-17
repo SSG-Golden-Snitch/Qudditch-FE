@@ -132,7 +132,10 @@ const Point = () => {
   return (
     <div className="min-h-screen bg-white">
       <MobileNavbar />
-      <div className="container mx-auto px-4 py-8">
+      <div
+        className="container mx-auto overflow-y-auto px-4 py-8"
+        style={{ height: 'calc(100vh - 100px)' }}
+      >
         <div>
           <button
             type="button"
