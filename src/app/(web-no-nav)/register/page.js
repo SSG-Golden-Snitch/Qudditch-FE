@@ -48,6 +48,8 @@ function Component() {
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
   const [openPrivacyModal, setOpenPrivacyModal] = useState(false)
+  const [emailCss, setEmailCss] = useState('')
+  const [loadEmail, setLoadEmail] = useState(false)
 
   const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('')
   const [agree, setAgree] = useState(false)
@@ -130,6 +132,7 @@ function Component() {
     fetchExtended(ocrReqUrl, {
       method: 'POST',
       body: formData,
+      'content-type': 'multipart/form-data',
     })
       .then((res) => res.json())
       .then((res) => {
@@ -148,9 +151,7 @@ function Component() {
     fetchExtended(sendVerifyCodeReqUrl, {
       method: 'POST',
       body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {},
     })
       .then((res) => res.json())
       .then((res) => {
@@ -190,7 +191,7 @@ function Component() {
           handleAlert('failure', res['message'])
         } else {
           alert('회원가입이 완료되었습니다.')
-          router.push(`/login`)
+          router.push(`mobile/login`)
         }
       })
   }
@@ -257,7 +258,8 @@ function Component() {
   }
 
   const handleEmailDuple = () => {
-    const emailDupleReqUrl = new URL(apiUrl + `/check-email`)
+    setLoadEmail(true)
+    const emailDupleReqUrl = new URL(apiUrl + `/find-store-email`)
     fetchExtended(emailDupleReqUrl, {
       method: 'POST',
       body: JSON.stringify({ email }),
@@ -268,11 +270,17 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert('이미 사용중인 이메일입니다')
+          setEmailColor('failure')
+          setText('이미 사용중인 이메일입니다')
+          setEmailCss('flex items-center pt-1 text-sm text-red-500')
         } else {
           setEmailColor('success')
           setText('사용가능한 이메일입니다')
+          setEmailCss('flex items-center pt-1 text-sm text-green-500')
         }
+      })
+      .finally(() => {
+        setLoadEmail(false)
       })
   }
 
@@ -308,20 +316,20 @@ function Component() {
                   <TextInput
                     id="store"
                     type="email"
-                    placeholder="name@ssg.com"
+                    placeholder="yourmail@mail.com"
                     icon={HiMail}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-96"
                     color={emailColor}
                   />
                   <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleEmailDuple()}>
-                    중복체크
+                    {loadEmail ? <Spinner /> : '중복확인'}
                   </Button>
                   <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => sendVerifyCode()}>
                     인증번호 전송
                   </Button>
                 </div>
-                <div className="flex items-center pt-1 text-sm text-green-500">{text}</div>
+                <div className={emailCss}>{text}</div>
               </div>
               {verify && (
                 <div className="w-full">
@@ -496,6 +504,7 @@ function Component() {
                     required
                   />
                   <Button
+                    style={{ backgroundColor: '#FBBF24' }}
                     className="absolute bottom-1.5 end-1.5 rounded-lg"
                     onClick={() => handleStore(pagination['page'], keyword)}
                   >
@@ -518,7 +527,11 @@ function Component() {
                         <Table.Cell>{store.name}</Table.Cell>
                         <Table.Cell>{store.address}</Table.Cell>
                         <Table.Cell>
-                          <Button size="xs" onClick={() => handleStoreSelect(store.id, store.name)}>
+                          <Button
+                            style={{ backgroundColor: '#FBBF24' }}
+                            size="xs"
+                            onClick={() => handleStoreSelect(store.id, store.name)}
+                          >
                             선택
                           </Button>
                         </Table.Cell>

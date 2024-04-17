@@ -10,6 +10,8 @@ import { IoStorefront } from 'react-icons/io5'
 import { FaMobileAlt } from 'react-icons/fa'
 import { SlLocationPin } from 'react-icons/sl'
 import Loading from '@/components/ui/Loading'
+import { HiOutlineLogout } from 'react-icons/hi'
+import { logout } from '@/utils/user'
 
 const WebSettingPage = () => {
   const [topMessage, setTopMessage] = useState()
@@ -105,7 +107,7 @@ const WebSettingPage = () => {
   }, [])
 
   return (
-    <>
+    <div className={'h-[calc(100vh-4rem)] overflow-y-scroll'}>
       {isTopLoading ? (
         <Loading />
       ) : topMessage != null ? (
@@ -113,7 +115,7 @@ const WebSettingPage = () => {
       ) : (
         <div className="mx-3 mt-3 h-48 rounded-3xl bg-gray-200 p-8">
           <div className="flex">
-            <SlLocationPin className="ml-2 text-sm text-gray-700" />
+            <SlLocationPin className="ml-2 text-sm text-gray-400" />
             <div className="ml-3 text-sm">{bookmarkStore}</div>
           </div>
           <div className="ml-2 mt-2 text-2xl font-bold">{name}님, 반가워요!</div>
@@ -128,7 +130,7 @@ const WebSettingPage = () => {
         {/* TODO 회원정보 수정 url*/}
         <Link className="block w-full p-6" href="/m/update">
           <div className="flex">
-            <AiFillSetting className="ml-2 text-3xl text-gray-700" />
+            <AiFillSetting className="ml-2 text-3xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">회원정보 수정</div>
           </div>
         </Link>
@@ -137,36 +139,44 @@ const WebSettingPage = () => {
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/m/alert">
           <div className="flex">
-            <LiaClipboardListSolid className="ml-2 text-3xl text-gray-700" />
+            <LiaClipboardListSolid className="ml-2 text-3xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">알림목록 조회</div>
           </div>
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/m/bookmark/product">
+        <Link className="block w-full p-6" href="/m/bookmark/product">
           <div className="flex">
-            <FaBox className="ml-2 text-3xl text-gray-700" />
+            <FaBox className="ml-3 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">관심상품 관리</div>
           </div>
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/m/customer-service">
+        <Link className="block w-full p-6" href="/m/customer-service">
           <div className="flex">
-            <IoStorefront className="ml-2 text-3xl text-gray-700" />
+            <IoStorefront className="ml-2 text-3xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">고객센터</div>
           </div>
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className=" block w-full p-6" href="/m/app-info">
+        <Link className="block w-full p-6" href="/m/app-info">
           <div className="flex">
-            <FaMobileAlt className="ml-2 text-3xl text-gray-700" />
+            <FaMobileAlt className="ml-2 text-3xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>
           </div>
         </Link>
       </div>
-    </>
+      <div className="flex justify-between border-b-2 border-gray-200">
+        <a className="block w-full p-6" href="#">
+          <div className="flex" onClick={() => logout().then(() => (window.location.href = '/m'))}>
+            <HiOutlineLogout className="ml-2 text-3xl text-gray-400" />
+            <div className="ms-3 text-lg font-medium text-gray-900">로그아웃</div>
+          </div>
+        </a>
+      </div>
+    </div>
   )
 }
 export default WebSettingPage
@@ -233,7 +243,7 @@ function Toggle() {
   return (
     <div className="flex justify-between border-b-2 border-gray-200  p-6">
       <div className="flex">
-        <AiFillBell className="ml-2 text-3xl text-gray-700 dark:text-gray-200" />
+        <AiFillBell className="ml-2 text-3xl text-gray-400 dark:text-gray-200" />
         <span className="ms-3 text-lg font-medium text-gray-900">푸시 알림</span>
       </div>
       {isLoading ? (
@@ -264,7 +274,7 @@ function MiniLoading() {
     <div role="status">
       <svg
         aria-hidden="true"
-        className="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+        className="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-400"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
