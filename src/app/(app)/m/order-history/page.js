@@ -10,6 +10,7 @@ import { IoIosArrowBack } from 'react-icons/io'
 import ReceiptModal from '@/components/ReceiptModal'
 import Loading from '@/components/ui/Loading'
 import { useRouter } from 'next/navigation'
+import MobileNavbar from '@/components/MobileNavbar'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -129,7 +130,7 @@ const OrderHistory = () => {
         <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
             <IoIosArrowBack className="mr-2" />
-            <h2 className="text-xl font-bold">구매목록</h2>
+            <h2 className="text-m font-semibold">구매내역</h2>
           </button>
           <DatePicker
             selected={selectedDate}
@@ -185,6 +186,7 @@ const OrderHistory = () => {
           <ReceiptModal partnerOrderId={activeOrderId} onClose={() => setShowReceipt(false)} />
         )}
       </div>
+      <MobileNavbar />
     </div>
   )
 }
