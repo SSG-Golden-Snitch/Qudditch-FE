@@ -14,12 +14,12 @@ const MobileNavbar = () => {
         href={path}
         className={
           'inline-block w-full justify-center rounded-t-2xl pb-1 pt-2 text-center hover:bg-gray-200 hover:text-yellow-400 focus:bg-gray-200 focus:text-yellow-400' +
-          (pathname === path ? 'text-yellow-400' : ' text-gray-500')
+          (pathname === path ? 'text-yellow-400' : ' text-stone-500')
         }
       >
         <div className={'flex flex-col items-center'}>
-          <div className={'h-10 w-10'}>{icon}</div>
-          <span className={'text-xs'}>{name}</span>
+          <div className={'flex h-10 w-10 justify-center '}>{icon}</div>
+          <span className={'flex justify-center text-xs '}>{name}</span>
         </div>
       </Link>
     )

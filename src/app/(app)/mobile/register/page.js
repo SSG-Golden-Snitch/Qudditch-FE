@@ -206,7 +206,7 @@ export default function Register() {
                 <Button
                   onClick={checkEmail}
                   disabled={loading || !email || emailError}
-                  className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
                 >
                   확인
                 </Button>
@@ -229,14 +229,14 @@ export default function Register() {
                 {sendBtn ? (
                   <Button
                     onClick={() => handleVerifyCode()}
-                    className="  bg-amber-400 px-0 text-center text-xs font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className="  bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     인증
                   </Button>
                 ) : (
                   <Button
                     onClick={() => sendVerifyCode()}
-                    className="  bg-amber-400 px-0 text-center text-xs font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className="  bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     전송
                   </Button>
@@ -292,7 +292,7 @@ export default function Register() {
           <Button
             onClick={() => handleSubmit()}
             type="submit"
-            className="w-full rounded-lg bg-amber-400 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+            className="w-full rounded-lg bg-amber-400 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
           >
             회원가입
           </Button>

@@ -48,10 +48,10 @@ export default function ProductRank() {
   }, [])
 
   return (
-    <div className="flex flex-col space-y-4 overflow-hidden rounded-3xl bg-zinc-100 p-8">
+    <div className="flex flex-col space-y-4 overflow-hidden rounded-3xl bg-stone-200 p-8">
       {userName ? (
         <h3 className="text-lg">
-          <span className="font-bold">{userName}</span>님을 위한 추천상품이 있어요 🧚‍♀️
+          <span className="font-bold">{userName}</span>님을 위한 추천상품 🧚‍♀️
         </h3>
       ) : (
         <h3 className="text-lg">오늘의 추천상품 🧚‍♀️</h3>
