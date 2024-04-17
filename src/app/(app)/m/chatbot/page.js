@@ -124,6 +124,10 @@ function Chatbot() {
     const decoder = new TextDecoder('utf-8')
 
     try {
+      if (inputValue === '') {
+        return
+      }
+
       if (!navigator.geolocation) {
         console.error('Geolocation not supported')
         return
