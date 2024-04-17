@@ -316,7 +316,7 @@ function Component() {
                   <TextInput
                     id="store"
                     type="email"
-                    placeholder="name@ssg.com"
+                    placeholder="yourmail@mail.com"
                     icon={HiMail}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-96"

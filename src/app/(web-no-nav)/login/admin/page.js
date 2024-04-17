@@ -61,7 +61,7 @@ export default function AdminLogin() {
                   name="email"
                   id="email"
                   icon={HiMail}
-                  placeholder="kdt4@email.com"
+                  placeholder="Email@ssg.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
