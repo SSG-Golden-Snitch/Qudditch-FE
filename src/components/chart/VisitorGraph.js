@@ -140,6 +140,7 @@ export const VisitorGraph = ({ dateInput }) => {
           data: finalDatas,
           borderWidth: 3,
           borderColor: graphColors[index],
+          backgroundColor: 'transparent',
         }
       }),
     }

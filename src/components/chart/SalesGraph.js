@@ -98,8 +98,15 @@ const SalesGraph = ({ dateInput }) => {
         {
           label: '매출',
           data: bindingList.map((itm) => itm.sales),
-          borderColor: graphColors[3],
-          backgroundColor: graphColors[5],
+          borderColor: '#fde047',
+          tension: 0.3,
+          backgroundColor: (context) => {
+            const ctx = context.chart.ctx
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+            gradient.addColorStop(0, 'rgba(253, 244, 201, 1)')
+            gradient.addColorStop(1, '#fff')
+            return gradient
+          },
           fill: true,
         },
       ],
