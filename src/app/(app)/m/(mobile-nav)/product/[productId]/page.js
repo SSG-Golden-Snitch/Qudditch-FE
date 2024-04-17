@@ -9,6 +9,7 @@ import { Divider } from '@aws-amplify/ui-react'
 import { CiStar } from 'react-icons/ci'
 import { TiStarFullOutline } from 'react-icons/ti'
 import { getDistance } from '@/utils/mapUtil'
+import { IoIosArrowBack } from 'react-icons/io'
 
 const ProductSearchPage = () => {
   const params = useParams()
@@ -93,7 +94,10 @@ const ProductSearchPage = () => {
       {loading && <Loading />}
       <div className={'flex flex-row items-center justify-between px-3 py-2 pb-14'}>
         <div className={'flex flex-row items-center'}>
-          <div className={'text-2xl'}>←</div>
+          <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
+            <IoIosArrowBack className="mr-2" />
+            <h2 className="text-xl font-bold">구매목록</h2>
+          </button>
         </div>
       </div>
       {product && (

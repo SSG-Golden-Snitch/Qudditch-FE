@@ -9,12 +9,17 @@ import Loading from '@/components/ui/Loading'
 
 // 커스텀 입력 컴포넌트
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
-  <button onClick={onClick} ref={ref} className="datepicker-button">
+  <button
+    onClick={onClick}
+    ref={ref}
+    className="datepicker-button border border-gray-300 bg-white p-2 font-bold text-gray-500 shadow-sm hover:bg-gray-50"
+  >
     {value}
   </button>
 ))
 
 const Sales = () => {
+  const itemsPerPage = 10
   const [pagination, setPagination] = useState({
     currentPage: 1,
     totalPageCount: 1, // 기본값 1로 설정하여 에러 방지
@@ -57,7 +62,7 @@ const Sales = () => {
         setTotalSales(responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0))
         setPagination((prev) => ({
           ...prev,
-          totalPageCount: Math.ceil(responseData.length / 10),
+          totalPageCount: Math.ceil(responseData.length / itemsPerPage),
         }))
       } catch (error) {
         console.error('주문 내역을 불러오는 중 오류가 발생했습니다.', error)
@@ -109,17 +114,8 @@ const Sales = () => {
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-start bg-gray-100 p-10">
-      <div className="min-w-full justify-between">
-        <div className="flex gap-4">
-          <Button onClick={() => handleViewTypeChange(1)} color={viewType === 1 ? 'gray' : 'light'}>
-            판매내역 조회
-          </Button>
-          <Button onClick={() => handleViewTypeChange(2)} color={viewType === 2 ? 'gray' : 'light'}>
-            환불내역 조회
-          </Button>
-        </div>
-        <div className="flex justify-end pr-20">
-          <span className="mr-1 font-bold">월 선택:</span>
+      <div className="flex min-w-full items-center justify-between pb-3">
+        <div className="flex items-center">
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
@@ -127,6 +123,14 @@ const Sales = () => {
             showMonthYearPicker
             customInput={<CustomInput />}
           />
+        </div>
+        <div className="flex gap-4">
+          <Button onClick={() => handleViewTypeChange(1)} color={viewType === 1 ? 'gray' : 'light'}>
+            판매내역 조회
+          </Button>
+          <Button onClick={() => handleViewTypeChange(2)} color={viewType === 2 ? 'gray' : 'light'}>
+            환불내역 조회
+          </Button>
         </div>
       </div>
 
@@ -139,20 +143,17 @@ const Sales = () => {
           </Table.Head>
           <Table.Body className="divide-y">
             {orders
-              .slice((pagination.currentPage - 1) * 10, pagination.currentPage * 10)
+              .slice(
+                (pagination.currentPage - 1) * itemsPerPage,
+                pagination.currentPage * itemsPerPage,
+              )
               .map((order, index) => (
-                <Table.Row
-                  key={index}
-                  className="items-center bg-white dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <Table.Cell>{(pagination.currentPage - 1) * itemsPerPage + index + 1}</Table.Cell>
                   <Table.Cell>{formatDateYMD(order.customerOrder.orderedAt)}</Table.Cell>
                   <Table.Cell>
-                    {' '}
                     {order.customerOrderProducts && order.customerOrderProducts.length > 0
-                      ? `${order.customerOrderProducts[0].productName} 외 ${
-                          order.customerOrderProducts.length - 1
-                        }개`
+                      ? `${order.customerOrderProducts[0].productName} 외 ${order.customerOrderProducts.length - 1}개`
                       : '상품 정보 없음'}
                   </Table.Cell>
                   <Table.Cell>{formatNumber(order.customerOrder.totalAmount)}</Table.Cell>
@@ -166,12 +167,13 @@ const Sales = () => {
             </Table.Row>
           </Table.Body>
         </Table>
-        <Pagination
-          currentPage={pagination.currentPage}
-          totalPages={pagination.totalPageCount} // 수정: 올바른 totalPages 값 사용
-          onPageChange={(page) => setPagination({ ...pagination, currentPage: page })}
-          layout="center"
-        />
+        <div className="mt-4 flex justify-center">
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPageCount} // 수정: 올바른 totalPages 값 사용
+            onPageChange={(page) => setPagination((prev) => ({ ...prev, currentPage: page }))}
+          />
+        </div>
       </div>
     </div>
   )

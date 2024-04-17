@@ -124,7 +124,7 @@ const OrderHistory = () => {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
