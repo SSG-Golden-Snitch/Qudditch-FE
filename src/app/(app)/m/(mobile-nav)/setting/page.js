@@ -169,12 +169,12 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className="block w-full p-6" href="/m">
-          <div className="flex" onClick={() => logout()}>
+        <a className="block w-full p-6" href="#">
+          <div className="flex" onClick={() => logout().then(() => (window.location.href = '/m'))}>
             <HiOutlineLogout className="ml-2 text-3xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">로그아웃</div>
           </div>
-        </Link>
+        </a>
       </div>
     </div>
   )
