@@ -14,12 +14,6 @@ export default function MobileUserLogin() {
   const [message, setMessage] = useState('') // 메시지 상태 관리
   const router = useRouter()
 
-  const kakaoLogin = () => {
-    console.log(window.Kakao.Auth)
-    window.Kakao.Auth.authorize({
-      redirectUri: `${window.location.origin}/mobile/login/kakao`,
-    })
-  }
   // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
