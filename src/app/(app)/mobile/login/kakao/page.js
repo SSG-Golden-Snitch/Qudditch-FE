@@ -10,14 +10,12 @@ const KakaoLogin = () => {
   const [data, setData] = useState(null)
 
   const handleCode = async (code) => {
-    await fetchExtended('/login/kakao?code=' + code)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        if (data['res'].hasOwnProperty('email')) {
-          setData(data['res'])
-        }
-      })
+    await fetchExtended('/kakao?code=' + code).then((data) => {
+      setData(data)
+      // console.log(data)
+      // if (data['res'].hasOwnProperty('email')) {
+      // }
+    })
   }
   useEffect(() => {
     if (data === null) {
