@@ -3,7 +3,7 @@
 import Loading from '@/components/ui/Loading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
-import { ImCancelCircle } from 'react-icons/im'
+import { RiCloseLine } from 'react-icons/ri'
 
 import { IoIosArrowBack } from 'react-icons/io'
 
@@ -80,7 +80,7 @@ export default function AlertListPage() {
           onClick={() => window.history.back()}
         >
           <IoIosArrowBack className="mr-2" />
-          <div className="text-xl font-bold dark:text-white">알림 기록</div>
+          <div className="text-sm dark:text-white">알림 기록</div>
         </button>
       </div>
       <ul className="rounded-2xl bg-white shadow">
@@ -107,7 +107,9 @@ function AlertList({ list }) {
           </div>
           <div className="mt-4 flex items-center justify-between">
             <p className="max-w-80 text-sm font-medium text-gray-500">{alertLog.body}</p>
-            <ImCancelCircle
+            <RiCloseLine
+              color="gray"
+              size={'20px'}
               onClick={() => {
                 let deleteId = alertLog.id
 

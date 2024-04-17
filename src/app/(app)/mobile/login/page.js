@@ -25,7 +25,6 @@ export default function MobileUserLogin() {
     await fetchExtended('/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
-      headers: { 'Content-Type': 'application/json' },
     })
       .then((res) => res.json())
       .then((res) => {
