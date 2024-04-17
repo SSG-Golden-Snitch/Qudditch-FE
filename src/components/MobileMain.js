@@ -225,8 +225,8 @@ const MobileMain = () => {
       <div className="p-3">
         <ProductSearchBar />
       </div>
-      <div className="px-7 pt-5">
-        <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
+      <div className=" px-7 pt-5 ">
+        <div className="text-xm flex w-full max-w-full justify-around gap-0">
           <Link href="/m/access" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
