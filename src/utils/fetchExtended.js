@@ -11,20 +11,19 @@ const getUserToken = () => {
 export const fetchExtended = returnFetch({
   baseUrl: apiUrl,
   headers: {
-    Accept: 'application/json',
+    Authorization: `Bearer ${getUserToken()?.replaceAll('"', '')}`,
   },
   interceptors: {
     request: async (args) => {
       console.log('********* before sending request *********')
       console.log('url:', args[0].toString())
       console.log('requestInit:', args[1], '\n\n')
-      const token = getUserToken()
-      if (token) {
-        args[1].headers = {
-          ...args[1].headers,
-          Authorization: `Bearer ${token.replaceAll('"', '')}`,
-        }
-        args.at(1).credentials = 'include'
+      if (
+        args[1].headers.get('Content-Type') === null ||
+        args[1].headers.get('Content-Type') === 'text/plain;charset=UTF-8'
+      ) {
+        console.log('setting content-type to application/json')
+        args[1].headers.set('Content-Type', 'application/json')
       }
       return args
     },
