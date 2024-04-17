@@ -1,6 +1,5 @@
 // src/app/mobile/login/page.js
 'use client'
-
 import { signIn } from 'next-auth/react'
 
 import { fetchExtended } from '@/utils/fetchExtended'
@@ -15,6 +14,12 @@ export default function MobileUserLogin() {
   const [message, setMessage] = useState('') // 메시지 상태 관리
   const router = useRouter()
 
+  const kakaoLogin = () => {
+    console.log(window.Kakao.Auth)
+    window.Kakao.Auth.authorize({
+      redirectUri: `${window.location.origin}/mobile/login/kakao`,
+    })
+  }
   // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -37,16 +42,15 @@ export default function MobileUserLogin() {
       })
   }
 
-  // 소셜 로그인 처리 함수
+  const kakaoLogin = () => {
+    console.log(window.Kakao.Auth)
+    window.Kakao.Auth.authorize({
+      redirectUri: `${window.location.origin}/mobile/login/kakao`,
+    })
+  }
+
   const handleSocialSignIn = async (provider) => {
-    setLoading(true)
-    const result = await signIn(provider, { redirect: false, callbackUrl: '/main' })
-    if (result.error) {
-      setMessage(result.error)
-      setLoading(false)
-    } else if (result.url) {
-      window.location.href = result.url // 성공적으로 인증된 경우 리다이렉트
-    }
+    await signIn(provider) // 'kakao'로 설정해 호출
   }
 
   return (
@@ -118,14 +122,14 @@ export default function MobileUserLogin() {
 
             <a href="#" className="block">
               <button
-                onClick={() => handleSocialSignIn('kakao')}
-                disabled={loading}
-                className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
+                onClick={kakaoLogin}
+                className="flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
               >
-                <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
+                <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Kakao Icon" />
                 <span className="dark:text-gray-300">Login with Kakao</span>
               </button>
             </a>
+
             <a href="#" className="block">
               <button
                 onClick={() => handleSocialSignIn('naver')}
