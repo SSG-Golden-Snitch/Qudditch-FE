@@ -18,6 +18,10 @@ const CustomInput = forwardRef(({ value, onClick }, ref) => (
   </button>
 ))
 
+// 빌드 에러 해결
+// Component-definition-is-missing-display-name-에러
+CustomInput.displayName = 'CustomInput'
+
 const Sales = () => {
   const itemsPerPage = 10
   const [pagination, setPagination] = useState({
