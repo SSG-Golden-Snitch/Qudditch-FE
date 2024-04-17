@@ -18,7 +18,10 @@ const GenderBestProduct = () => {
   }, [])
 
   return (
-    <div className={'h-full w-full p-[10px]'}>
+    <div className={'h-full w-full p-[10px] text-center '}>
+      <div className="py-5">
+        <span className=" text-center text-2xl font-semibold text-gray-600">성별 인기 상품</span>
+      </div>
       <Table className={'text-center text-xl'}>
         <Table.Head className={'text-xl'}>
           <Table.HeadCell>Gender</Table.HeadCell>

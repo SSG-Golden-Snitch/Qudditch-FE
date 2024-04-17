@@ -19,7 +19,7 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
   }
   return (
     <div className=" w-128 px-3">
-      <Table className="text-s w-[calc(100vw-300px)] items-center justify-center text-center">
+      <Table className=" w-[calc(100vw-300px)] items-center justify-center text-center">
         <Table.Head>
           {header.map((h, index) => (
             <TableHeadCell
@@ -51,10 +51,8 @@ export function CustomTable({ data, header, params, handleAlert, handleData }) {
                       ? 'cursor-pointer hover:underline'
                       : ''
                   } ${
-                    h.col_name === 'expiredAt' &&
-                    item['expiredAt'] &&
-                    new Date(item['expiredAt']) < new Date()
-                      ? 'text-red-500'
+                    h.col_name === 'expiredAt' && new Date(item['expiredAt']) < new Date()
+                      ? 'font-bold text-red-500'
                       : ''
                   }`}
                 >

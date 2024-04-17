@@ -157,7 +157,7 @@ export default function OrderInsertPage() {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+        <div className="h-screen overflow-x-auto bg-[#e4e4e4] px-10 py-10">
           {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
           <form
             className="relative mx-auto max-w-md"

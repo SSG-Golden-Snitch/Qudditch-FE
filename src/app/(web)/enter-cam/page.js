@@ -169,7 +169,7 @@ const Home = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className="flex h-screen flex-row items-center justify-between pt-6">
+        <div className="flex h-screen flex-row items-center justify-between bg-[#e4e4e4] pt-6 ">
           {/* Camera area */}
           <div className={'flex h-full max-w-[80%] shrink grow flex-col px-4'}>
             <CameraSelect />

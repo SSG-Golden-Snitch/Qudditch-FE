@@ -110,7 +110,7 @@ const Sales = () => {
   // }
   if (isLoading) return <Loading />
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] px-10 py-5">
       <div className="flex justify-between">
         <div className="flex items-center justify-start">
           <DatePicker
