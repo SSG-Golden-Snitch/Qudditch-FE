@@ -50,7 +50,7 @@ export default function OrderListPage() {
   if (!orderData.pagination) return <div>데이터를 불러오지 못했습니다.</div>
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+    <div className="h-screen overflow-x-auto bg-gray-100 px-10 pb-10 pt-[6rem]">
       <Table>
         <Table.Head>
           <Table.HeadCell>ID</Table.HeadCell>
