@@ -18,11 +18,7 @@ export const fetchExtended = returnFetch({
       console.log('********* before sending request *********')
       console.log('url:', args[0].toString())
       console.log('requestInit:', args[1], '\n\n')
-      if (
-        args[1].headers.get('Content-Type') === null ||
-        args[1].headers.get('Content-Type') === 'text/plain;charset=UTF-8'
-      ) {
-        console.log('setting content-type to application/json')
+      if (args[1].headers.get('Content-Type') === 'text/plain;charset=UTF-8') {
         args[1].headers.set('Content-Type', 'application/json')
       }
       return args

@@ -48,6 +48,8 @@ function Component() {
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
   const [openPrivacyModal, setOpenPrivacyModal] = useState(false)
+  const [emailCss, setEmailCss] = useState('')
+  const [loadEmail, setLoadEmail] = useState(false)
 
   const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('')
   const [agree, setAgree] = useState(false)
@@ -130,6 +132,7 @@ function Component() {
     fetchExtended(ocrReqUrl, {
       method: 'POST',
       body: formData,
+      'content-type': 'multipart/form-data',
     })
       .then((res) => res.json())
       .then((res) => {
@@ -148,9 +151,7 @@ function Component() {
     fetchExtended(sendVerifyCodeReqUrl, {
       method: 'POST',
       body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {},
     })
       .then((res) => res.json())
       .then((res) => {
@@ -257,7 +258,8 @@ function Component() {
   }
 
   const handleEmailDuple = () => {
-    const emailDupleReqUrl = new URL(apiUrl + `/check-email`)
+    setLoadEmail(true)
+    const emailDupleReqUrl = new URL(apiUrl + `/find-store-email`)
     fetchExtended(emailDupleReqUrl, {
       method: 'POST',
       body: JSON.stringify({ email }),
@@ -268,11 +270,17 @@ function Component() {
       .then((res) => res.json())
       .then((res) => {
         if (res['status'] === 'fail') {
-          alert('이미 사용중인 이메일입니다')
+          setEmailColor('failure')
+          setText('이미 사용중인 이메일입니다')
+          setEmailCss('flex items-center pt-1 text-sm text-red-500')
         } else {
           setEmailColor('success')
           setText('사용가능한 이메일입니다')
+          setEmailCss('flex items-center pt-1 text-sm text-green-500')
         }
+      })
+      .finally(() => {
+        setLoadEmail(false)
       })
   }
 
@@ -315,13 +323,13 @@ function Component() {
                     color={emailColor}
                   />
                   <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleEmailDuple()}>
-                    중복체크
+                    {loadEmail ? <Spinner /> : '중복확인'}
                   </Button>
                   <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => sendVerifyCode()}>
                     인증번호 전송
                   </Button>
                 </div>
-                <div className="flex items-center pt-1 text-sm text-green-500">{text}</div>
+                <div className={emailCss}>{text}</div>
               </div>
               {verify && (
                 <div className="w-full">
