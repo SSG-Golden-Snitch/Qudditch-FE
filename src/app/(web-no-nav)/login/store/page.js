@@ -1,8 +1,10 @@
-// src/app/web/login/store/page.js
 'use client'
-import { Button, Label, TextInput } from 'flowbite-react'
-import { useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Checkbox, Label, TextInput } from 'flowbite-react'
+import { useState } from 'react'
+import { HiMail } from 'react-icons/hi'
+import { HiLockClosed } from 'react-icons/hi2'
+import WebLogo from '/public/WebLogo.svg'
 
 export default function StoreLogin() {
   const [email, setEmail] = useState('')
@@ -26,6 +28,7 @@ export default function StoreLogin() {
       if (data.error) {
         alert(data.error)
       } else {
+        if (typeof window === 'undefined') return
         sessionStorage.setItem('token', data.token)
         window.location.href = '/'
       }
@@ -36,65 +39,93 @@ export default function StoreLogin() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-center bg-gray-100 py-6 sm:py-12">
-      <div className="relative py-3 sm:mx-auto sm:max-w-xl">
-        <div className="absolute inset-0 -skew-y-6 transform bg-gradient-to-r from-cyan-400 to-sky-500 shadow-lg sm:-rotate-6 sm:skew-y-0 sm:rounded-3xl"></div>
-        <div className="relative bg-white px-4 py-10 shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="mx-auto max-w-md">
-            <div>
-              <h1 className="text-2xl font-semibold">Login</h1>
-            </div>
-            <div className="divide-y divide-gray-200">
-              <div className="space-y-4 py-8 text-base leading-6 text-gray-700 sm:text-lg sm:leading-7">
-                <div className="relative">
-                  <input
-                    autoComplete="off"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    id="email"
-                    name="email"
-                    type="text"
-                    className="focus:borer-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none"
-                    placeholder="Email address"
-                  />
-                  <label
-                    htmlFor="email"
-                    className="peer-placeholder-shown:text-gray-440 absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Email Address
-                  </label>
+    <section className="flex min-h-screen  items-center justify-center bg-gray-50 ">
+      <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
+        <div className="grid  pb-10 text-center">
+          <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
+          <WebLogo />
+        </div>
+        <div className="w-full rounded-lg  bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
+          <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-800 md:text-2xl"></h1>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleLogin}>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="email">이메일</Label>
                 </div>
-                <div className="relative">
-                  <input
-                    autoComplete="off"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="password"
-                    name="password"
-                    type="password"
-                    className="focus:borer-rose-600 peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none"
-                    placeholder="Password"
-                  />
-                  <label
-                    htmlFor="password"
-                    className="peer-placeholder-shown:text-gray-440 absolute -top-3.5 left-0 text-sm text-gray-600 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-gray-600"
-                  >
-                    Password
-                  </label>
-                </div>
-                <div className="relative">
-                  <button
-                    onClick={handleLogin}
-                    className="rounded-md bg-cyan-500 px-2 py-1 text-white"
-                  >
-                    Submit
-                  </button>
-                </div>
+                <TextInput
+                  autoComplete="off"
+                  type="text"
+                  name="email"
+                  id="email"
+                  icon={HiMail}
+                  placeholder="kdt4@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
-            </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="password">비밀번호</Label>
+                </div>
+                <TextInput
+                  autoComplete="off"
+                  type="password"
+                  name="password"
+                  id="password"
+                  icon={HiLockClosed}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-start">
+                  <div className="flex h-5 items-center">
+                    <Checkbox
+                      id="remember"
+                      aria-describedby="remember"
+                      type="checkbox"
+                      required=""
+                      color="yellow"
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="remember" className="text-gray-500">
+                      ID Check
+                    </label>
+                  </div>
+                </div>
+                <a href="#" className="text-sm font-medium text-stone-600 hover:underline">
+                  비밀번호 찾기
+                </a>
+              </div>
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+              >
+                로그인
+              </button>
+              <p className="text-sm font-light text-gray-500">
+                <a
+                  href="/login/admin"
+                  className="font-medium text-stone-400 underline hover:underline"
+                >
+                  관리자 로그인
+                </a>
+              </p>
+              <div className="flex w-full justify-center">
+                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                  아직 회원이 아니신가요?{' '}
+                  <a href="/register" className=" font-medium text-amber-400 hover:underline">
+                    회원가입
+                  </a>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }

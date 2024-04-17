@@ -14,6 +14,7 @@ import {
   PointElement,
 } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
+import { doughnutChartColor } from './doughnutChartColor'
 
 ChartJS.register(
   BarElement,
@@ -31,11 +32,25 @@ const BestProduct = () => {
   const [productDataSet, setProductDataSet] = useState([])
   const [chartData, setChartData] = useState({ labels, datasets: [] })
 
+  const tooltip = {
+    callbacks: {
+      label: function (context) {
+        return `판매량: ${context.formattedValue}개`
+      },
+    },
+  }
+
   const options = {
     plugins: {
+      tooltip: tooltip,
       legend: {
         position: 'right',
         align: 'center',
+        labels: {
+          font: {
+            size: 18,
+          },
+        },
       },
       title: {
         display: true,
@@ -84,13 +99,7 @@ const BestProduct = () => {
         {
           label: '인기 제품',
           data: productDataSet,
-          backgroundColor: [
-            'rgb(232, 232, 232)',
-            'rgb(100, 100, 100)',
-            'rgb(86, 86, 86)',
-            'rgb(145, 145, 145)',
-            'rgb(200, 200, 200)',
-          ],
+          backgroundColor: doughnutChartColor,
           hoverOffset: 4,
         },
       ],

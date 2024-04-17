@@ -20,7 +20,7 @@ const CustomSidebar = () => {
   const pathname = usePathname()
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
+    const token = localStorage.getItem('token')
     if (typeof window !== 'undefined' && token) {
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
@@ -106,7 +106,7 @@ const CustomSidebar = () => {
 
   return (
     <Sidebar aria-label={'Sidebar'}>
-      <Sidebar.Logo href={'/'} img={'/AppLogo.svg'} style={{ padding: '10px' }}>
+      <Sidebar.Logo href={'/'} img={'/WebLogo.svg'} style={{ padding: '20px' }}>
         {/* <span className={'self-center whitespace-nowrap text-xl font-semibold'}></span> */}
       </Sidebar.Logo>
 

@@ -10,10 +10,11 @@ import {
   Tooltip,
   Title,
   Legend,
+  Filler,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend)
+ChartJS.register(BarElement, CategoryScale, LinearScale, Filler, Title, Tooltip, Legend)
 
 import { graphColors } from './graphColors'
 

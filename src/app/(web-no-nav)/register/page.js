@@ -11,6 +11,7 @@ import {
   Table,
   TextInput,
   Spinner,
+  Checkbox,
 } from 'flowbite-react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
@@ -22,6 +23,8 @@ import {
   HiUser,
 } from 'react-icons/hi'
 import { HiBuildingStorefront } from 'react-icons/hi2'
+import WebLogo from '/public/WebLogo.svg'
+import PrivacyModal from '@/components/PrivacyModal'
 
 function Component() {
   const router = useRouter()
@@ -44,6 +47,7 @@ function Component() {
   const [error, setError] = useState('')
   const [color, setColor] = useState('')
   const [message, setMessage] = useState('')
+  const [openPrivacyModal, setOpenPrivacyModal] = useState(false)
 
   const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('')
   const [agree, setAgree] = useState(false)
@@ -54,6 +58,10 @@ function Component() {
       paginationParam: { ...pagination.paginationParam, page },
     })
     handleStore(page)
+  }
+
+  const handleOpenPrivacyModal = () => {
+    setOpenPrivacyModal(true)
   }
 
   const [pagination, setPagination] = useState({
@@ -271,6 +279,10 @@ function Component() {
   return (
     <div className="h-full">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
+      <div className="grid  items-center justify-items-center pb-5 pt-20 text-center">
+        <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
+        <WebLogo />
+      </div>
       <div className="flex flex-col items-center justify-center   pt-10">
         <div className="flex  items-center justify-center ">
           <form className="  flex w-full max-w-full flex-col gap-4">
@@ -299,11 +311,15 @@ function Component() {
                     placeholder="name@ssg.com"
                     icon={HiMail}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-2/3"
+                    className="w-96"
                     color={emailColor}
                   />
-                  <Button onClick={() => handleEmailDuple()}>중복체크</Button>
-                  <Button onClick={() => sendVerifyCode()}>인증번호 전송</Button>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleEmailDuple()}>
+                    중복체크
+                  </Button>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => sendVerifyCode()}>
+                    인증번호 전송
+                  </Button>
                 </div>
                 <div className="flex items-center pt-1 text-sm text-green-500">{text}</div>
               </div>
@@ -320,7 +336,12 @@ function Component() {
                       className="w-2/3"
                     />
                     <div className="flex content-center items-center gap-5 text-center">
-                      <Button onClick={() => handleConfirmVerify()}>인증번호 확인</Button>
+                      <Button
+                        style={{ backgroundColor: '#FBBF24' }}
+                        onClick={() => handleConfirmVerify()}
+                      >
+                        인증번호 확인
+                      </Button>
                       <div>{timerFormat(timer)}</div>
                     </div>
                   </div>
@@ -383,7 +404,9 @@ function Component() {
                     readOnly
                     className="w-96"
                   />
-                  <Button onClick={() => handleOpenModal()}>매장 선택 </Button>
+                  <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => handleOpenModal()}>
+                    매장 선택{' '}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -412,7 +435,8 @@ function Component() {
             </div>
 
             <div className="flex items-center gap-2 pt-16">
-              <TextInput
+              <Checkbox
+                color={'warning'}
                 id="agree"
                 type="checkbox"
                 checked={agree}
@@ -420,15 +444,17 @@ function Component() {
                 required
               />
               <Label htmlFor="agree" className="flex">
-                동의합니다. &nbsp;
-                <a href="#" className="text-cyan-600 hover:underline">
-                  이용약관 및 개인정보 처리방침
-                </a>
+                개인정보 처리방침에 동의합니다. &nbsp;
+                <PrivacyModal />
               </Label>
             </div>
           </form>
         </div>
-        <Button type="submit" className="mb-10 mt-16 w-72" onClick={() => handleSubmit()}>
+        <Button
+          style={{ backgroundColor: '#FBBF24' }}
+          className="mb-10 mt-16 w-72"
+          onClick={() => handleSubmit()}
+        >
           회원가입
         </Button>
 
