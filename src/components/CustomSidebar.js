@@ -13,6 +13,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { HiMiniVideoCamera } from 'react-icons/hi2'
 import { useEffect, useState } from 'react'
+import { BiBuoy } from 'react-icons/bi'
+import { logout } from '@/utils/user'
 
 const CustomSidebar = () => {
   const [isAdmin, setIsAdmin] = useState(false)
@@ -141,6 +143,12 @@ const CustomSidebar = () => {
                   </Sidebar.Item>
                 )
               })}
+          <Sidebar.Item
+            onClick={() => logout().then(() => window.location.reload())}
+            className="fixed bottom-2 left-[4rem] text-center font-semibold text-gray-500"
+          >
+            Logout
+          </Sidebar.Item>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
