@@ -5,11 +5,17 @@ import { useState } from 'react'
 import { HiMail } from 'react-icons/hi'
 import { HiLockClosed } from 'react-icons/hi2'
 import WebLogo from '/public/WebLogo.svg'
+import { CustomAlert } from '@/components/CustomAlert'
 
 export default function StoreLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const handleAlert = (message = '') => {
+    setMessage(message)
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -34,12 +40,13 @@ export default function StoreLogin() {
       }
     } catch (error) {
       setLoading(false)
-      alert('로그인 중 에러가 발생했습니다.')
+      setMessage('아이디와 비밀번호를 확인하세요')
     }
   }
 
   return (
     <section className="flex min-h-screen  items-center justify-center bg-gray-50 ">
+      {message && <CustomAlert message={message} handleDismiss={handleAlert} />}
       <div className="mx-auto flex w-1/2 flex-col items-center justify-center  px-6 py-8 md:h-screen lg:py-0">
         <div className="grid  pb-10 text-center">
           <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
@@ -54,14 +61,14 @@ export default function StoreLogin() {
                   <Label htmlFor="email">이메일</Label>
                 </div>
                 <TextInput
-                  autoComplete="off"
-                  type="text"
+                  type="email"
                   name="email"
                   id="email"
                   icon={HiMail}
                   placeholder="Email@ssg.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </div>
               <div>
@@ -69,7 +76,6 @@ export default function StoreLogin() {
                   <Label htmlFor="password">비밀번호</Label>
                 </div>
                 <TextInput
-                  autoComplete="off"
                   type="password"
                   name="password"
                   id="password"
@@ -77,6 +83,7 @@ export default function StoreLogin() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
               <div className="flex items-center justify-between">
