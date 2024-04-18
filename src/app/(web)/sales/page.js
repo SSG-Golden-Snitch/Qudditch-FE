@@ -1,11 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, forwardRef, Fragment } from 'react'
-import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
+import Loading from '@/components/ui/Loading'
+import { fetchExtended, apiUrl } from '@/utils/fetchExtended'
+import { Button, Pagination, Table } from 'flowbite-react'
+import { forwardRef, useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
-import { Button, Pagination, Table } from 'flowbite-react'
-import Loading from '@/components/ui/Loading'
 
 // 커스텀 입력 컴포넌트
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
@@ -22,29 +22,30 @@ const CustomInput = forwardRef(({ value, onClick }, ref) => (
 // Component-definition-is-missing-display-name-에러
 CustomInput.displayName = 'CustomInput'
 
-async function getMonthlyOrderHistory(formmattedDate, viewType, page = 1, recordSize = 10) {
-  const response = await fetchExtended(
-    `/api/order/history?monthYear=${formmattedDate}&status=${viewType}&page=${page}&recordSize=${recordSize}`,
-  )
-  const responseData = await response.json()
-  console.log(responseData)
-  return responseData
-}
-
 const Sales = () => {
   const [orderData, setOrderData] = useState({
     history: [],
     pagination: null,
   })
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [totalSales, setTotalSales] = useState(0)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
   const [isLoading, setIsLoading] = useState(true)
+
+  async function getMonthlyOrderHistory(formmattedDate, viewType, page = 1, recordSize = 10) {
+    const response = await fetchExtended(
+      apiUrl +
+        `/api/order/history?monthYear=${formmattedDate}&status=${viewType}&page=${page}&recordSize=${recordSize}`,
+    )
+    const responseData = await response.json()
+
+    return responseData
+  }
 
   useEffect(() => {
     const year = selectedDate.getFullYear()
     const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
     const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
+
     getMonthlyOrderHistory(formattedDate, viewType).then((responseData) => {
       setOrderData({
         history: responseData.history,
@@ -52,7 +53,7 @@ const Sales = () => {
       })
       setIsLoading(false)
     })
-  }, [])
+  }, [viewType, selectedDate])
 
   const formatDateYMD = (date) => {
     // date가 문자열인 경우 Date 객체로 변환
@@ -99,7 +100,7 @@ const Sales = () => {
   ]
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-start bg-gray-100 p-10">
+    <div className="flex h-screen w-full flex-col items-center justify-start bg-[#e4e4e4] p-10">
       <div className="flex min-w-full items-center justify-between pb-3">
         <div className="flex items-center">
           <DatePicker
@@ -128,24 +129,25 @@ const Sales = () => {
             ))}
           </Table.Head>
           <Table.Body className="divide-y">
-            {orderData.history.map((order) => (
-              <Table.Row key={order.id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell>{order.id}</Table.Cell>
-                <Table.Cell>{formatDateYMD(order.orderedAt)}</Table.Cell>
-                <Table.Cell>
-                  {order.customerOrderProducts && order.customerOrderProducts.length > 0
-                    ? `${order.customerOrderProducts.productName} 외 ${order.customerOrderProducts.length - 1}개`
-                    : '상품 정보 없음'}
-                </Table.Cell>
-                <Table.Cell>{formatNumber(order.totalAmount)}</Table.Cell>
-              </Table.Row>
-            ))}
-            <Table.Row>
-              <Table.Cell colSpan={3} className="text-right">
-                Total Sales:
-              </Table.Cell>
-              <Table.Cell>{formatNumber(totalSales)}</Table.Cell>
-            </Table.Row>
+            {orderData &&
+              orderData.history.map((order, idx) => {
+                const customerOrder = order['customerOrder']
+                const customerOrderProducts = order['customerOrderProducts']
+                return (
+                  <Table.Row key={idx} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell>{customerOrder.id}</Table.Cell>
+                    <Table.Cell>{formatDateYMD(customerOrder.orderedAt)}</Table.Cell>
+                    <Table.Cell>
+                      {customerOrderProducts && customerOrderProducts.length > 0
+                        ? customerOrderProducts.length == 1
+                          ? customerOrderProducts[0].productName
+                          : `${customerOrderProducts[0].productName} 외 ${customerOrderProducts.length - 1}개`
+                        : '상품 정보 없음'}
+                    </Table.Cell>
+                    <Table.Cell>{formatNumber(customerOrder.totalAmount)}</Table.Cell>
+                  </Table.Row>
+                )
+              })}
           </Table.Body>
         </Table>
         <div className="mt-4 flex justify-center">
