@@ -178,6 +178,13 @@ function Chatbot() {
     return formattedTime
   }
 
+  const sendMessageHandler = () => {
+    if (inputValue === '') {
+      return
+    }
+    handleMessageSend()
+  }
+
   const onTouchStartHandler = (e) => {
     e.stopPropagation()
   }
@@ -242,7 +249,7 @@ function Chatbot() {
         <div className="chat-input flex items-center  bg-gray-300 p-3 pb-7">
           <button
             onClick={listening ? stopListening : startListening}
-            className="mr-2 rounded-full bg-gray-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-600 focus:outline-none"
+            className="mr-2 rounded-full bg-gray-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-600"
           >
             {listening ? <BsStopCircle /> : <CiMicrophoneOn />}
           </button>
