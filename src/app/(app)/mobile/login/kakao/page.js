@@ -11,7 +11,6 @@ const KakaoLogin = () => {
     await fetch(code)
       .then((res) => {
         if (res.status === 200) return res.json()
-        if (res.status === 301) return (window.location.href = res.headers.get('Location'))
         new Error(res.text)
       })
       .then((res) => {
@@ -22,7 +21,6 @@ const KakaoLogin = () => {
       })
       .catch((err) => {
         console.log(err)
-        window.location.href = '/mobile/login?' + err
       })
   }
   useEffect(() => {
