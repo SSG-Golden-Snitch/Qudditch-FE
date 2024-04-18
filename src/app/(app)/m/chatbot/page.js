@@ -178,6 +178,10 @@ function Chatbot() {
     return formattedTime
   }
 
+  const onTouchStartHandler = (e) => {
+    e.stopPropagation()
+  }
+
   return (
     <div className="chat-app mx-auto flex h-screen max-w-md flex-col rounded-lg  bg-gray-200 font-sans">
       <header className="chat-header flex items-center justify-between  bg-gray-800 p-2 text-white">
