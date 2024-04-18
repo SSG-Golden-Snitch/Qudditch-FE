@@ -1,4 +1,24 @@
 import { fetchExtended } from './fetchExtended'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+
+const CheckLogin = () => {
+  'use client'
+  const router = useRouter()
+  useEffect(() => {
+    function getToken() {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+          router.push('/mobile/login')
+        }
+      }
+    }
+
+    getToken()
+  }, [])
+}
 
 const logout = () =>
   new Promise((resolve, reject) => {
@@ -46,13 +66,13 @@ async function logoutDevice() {
         // SUCCESS
         isSuccessDeviceLogout = true
       } else {
-        throw new Error('디바이스 로그아웃 실패')
+        new Error('디바이스 로그아웃 실패')
       }
     } catch (error) {
-      deviceLogoutMsg = error.message
+      console.log(error.message)
     }
   }
   return isSuccessDeviceLogout
 }
 
-export { logout }
+export { CheckLogin, logout, logoutDevice }

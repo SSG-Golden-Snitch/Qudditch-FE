@@ -10,6 +10,7 @@ import { Progress, Spinner } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { CheckLogin } from '@/utils/user'
 
 export default function Access() {
   const router = useRouter()
@@ -19,19 +20,7 @@ export default function Access() {
   const [expired, setExpired] = useState(false)
   const { Canvas } = useQRCode()
 
-  useEffect(() => {
-    function getUsername() {
-      if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('token')
-
-        if (!token) {
-          router.push('/mobile/login')
-        }
-      }
-    }
-
-    getUsername()
-  }, [])
+  CheckLogin()
 
   const accessReqUrl = new URL(apiUrl + '/api/access/qrcode/request')
 

@@ -4,7 +4,9 @@ import { signIn } from 'next-auth/react'
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { initializeApp } from 'firebase/app'
+import { getMessaging, getToken } from 'firebase/messaging'
 
 export default function MobileUserLogin() {
   // 이메일과 비밀번호 상태 관리
@@ -12,6 +14,36 @@ export default function MobileUserLogin() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false) // 로딩 상태 관리
   const [message, setMessage] = useState('') // 메시지 상태 관리
+  const [fcmToken, setFcmToken] = useState()
+
+  // fcm을 위한 device 토큰 get
+  useEffect(() => {
+    const firebaseApp = initializeApp({
+      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FCM_PROJECT_ID,
+      storageBucket: process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET,
+      messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID,
+      appId: process.env.NEXT_PUBLIC_FCM_APP_ID,
+    })
+
+    const messaging = getMessaging(firebaseApp)
+
+    getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FCM_VAP_ID_KEY,
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          setFcmToken(currentToken)
+        } else {
+          console.log('No registration token available. Request permission to generate one.')
+        }
+      })
+      .catch((err) => {
+        console.log('An error occurred while retrieving token. ', err)
+      })
+  }, [])
+
   // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -25,10 +57,26 @@ export default function MobileUserLogin() {
       .then((res) => {
         if (res['token'].length > 0 || res['token']) {
           localStorage.setItem('token', res['token'].replaceAll('"', ''))
-          window.location.href = '/m'
         } else {
           setMessage('아이디와 비밀번호를 확인하세요')
           setLoading(false)
+        }
+      })
+      .then((res) => {
+        if (fcmToken) {
+          fetchExtended('/api/fcm/login-device', {
+            method: 'POST',
+            body: JSON.stringify({ email, deviceToken: fcmToken }),
+          })
+            .then((res) => {
+              if (res.status === 200) {
+                setLoading(false)
+                window.location.href = '/m'
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
         }
       })
       .catch((err) => {
@@ -43,6 +91,10 @@ export default function MobileUserLogin() {
     })
   }
 
+  const handleAlert = () => {
+    setMessage('')
+  }
+
   const handleSocialSignIn = async (provider) => {
     await signIn(provider) // 'kakao'로 설정해 호출
   }
@@ -51,7 +103,14 @@ export default function MobileUserLogin() {
       {message && <CustomAlert message={message} handleDismiss={handleAlert} />}
       <div className="flex w-full flex-col items-center justify-center px-6 py-8 md:h-screen lg:p-0">
         <span className="pb-1 text-gray-500">딜리셔스 아이디어</span>
-        <img className="h-50 w-50 mr-2" src="/WebLogo.svg" alt="logo"></img>
+        <img
+          className="h-50 w-50 mr-2"
+          src="/WebLogo.svg"
+          alt="logo"
+          onClick={() => {
+            window.location.href = '/m'
+          }}
+        ></img>
         <form onSubmit={handleLogin} className="min-w-full space-y-4 md:space-y-4">
           <div>
             <label
