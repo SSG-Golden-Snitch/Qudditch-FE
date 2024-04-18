@@ -11,7 +11,7 @@ import { FaMobileAlt } from 'react-icons/fa'
 import { SlLocationPin } from 'react-icons/sl'
 import Loading from '@/components/ui/Loading'
 import { HiOutlineLogout } from 'react-icons/hi'
-import { logout, logoutDevice } from '@/utils/user'
+import { CheckLogin, logout, logoutDevice } from '@/utils/user'
 
 const WebSettingPage = () => {
   const [topMessage, setTopMessage] = useState()
@@ -22,6 +22,8 @@ const WebSettingPage = () => {
   const [totalUsedPoint, setTotalUsedPoint] = useState(0)
   const [totalEarnPoint, setTotalEarnPoint] = useState(0)
   const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
+
+  CheckLogin()
 
   useEffect(() => {
     async function getTopDatas() {

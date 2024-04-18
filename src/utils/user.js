@@ -1,4 +1,24 @@
 import { fetchExtended } from './fetchExtended'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+
+const CheckLogin = () => {
+  'use client'
+  const router = useRouter()
+  useEffect(() => {
+    function getToken() {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+          router.push('/mobile/login')
+        }
+      }
+    }
+
+    getToken()
+  }, [])
+}
 
 const logout = () =>
   new Promise((resolve, reject) => {
@@ -55,4 +75,4 @@ async function logoutDevice() {
   return isSuccessDeviceLogout
 }
 
-export { logout, logoutDevice }
+export { CheckLogin, logout, logoutDevice }

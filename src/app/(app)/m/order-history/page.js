@@ -11,6 +11,7 @@ import ReceiptModal from '@/components/ReceiptModal'
 import Loading from '@/components/ui/Loading'
 import { useRouter } from 'next/navigation'
 import MobileNavbar from '@/components/MobileNavbar'
+import { CheckLogin } from '@/utils/user'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -34,6 +35,8 @@ const OrderHistory = () => {
   const [showReceipt, setShowReceipt] = useState(false)
   const [activeOrderId, setActiveOrderId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  CheckLogin()
 
   useEffect(() => {
     const fetchOrders = async () => {

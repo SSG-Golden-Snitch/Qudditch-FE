@@ -4,10 +4,13 @@ import MapComponent from '@/components/map'
 import { Suspense, useEffect, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import Loading from '@/components/ui/Loading'
+import { CheckLogin } from '@/utils/user'
 
 const HomePage = () => {
   const [currentPosition, setCurrentPosition] = useState(null)
   const [data, setData] = useState(null)
+
+  CheckLogin()
 
   useEffect(() => {
     const fetchLocationData = async ({ latitude, longitude }) => {

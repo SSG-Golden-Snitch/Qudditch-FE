@@ -5,6 +5,7 @@ import MobileNavbar from '@/components/MobileNavbar'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { IoIosArrowBack } from 'react-icons/io'
 import Loading from '@/components/ui/Loading'
+import { CheckLogin } from '@/utils/user'
 
 const Point = () => {
   const [pointData, setPointData] = useState([])
@@ -16,6 +17,8 @@ const Point = () => {
   const [dataLoaded, setDataLoaded] = useState(false)
   const [showAllData, setShowAllData] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(true)
+
+  CheckLogin()
 
   useEffect(() => {
     if (!dataLoaded) {

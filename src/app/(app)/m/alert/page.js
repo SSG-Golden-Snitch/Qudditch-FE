@@ -6,11 +6,14 @@ import { useEffect, useState } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 
 import { IoIosArrowBack } from 'react-icons/io'
+import { CheckLogin } from '@/utils/user'
 
 export default function AlertListPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [alerts, setAlerts] = useState()
   const [message, setMessage] = useState()
+
+  CheckLogin()
 
   useEffect(() => {
     fetchNotification()
