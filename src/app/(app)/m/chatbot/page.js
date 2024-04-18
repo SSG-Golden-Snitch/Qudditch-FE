@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { CiMicrophoneOn } from 'react-icons/ci'
 import { BsStopCircle } from 'react-icons/bs'
 import Link from 'next/link'
+import { CheckLogin } from '@/utils/user'
 
 function Chatbot() {
   const [messages, setMessages] = useState([])
@@ -16,6 +17,8 @@ function Chatbot() {
   const [listening, setListening] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
+
+  CheckLogin()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
