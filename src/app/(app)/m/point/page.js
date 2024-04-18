@@ -96,7 +96,9 @@ const Point = () => {
                   <p style={{ fontSize: '0.8rem', color: '#888888' }}>
                     {formatDate(item.orderedAt)}
                   </p>
-                  <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{item.name}</p>
+                  <p style={{ fontSize: '1rem' }} className="font-bold">
+                    {item.name}
+                  </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   {displayType === '전체' && item.usedPoint !== null && item.usedPoint !== 0 && (
