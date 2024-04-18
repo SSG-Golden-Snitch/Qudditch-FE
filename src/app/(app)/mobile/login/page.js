@@ -164,30 +164,12 @@ export default function MobileUserLogin() {
         </form>
         <div className="mt-4 min-w-full">
           <button
-            onClick={() => handleSocialSignIn('google')}
-            disabled={loading}
-            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
-          >
-            <img src="/btn_google.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-            <span className="dark:text-gray-300">Login with Google</span>
-          </button>
-
-          <button
             onClick={kakaoLogin}
             disabled={loading}
             className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
           >
             <img src="/btn_kakao.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-            <span className="dark:text-gray-300">Login with Kakao</span>
-          </button>
-
-          <button
-            onClick={() => handleSocialSignIn('naver')}
-            disabled={loading}
-            className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
-          >
-            <img src="/btn_naver.svg" className="mr-2 h-5 w-5" alt="Google Icon" />
-            <span className="dark:text-gray-300">Login with Naver</span>
+            <span className="dark:text-gray-300">카카오톡으로 로그인하기</span>
           </button>
         </div>
         <div className="flex w-full justify-center">
