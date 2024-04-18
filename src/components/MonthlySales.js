@@ -27,8 +27,8 @@ const MonthlySales = ({ dateInput }) => {
 
   return (
     <div className="text-center">
-      <h4 className="text-xl font-semibold text-gray-500">당월 판매금액</h4>
-      <h3 className="text-3xl font-semibold text-gray-800">
+      <h4 className="text-l font-semibold text-gray-500">당월 판매금액</h4>
+      <h3 className="text-2xl font-bold text-gray-800">
         {result && result.length > 0 && result[0]
           ? formatCurrency(result[0].price)
           : formatCurrency(0)}
