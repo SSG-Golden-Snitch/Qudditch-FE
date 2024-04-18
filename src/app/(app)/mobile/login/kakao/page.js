@@ -1,29 +1,35 @@
 'use client'
 
 import Loading from '@/components/ui/Loading'
-import { fetchExtended } from '@/utils/fetchExtended'
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect } from 'react'
 
 const KakaoLogin = () => {
   const searchParams = useSearchParams()
-  const [data, setData] = useState(null)
 
   const handleCode = async (code) => {
-    await fetchExtended('/kakao?code=' + code).then((data) => {
-      setData(data)
-      // console.log(data)
-      // if (data['res'].hasOwnProperty('email')) {
-      // }
-    })
+    await fetch(code)
+      .then((res) => {
+        if (res.status === 200) return res.json()
+        if (res.status === 301) return (window.location.href = res.headers.get('Location'))
+        new Error(res.text)
+      })
+      .then((res) => {
+        if (res['token'].length > 0 || res['token']) {
+          localStorage.setItem('token', res['token'].replaceAll('"', ''))
+          window.location.href = '/m'
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        window.location.href = '/mobile/login?' + err
+      })
   }
   useEffect(() => {
-    if (data === null) {
-      handleCode(searchParams.get('code'))
-    }
+    handleCode(process.env.NEXT_PUBLIC_API_URL + '/kakao?code=' + searchParams.get('code'))
   }, [])
 
-  return <div>{data ? JSON.stringify(data) : 'loading'}</div>
+  return <Loading />
 }
 
 const SuspenseKakao = () => {
