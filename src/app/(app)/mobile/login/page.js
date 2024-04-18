@@ -38,8 +38,7 @@ export default function MobileUserLogin() {
   }
 
   const kakaoLogin = () => {
-    console.log(window.Kakao.Auth)
-    window.Kakao.Auth.authorize({
+    window?.Kakao.Auth.authorize({
       redirectUri: `${window.location.origin}/mobile/login/kakao`,
     })
   }
