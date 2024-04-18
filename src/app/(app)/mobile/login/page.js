@@ -1,21 +1,18 @@
 // src/app/mobile/login/page.js
 'use client'
-
 import { signIn } from 'next-auth/react'
 
-import { useState } from 'react'
-import { fetchExtended } from '@/utils/fetchExtended'
 import { CustomAlert } from '@/components/CustomAlert'
+import { fetchExtended } from '@/utils/fetchExtended'
+import { useState } from 'react'
 
 export default function MobileUserLogin() {
+  // 이메일과 비밀번호 상태 관리
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-
-  const handleAlert = (message = '') => {
-    setMessage(message)
-  }
+  const [loading, setLoading] = useState(false) // 로딩 상태 관리
+  const [message, setMessage] = useState('') // 메시지 상태 관리
+  // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -40,10 +37,14 @@ export default function MobileUserLogin() {
       })
   }
 
-  // 소셜 로그인 처리 함수
-  const handleSocialSignIn = (provider) => async (e) => {
-    e.preventDefault()
-    await signIn(provider)
+  const kakaoLogin = () => {
+    window?.Kakao.Auth.authorize({
+      redirectUri: `${window.location.origin}/mobile/login/kakao`,
+    })
+  }
+
+  const handleSocialSignIn = async (provider) => {
+    await signIn(provider) // 'kakao'로 설정해 호출
   }
   return (
     <section className="flex h-screen max-w-full items-center justify-center bg-white">
@@ -113,7 +114,7 @@ export default function MobileUserLogin() {
           </button>
 
           <button
-            onClick={() => handleSocialSignIn('kakao')}
+            onClick={kakaoLogin}
             disabled={loading}
             className="my-3 flex w-full items-center justify-center rounded-lg border border-slate-200 py-2 text-center text-slate-700 transition duration-150 hover:border-slate-400 hover:text-slate-900 hover:shadow"
           >
