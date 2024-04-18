@@ -8,7 +8,6 @@ import Image from 'next/image'
 import { CiMicrophoneOn } from 'react-icons/ci'
 import { BsStopCircle } from 'react-icons/bs'
 import Link from 'next/link'
-import Loading from '@/components/ui/Loading'
 
 function Chatbot() {
   const [messages, setMessages] = useState([])
@@ -48,30 +47,6 @@ function Chatbot() {
         time: getTime(),
       },
     ])
-  }, [])
-
-  useEffect(() => {
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const latitude = position.coords.latitude
-            const longitude = position.coords.longitude
-            console.log(latitude)
-            console.log(longitude)
-
-            sendMessageWithLocation(latitude, longitude)
-          },
-          (error) => {
-            console.error('Geolocation error:', error)
-          },
-        )
-      } else {
-        console.error('Geolocation not supported')
-      }
-    }
-
-    getLocation()
   }, [])
 
   const sendMessageWithLocation = async (longitude, latitude) => {
@@ -128,11 +103,7 @@ function Chatbot() {
         return
       }
 
-      if (!navigator.geolocation) {
-        console.error('Geolocation not supported')
-        return
-      }
-
+      // 위치 정보가 허용되었을 때만 메시지 전송
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const latitude = position.coords.latitude
@@ -162,6 +133,15 @@ function Chatbot() {
         },
         (error) => {
           console.error('Geolocation error:', error)
+          // 위치 정보를 사용할 수 없는 경우 적절한 안내 메시지를 추가합니다.
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              text: '위치 정보를 사용할 수 없습니다 위치 정보를 활성화해주세요',
+              sender: '도비',
+              time: getTime(),
+            },
+          ])
         },
       )
     } catch (error) {
