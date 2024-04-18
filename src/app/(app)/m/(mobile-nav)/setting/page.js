@@ -113,15 +113,18 @@ const WebSettingPage = () => {
       ) : topMessage != null ? (
         topMessage
       ) : (
-        <div className="mx-3 mt-3 h-48 rounded-3xl bg-gray-200 p-8">
+        <div className="mx-3 mt-3  rounded-3xl bg-gray-200 p-8">
           <div className="flex">
-            <SlLocationPin className="ml-2 text-sm text-gray-400" />
-            <div className="ml-3 text-sm">{bookmarkStore}</div>
+            <SlLocationPin className=" text-m ml-2 text-gray-900" />
+            <div className="ml-2 text-sm">{bookmarkStore}</div>
           </div>
-          <div className="ml-2 mt-2 text-2xl font-bold">{name}님, 반가워요!</div>
-          <div className="mx-2 mt-3 rounded-lg bg-gray-100">
-            <Link className="block w-full p-4" href="/m/point">
-              <div className="text-center text-2xl font-semibold">{point + 'P'}</div>
+          <div className="ml-2 mt-2 text-2xl font-semibold">{name}님, 반가워요!</div>
+          <div className="mx-2 mb-2 mt-3 rounded-lg bg-gray-100">
+            <Link className="block  w-full p-4" href="/m/point">
+              <div className="flex flex-col items-center">
+                <div className="text-gray-500">포인트</div>
+                <div className="text-center text-xl font-semibold"> {point + ' P'}</div>
+              </div>
             </Link>
           </div>
         </div>
@@ -130,7 +133,7 @@ const WebSettingPage = () => {
         {/* TODO 회원정보 수정 url*/}
         <Link className="block w-full p-6" href="/m/update">
           <div className="flex">
-            <AiFillSetting className="ml-2 text-3xl text-gray-400" />
+            <AiFillSetting className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">회원정보 수정</div>
           </div>
         </Link>
@@ -139,7 +142,7 @@ const WebSettingPage = () => {
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/m/alert">
           <div className="flex">
-            <LiaClipboardListSolid className="ml-2 text-3xl text-gray-400" />
+            <LiaClipboardListSolid className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">알림목록 조회</div>
           </div>
         </Link>
@@ -147,15 +150,15 @@ const WebSettingPage = () => {
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/m/bookmark/product">
           <div className="flex">
-            <FaBox className="ml-3 text-2xl text-gray-400" />
-            <div className="ms-3 text-lg font-medium text-gray-900">관심상품 관리</div>
+            <FaBox className="ml-3 text-xl text-gray-400" />
+            <div className="ms-3 text-lg font-medium text-gray-900 ">관심상품 관리</div>
           </div>
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/m/customer-service">
           <div className="flex">
-            <IoStorefront className="ml-2 text-3xl text-gray-400" />
+            <IoStorefront className="ml-2 text-xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">고객센터</div>
           </div>
         </Link>
@@ -163,7 +166,7 @@ const WebSettingPage = () => {
       <div className="flex justify-between border-b-2 border-gray-200">
         <Link className="block w-full p-6" href="/m/app-info">
           <div className="flex">
-            <FaMobileAlt className="ml-2 text-3xl text-gray-400" />
+            <FaMobileAlt className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>
           </div>
         </Link>
@@ -171,7 +174,7 @@ const WebSettingPage = () => {
       <div className="flex justify-between border-b-2 border-gray-200">
         <a className="block w-full p-6" href="#">
           <div className="flex" onClick={() => logout().then(() => (window.location.href = '/m'))}>
-            <HiOutlineLogout className="ml-2 text-3xl text-gray-400" />
+            <HiOutlineLogout className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">로그아웃</div>
           </div>
         </a>
@@ -243,7 +246,7 @@ function Toggle() {
   return (
     <div className="flex justify-between border-b-2 border-gray-200  p-6">
       <div className="flex">
-        <AiFillBell className="ml-2 text-3xl text-gray-400 dark:text-gray-200" />
+        <AiFillBell className="ml-2 text-2xl text-gray-400 dark:text-gray-200" />
         <span className="ms-3 text-lg font-medium text-gray-900">푸시 알림</span>
       </div>
       {isLoading ? (
@@ -255,14 +258,14 @@ function Toggle() {
           <input
             type="checkbox"
             value=""
-            className="peer sr-only"
+            className="peer sr-only "
             onChange={(e) => {
               setIsChecked(e.target.checked)
               fetchSetNotification(e.target.checked)
             }}
             checked={isChecked}
           />
-          <div className="peer relative h-7 w-14 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-0.5 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"></div>
+          <div className="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-yellow-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-yellow-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-yellow-800 rtl:peer-checked:after:-translate-x-full"></div>
         </label>
       )}
     </div>

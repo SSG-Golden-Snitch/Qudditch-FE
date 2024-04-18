@@ -143,7 +143,7 @@ const Point = () => {
             onClick={() => window.history.back()}
           >
             <IoIosArrowBack className="mr-2" />
-            <h2 className="text-xl font-bold">포인트</h2>
+            <h2 className="text-m font-semibold">포인트</h2>
           </button>
           <div className="mb-6 text-center">
             <p className="text-3xl font-bold">{totalEarnPoint - totalUsedPoint} P</p>

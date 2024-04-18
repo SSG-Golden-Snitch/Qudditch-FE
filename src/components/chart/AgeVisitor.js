@@ -36,9 +36,9 @@ const AgeVisitor = () => {
       },
       title: {
         display: true,
-        text: '나이',
+        text: '연령대별 방문자 수',
         font: {
-          size: 25,
+          size: 22,
         },
         padding: {
           bottom: 20,

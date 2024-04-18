@@ -200,15 +200,15 @@ export default function OrderInsertPage() {
           </form>
           <br />
           <br />
-          <Table>
-            <Table.Head>
+          <Table className="items-center justify-center text-center text-black">
+            <Table.Head className="items-center text-black">
               <Table.HeadCell>id</Table.HeadCell>
               <Table.HeadCell>Brand</Table.HeadCell>
               <Table.HeadCell>Name</Table.HeadCell>
               <Table.HeadCell>Quantity</Table.HeadCell>
               <Table.HeadCell></Table.HeadCell>
             </Table.Head>
-            <Table.Body className="divide-y">
+            <Table.Body className="divide-y ">
               {orderProducts.map((product) => (
                 <Table.Row
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"

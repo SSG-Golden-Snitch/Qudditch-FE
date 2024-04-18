@@ -19,11 +19,9 @@ const AgeBestProduct = () => {
   }, [])
 
   return (
-    <div className={'h-full w-full items-center justify-center p-[10px] text-center'}>
-      <div className="py-5">
-        <span className=" text-center text-2xl font-semibold text-gray-600">
-          나이대별 인기 상품
-        </span>
+    <div className={'h-full w-full items-center justify-center p-[20px] text-center'}>
+      <div className="">
+        <span className=" text-center text-xl font-bold text-gray-600">연령대별 인기 상품</span>
       </div>
       <Table className={'text-center text-xl'}>
         <Table.Head className={'text-xl'}>
