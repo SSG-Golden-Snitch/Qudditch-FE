@@ -84,6 +84,10 @@ function Chatbot() {
     }
     recognition.onstart = () => {
       setListening(true)
+      // 5초 후에 음성 인식을 중지합니다.
+      setTimeout(() => {
+        recognition.stop()
+      }, 5000)
     }
     recognition.onend = () => {
       setListening(false)
