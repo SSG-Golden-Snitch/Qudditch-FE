@@ -46,13 +46,13 @@ async function logoutDevice() {
         // SUCCESS
         isSuccessDeviceLogout = true
       } else {
-        throw new Error('디바이스 로그아웃 실패')
+        new Error('디바이스 로그아웃 실패')
       }
     } catch (error) {
-      deviceLogoutMsg = error.message
+      console.log(error.message)
     }
   }
   return isSuccessDeviceLogout
 }
 
-export { logout }
+export { logout, logoutDevice }
