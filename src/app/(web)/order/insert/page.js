@@ -240,28 +240,28 @@ export default function OrderInsertPage() {
 
           <a
             onClick={handleSubmit}
-            class="group relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-gray-500 p-3 px-4 py-2 font-medium text-gray-600 shadow-md transition duration-300 ease-out"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-gray-500 p-3 px-4 py-2 font-medium text-gray-600 shadow-md transition duration-300 ease-out"
           >
-            <span class="ease absolute inset-0 flex h-full w-full -translate-x-full items-center justify-center bg-gray-500 text-white duration-300 group-hover:translate-x-0">
+            <span className="ease absolute inset-0 flex h-full w-full -translate-x-full items-center justify-center bg-gray-500 text-white duration-300 group-hover:translate-x-0">
               <svg
-                class="h-6 w-6"
+                className="h-6 w-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M14 5l7 7m0 0l-7 7m7-7H3"
                 ></path>
               </svg>
             </span>
-            <span class="ease absolute flex h-full w-full transform items-center justify-center text-gray-500 transition-all duration-300 group-hover:translate-x-full">
+            <span className="ease absolute flex h-full w-full transform items-center justify-center text-gray-500 transition-all duration-300 group-hover:translate-x-full">
               발주추가
             </span>
-            <span class="invisible relative">발주추가</span>
+            <span className="invisible relative">발주추가</span>
           </a>
 
           <br />
@@ -304,11 +304,8 @@ export default function OrderInsertPage() {
             </div>
             {recommend.length > 0 && (
               <div className="md:col-span-1">
-                <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
-                  Recommended{' '}
-                  <span className="underline-offset-3 underline decoration-blue-200 decoration-8 dark:decoration-blue-600">
-                    product’s for ordering
-                  </span>
+                <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
+                  발주 추천 상품
                 </h1>
                 <Table>
                   <Table.Head>
@@ -318,10 +315,10 @@ export default function OrderInsertPage() {
                     <Table.HeadCell></Table.HeadCell>
                   </Table.Head>
                   <Table.Body className="divide-y">
-                    {recommend.map((product) => (
+                    {recommend.map((product, idx) => (
                       <Table.Row
                         className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                        key={product.id}
+                        key={idx}
                       >
                         <Table.Cell>
                           <Image src={product.image} alt={product.name} width="70" height="70" />
