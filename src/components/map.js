@@ -176,7 +176,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
                 width: '80%',
                 maxWidth: '20rem',
                 height: 'auto',
-                transform: 'translateY(-30%)',
+                transform: 'translateY(-40%)',
                 borderRadius: '30px',
               }}
             >
