@@ -27,7 +27,7 @@ export default function OrderDetailPage({ id }) {
       {isLoading ? (
         <Loading />
       ) : (
-        <Table>
+        <Table className="items-center text-black">
           <Table.Head>
             <Table.HeadCell></Table.HeadCell>
             <Table.HeadCell>Brand</Table.HeadCell>

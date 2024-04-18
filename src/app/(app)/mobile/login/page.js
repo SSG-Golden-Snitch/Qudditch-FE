@@ -95,7 +95,7 @@ export default function MobileUserLogin() {
           <button
             type="submit"
             disabled={loading}
-            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
+            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-extrabold text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 "
           >
             {loading ? '로그인중...' : '로그인'}
           </button>
