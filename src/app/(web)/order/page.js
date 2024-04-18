@@ -50,8 +50,8 @@ export default function OrderListPage() {
   if (!orderData.pagination) return <div>데이터를 불러오지 못했습니다.</div>
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 pb-10 pt-[6rem]">
-      <Table>
+    <div className="h-screen overflow-x-auto bg-[#e4e4e4] px-10 pb-10 pt-[6rem] ">
+      <Table className="text-center font-semibold text-black">
         <Table.Head>
           <Table.HeadCell>ID</Table.HeadCell>
           <Table.HeadCell>State</Table.HeadCell>
@@ -89,7 +89,7 @@ export default function OrderListPage() {
             ></path>
           </svg>
         </span>
-        <span class="ease absolute flex h-full w-full transform items-center justify-center text-gray-500 transition-all duration-300 group-hover:translate-x-full">
+        <span class="ease absolute flex h-full w-full transform items-center justify-center transition-all duration-300 group-hover:translate-x-full">
           발주등록
         </span>
         <span class="invisible relative">발주등록</span>

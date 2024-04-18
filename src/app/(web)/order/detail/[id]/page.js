@@ -39,7 +39,7 @@ export default function OrderDetail({ params: { id } }) {
     }
   }
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+    <div className="h-screen overflow-x-auto bg-[#e4e4e4] px-10 py-10">
       {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       <OrderDetailPage id={id} />
       <br />

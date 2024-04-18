@@ -56,7 +56,7 @@ const BestProduct = () => {
         display: true,
         text: 'Best 5 제품',
         font: {
-          size: 25,
+          size: 22,
         },
         padding: {
           bottom: 20,

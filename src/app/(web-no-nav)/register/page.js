@@ -191,7 +191,7 @@ function Component() {
           handleAlert('failure', res['message'])
         } else {
           alert('회원가입이 완료되었습니다.')
-          router.push(`mobile/login`)
+          router.push(`/login/store`)
         }
       })
   }
@@ -285,7 +285,7 @@ function Component() {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full ">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
       <div className="grid  items-center justify-items-center pb-5 pt-20 text-center">
         <span className="pb-2 text-gray-500">딜리셔스 아이디어</span>
