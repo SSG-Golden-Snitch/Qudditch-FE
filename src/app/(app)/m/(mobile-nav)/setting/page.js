@@ -11,7 +11,7 @@ import { FaMobileAlt } from 'react-icons/fa'
 import { SlLocationPin } from 'react-icons/sl'
 import Loading from '@/components/ui/Loading'
 import { HiOutlineLogout } from 'react-icons/hi'
-import { logout } from '@/utils/user'
+import { logout, logoutDevice } from '@/utils/user'
 
 const WebSettingPage = () => {
   const [topMessage, setTopMessage] = useState()
@@ -173,7 +173,12 @@ const WebSettingPage = () => {
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
         <a className="block w-full p-6" href="#">
-          <div className="flex" onClick={() => logout().then(() => (window.location.href = '/m'))}>
+          <div
+            className="flex"
+            onClick={() =>
+              logoutDevice().then(() => logout().then(() => (window.location.href = '/m')))
+            }
+          >
             <HiOutlineLogout className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">로그아웃</div>
           </div>
@@ -236,7 +241,7 @@ function Toggle() {
         const responseData = await response.text()
         // console.log(responseData) // SUCCESS
       } else {
-        throw new Error('푸시 알림을 설정하는데 실패했습니다.')
+        new Error('푸시 알림을 설정하는데 실패했습니다.')
       }
     } catch (error) {
       setMessage(error.message)
