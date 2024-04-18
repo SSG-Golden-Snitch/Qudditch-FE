@@ -20,9 +20,9 @@ const GenderVisitor = () => {
       },
       title: {
         display: true,
-        text: '성별',
+        text: '성별 방문자수',
         font: {
-          size: 25,
+          size: 22,
         },
         padding: {
           bottom: 20,

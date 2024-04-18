@@ -43,7 +43,12 @@ export default function Home() {
     <div className="flex h-screen flex-col bg-[#e4e4e4] px-4 dark:border-gray-700">
       <div className="flex h-14 justify-end">
         <div className={'py-2'}>
-          <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
+          <Datepicker
+            options={{ datepickerClassNames: 'right-4' }}
+            onChange={handleChange}
+            show={show}
+            setShow={handleClose}
+          />
         </div>
       </div>
       <div className="mb-4 grid h-24 grid-cols-4 gap-4">
