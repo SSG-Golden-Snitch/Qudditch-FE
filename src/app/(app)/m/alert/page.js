@@ -7,8 +7,10 @@ import { RiCloseLine } from 'react-icons/ri'
 
 import { IoIosArrowBack } from 'react-icons/io'
 import { CheckLogin } from '@/utils/user'
+import { useRouter } from 'next/navigation'
 
 export default function AlertListPage() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [alerts, setAlerts] = useState()
   const [message, setMessage] = useState()
@@ -76,14 +78,10 @@ export default function AlertListPage() {
 
   return (
     <div className="min-h-full bg-gray-100 px-3 pb-3">
-      <div className="p-3">
-        <button
-          type="button"
-          className="mb-4 flex items-center"
-          onClick={() => window.history.back()}
-        >
+      <div className="py-4">
+        <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
           <IoIosArrowBack className="mr-2" />
-          <div className="text-sm dark:text-white">알림 기록</div>
+          <h2 className="text-m font-semibold">알림 기록</h2>
         </button>
       </div>
       <ul className="rounded-2xl bg-white shadow">
