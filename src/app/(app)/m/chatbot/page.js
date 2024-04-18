@@ -178,17 +178,6 @@ function Chatbot() {
     return formattedTime
   }
 
-  const sendMessageHandler = () => {
-    if (inputValue === '') {
-      return
-    }
-    handleMessageSend()
-  }
-
-  const onTouchStartHandler = (e) => {
-    e.stopPropagation()
-  }
-
   return (
     <div className="min-h-full min-w-full">
       <div className="chat-app mx-auto flex h-screen max-w-full flex-col rounded-lg  bg-gray-200 font-sans">
