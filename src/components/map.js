@@ -156,7 +156,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
 
   return (
     <div>
-      <div id="map" style={{ width: '100vw', height: '93vh' }}></div>
+      <div id="map" style={{ width: '100vw', height: '90vh' }}></div>
       {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       {selectStore && (
         <Modal
@@ -176,7 +176,7 @@ const MapComponent = ({ defaultPosition, stores }) => {
                 width: '80%',
                 maxWidth: '20rem',
                 height: 'auto',
-                transform: 'translateY(-30%)',
+                transform: 'translateY(-40%)',
                 borderRadius: '30px',
               }}
             >
