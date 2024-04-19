@@ -122,12 +122,14 @@ const WebSettingPage = () => {
       ) : topMessage != null ? (
         topMessage
       ) : (
-        <div className="mx-3 rounded-3xl bg-gray-200 p-8">
+        <div className="mx-3 rounded-3xl bg-gray-200 p-6">
           <div className="flex">
             <SlLocationPin className=" text-m ml-2 text-gray-900" />
-            <div className="ml-2 text-sm">{bookmarkStore}</div>
+            <div className="ml-2">{bookmarkStore}</div>
           </div>
-          <div className="ml-2 mt-2 text-2xl font-semibold">{name}님, 반가워요!</div>
+          <div className="ml-2 mt-1 text-2xl ">
+            <span className="font-semibold">{name}님</span>, 반가워요!
+          </div>
           <div className="mx-2 mb-2 mt-3 rounded-lg bg-gray-100">
             <Link className="block  w-full p-4" href="/m/point">
               <div className="flex flex-col items-center">

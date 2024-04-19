@@ -1,12 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { IoIosArrowBack } from 'react-icons/io'
 import { TiStarFullOutline } from 'react-icons/ti'
-import { useRouter } from 'next/navigation'
-import Loading from '@/components/ui/Loading'
-import { CiStar } from 'react-icons/ci'
 
 export default function Favorite() {
   const [product, setProduct] = useState([])
@@ -74,7 +72,11 @@ export default function Favorite() {
     <div className="min-h-full bg-gray-100 px-3 pb-3">
       <div className="p-3">
         <div className="py-4">
-          <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
+          <button
+            type="button"
+            className="flex items-center"
+            onClick={() => router.push('/m/setting')}
+          >
             <IoIosArrowBack className="mr-2" />
             <h2 className="text-m font-semibold">관심상품</h2>
           </button>
