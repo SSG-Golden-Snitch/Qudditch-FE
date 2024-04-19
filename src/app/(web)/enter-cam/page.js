@@ -180,7 +180,7 @@ const Home = () => {
                   <Webcam
                     ref={webcamRefCallback}
                     mirrored={mirrored}
-                    className="h-full w-full object-contain p-2"
+                    className="h-full w-full rounded-2xl object-contain p-2"
                     videoConstraints={{
                       deviceId: cameraDeviceProvider.webcamId,
                     }}
@@ -209,8 +209,14 @@ const Home = () => {
               ) : null}
             </div>
           </div>
-          <div className={'mr-4 h-full max-w-[18%] grow overflow-auto border p-4 text-center'}>
-            <ul>
+          <div
+            className={
+              'mr-4 h-full max-w-[18%] grow overflow-auto rounded-xl border bg-white p-4 text-center'
+            }
+          >
+            <div className="pb-4 text-xl font-semibold">출입기록</div>
+            <hr />
+            <ul className="mt-4">
               {enteredCustomers.map((customer, idx) => (
                 <li key={idx}>{customer}: 출입문 열림</li>
               ))}

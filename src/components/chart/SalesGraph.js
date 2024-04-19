@@ -40,7 +40,7 @@ const SalesGraph = ({ dateInput }) => {
       },
       title: {
         display: true,
-        text: '일일 매출 현황',
+        text: '매출 현황',
         font: {
           size: 22,
         },
@@ -103,7 +103,7 @@ const SalesGraph = ({ dateInput }) => {
           backgroundColor: (context) => {
             const ctx = context.chart.ctx
             const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-            gradient.addColorStop(0, 'rgba(253, 244, 201, 1)')
+            gradient.addColorStop(0, '#ffe454')
             gradient.addColorStop(1, '#fff')
             return gradient
           },
