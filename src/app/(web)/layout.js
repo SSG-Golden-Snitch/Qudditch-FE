@@ -4,7 +4,7 @@ import '@aws-amplify/ui-react/styles.css'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import CustomSidebar from '@/components/CustomSidebar'
 import { useEffect, useState } from 'react'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { Analytics } from '@vercel/analytics/react'
 
 export default function WebRootLayout({ children }) {
@@ -33,7 +33,7 @@ export default function WebRootLayout({ children }) {
         <Analytics />
         <SpeedInsights />
         {isLoading ? (
-          <Loading />
+          <CustomLoading />
         ) : (
           <>
             <CustomSidebar />

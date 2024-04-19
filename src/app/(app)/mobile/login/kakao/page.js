@@ -1,6 +1,6 @@
 'use client'
 
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect } from 'react'
 
@@ -27,12 +27,12 @@ const KakaoLogin = () => {
     handleCode(process.env.NEXT_PUBLIC_API_URL + '/kakao?code=' + searchParams.get('code'))
   }, [])
 
-  return <Loading />
+  return <CustomLoading />
 }
 
 const SuspenseKakao = () => {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<CustomLoading />}>
       <KakaoLogin />
     </Suspense>
   )

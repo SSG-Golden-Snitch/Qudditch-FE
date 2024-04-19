@@ -82,7 +82,7 @@ export default function Favorite() {
           </button>
         </div>
         <ul className="rounded-2xl bg-white shadow">
-          {/* {isLoading ? <Loading /> : message ? message : <ProductList list={items} />} */}
+          {/* {isLoading ? <CustomLoading /> : message ? message : <ProductList list={items} />} */}
           <ProductList list={product} />
         </ul>
       </div>
