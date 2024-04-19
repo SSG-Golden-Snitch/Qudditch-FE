@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Divider } from '@aws-amplify/ui-react'
@@ -87,7 +87,7 @@ const ProductSearchPage = () => {
 
   return (
     <div className={'h-[calc(100vh-5rem)] w-full'}>
-      {loading && <Loading />}
+      {loading && <CustomLoading />}
       <div className={'flex flex-row items-center justify-between px-3 py-2 pb-14'}>
         <div className={'flex flex-row items-center'}>
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>

@@ -1,6 +1,6 @@
 'use client'
 
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
@@ -85,7 +85,7 @@ export default function AlertListPage() {
         </button>
       </div>
       <ul className="rounded-2xl bg-white shadow">
-        {isLoading ? <Loading /> : message ? message : <AlertList list={alerts} />}
+        {isLoading ? <CustomLoading /> : message ? message : <AlertList list={alerts} />}
       </ul>
     </div>
   )

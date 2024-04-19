@@ -1,6 +1,6 @@
 'use client'
 
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { fetchExtended, apiUrl } from '@/utils/fetchExtended'
 import { Button, Pagination, Table } from 'flowbite-react'
 import { forwardRef, useEffect, useState } from 'react'
@@ -90,7 +90,7 @@ const Sales = () => {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
 
   const headers = [
     { label: 'No', key: 'index' },
