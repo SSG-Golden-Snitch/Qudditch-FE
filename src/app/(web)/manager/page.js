@@ -40,10 +40,15 @@ export default function Home() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-4 dark:border-gray-700">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] px-4 dark:border-gray-700">
       <div className="flex h-14 justify-end">
         <div className={'py-2'}>
-          <Datepicker onChange={handleChange} show={show} setShow={handleClose} />
+          <Datepicker
+            options={{ datepickerClassNames: 'right-4' }}
+            onChange={handleChange}
+            show={show}
+            setShow={handleClose}
+          />
         </div>
       </div>
       <div className="mb-4 grid h-24 grid-cols-4 gap-4">
@@ -65,12 +70,12 @@ export default function Home() {
         indicators={false}
         slide={false}
         leftControl={
-          <div className={'text-4xl'}>
+          <div className={'text-3xl text-gray-500 '}>
             <FaChevronLeft />
           </div>
         }
         rightControl={
-          <div className={'text-4xl'}>
+          <div className={'text-3xl text-gray-500 '}>
             <FaChevronRight />
           </div>
         }

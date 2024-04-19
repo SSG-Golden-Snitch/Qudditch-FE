@@ -77,7 +77,7 @@ export default function Product() {
 
   if (isLoading) return <Loading />
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] py-16">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
       <div className="flex h-screen flex-col items-center overflow-y-scroll pt-10">

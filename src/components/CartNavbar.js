@@ -1,6 +1,7 @@
 'use client'
 
 import { fetchExtended } from '@/utils/fetchExtended'
+import { Checkbox } from 'flowbite-react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -59,6 +60,7 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           },
           body: JSON.stringify({
             pg_token,
+            order_id: partnerOrderId,
           }),
         })
 
@@ -72,11 +74,11 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
           router.push('/m/store-select/payResult') // Navigate to success page
         } else {
           console.error('Failed to approve payment:', data)
-          router.push('/m/store-select/payResult') // Navigate to failure page
+          router.push('/m/store-select/cart') // Navigate to failure page
         }
       } catch (error) {
         console.error('Error approving payment:', error)
-        router.push('/m/store-select/payResult')
+        router.push('/m/store-select/cart')
       }
     }
 
@@ -87,18 +89,20 @@ const CartNavbar = ({ allSelected, handleSelectAllChange, initiatePayment, total
     <div className="fixed inset-x-0 bottom-0 z-10 bg-gray-100 shadow-md">
       <div className="flex items-center justify-between rounded-t-2xl p-4">
         <div className="flex items-center">
-          <input
+          <Checkbox
+            color={'warning'}
+            id="allSelected"
             type="checkbox"
             checked={allSelected}
             onChange={handleSelectAllChange}
-            className="h-6 w-6 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            required
           />
           <span className="ml-2 font-medium">전체</span>
           <span className="ml-4 font-bold">총액: {formatNumber(totalPay)}원</span>
         </div>
 
         <button
-          className="ml-4 flex-1 bg-blue-500 px-4 py-2 text-lg font-medium text-white"
+          className="ml-4 flex-1 bg-amber-400 px-4 py-2 text-lg font-medium text-white"
           onClick={handleInitiatePayment}
         >
           결제하기

@@ -55,7 +55,7 @@ export default function Register() {
         }
         if (res['status'] === 'success') {
           handleAlert('success', res['message'])
-          router.push('/login')
+          router.push('/mobile/login')
         }
       })
   }
@@ -143,7 +143,7 @@ export default function Register() {
   const handlePassword = (value) => {
     setPassword(value)
     if (value.length < 8) {
-      setPasswordError('비밀번호는 8~12자리의 영문, 숫자 조합이어야 합니다.')
+      setPasswordError('비밀번호는 8~12자리의 영문,숫자 조합이어야 합니다.')
       setPWColor('failure')
     } else {
       setPasswordError('')
@@ -168,8 +168,8 @@ export default function Register() {
 
       <section className="grid min-h-screen  items-center justify-center  ">
         <div
-          className="mx-auto flex 
-       flex-col items-center justify-center  px-6 py-24 md:h-screen lg:py-0"
+          className=" flex w-full
+       flex-col items-center justify-center py-24 "
         >
           {' '}
           <div>
@@ -178,7 +178,7 @@ export default function Register() {
               <WebLogo />
             </div>
           </div>
-          <form>
+          <form className="w-screen px-10">
             <div className="pb-2">
               <Label htmlFor="name">이름</Label>
               <TextInput
@@ -204,9 +204,10 @@ export default function Register() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <Button
+                  color={'warning'}
                   onClick={checkEmail}
                   disabled={loading || !email || emailError}
-                  className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  className="shrink-0 rounded-lg bg-amber-400 px-0 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
                 >
                   확인
                 </Button>
@@ -228,15 +229,17 @@ export default function Register() {
                 />
                 {sendBtn ? (
                   <Button
+                    color={'warning'}
                     onClick={() => handleVerifyCode()}
-                    className="  bg-amber-400 px-0 text-center text-xs font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className=" shrink-0 bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     인증
                   </Button>
                 ) : (
                   <Button
+                    color={'warning'}
                     onClick={() => sendVerifyCode()}
-                    className="  bg-amber-400 px-0 text-center text-xs font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className=" shrink-0 bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     전송
                   </Button>
@@ -288,11 +291,12 @@ export default function Register() {
           </form>
         </div>
 
-        <div className="pb-24">
+        <div className="flex items-center justify-center pb-24">
           <Button
+            color={'warning'}
             onClick={() => handleSubmit()}
             type="submit"
-            className="w-full rounded-lg bg-amber-400 text-center text-sm font-medium text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+            className="w-3/4 rounded-lg bg-amber-400 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
           >
             회원가입
           </Button>

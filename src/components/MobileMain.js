@@ -77,6 +77,7 @@ const ProductSearchBar = () => {
       options={products}
       placeholder="상품명을 입력해주세요"
       size="medium"
+      style={{ borderRadius: '20px' }}
       isLoading={isLoading}
       onChange={onChange}
       onClear={onClear}
@@ -176,8 +177,8 @@ const MobileMain = () => {
   }
 
   return (
-    <div className=" h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll ">
-      <div className="   items-center  justify-items-center  bg-stone-600 pt-10">
+    <div className="h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll  ">
+      <div className="   items-center  justify-items-center  bg-stone-500 pt-10">
         <div className=" items-center justify-items-stretch text-center">
           <div className="flex justify-center pl-24">
             <AppLogo />
@@ -222,11 +223,11 @@ const MobileMain = () => {
           </div>
         </div>
       </div>
-      <div className="p-3">
+      <div className="px-8 pt-4">
         <ProductSearchBar />
       </div>
-      <div className="px-7 pt-5">
-        <div className="text-xm flex w-full max-w-4xl justify-around gap-0">
+      <div className=" px-6 pt-5 ">
+        <div className="text-xm flex w-full max-w-full justify-around gap-0">
           <Link href="/m/access" passHref>
             <div className="flex flex-col items-center text-center active:bg-gray-100">
               <div className="text-6xl">
@@ -252,7 +253,7 @@ const MobileMain = () => {
             </div>
           </Link>
         </div>
-        <div className="mt-3 ">
+        <div className="mt-3">
           <ProductRank />
         </div>
       </div>

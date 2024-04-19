@@ -50,8 +50,8 @@ export default function OrderListPage() {
   if (!orderData.pagination) return <div>데이터를 불러오지 못했습니다.</div>
 
   return (
-    <div className="h-screen overflow-x-auto bg-gray-100 px-10 pb-10 pt-[6rem]">
-      <Table>
+    <div className="h-screen overflow-x-auto bg-[#e4e4e4] px-10 pb-10 pt-[6rem] ">
+      <Table className="text-center font-semibold text-black">
         <Table.Head>
           <Table.HeadCell>ID</Table.HeadCell>
           <Table.HeadCell>State</Table.HeadCell>
@@ -71,28 +71,28 @@ export default function OrderListPage() {
       <br />
       <a
         onClick={handleInsertClick}
-        class="group relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-gray-500 p-3 px-4 py-2 font-medium text-gray-600 shadow-md transition duration-300 ease-out"
+        className="group relative inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-gray-500 p-3 px-4 py-2 font-medium text-gray-600 shadow-md transition duration-300 ease-out"
       >
-        <span class="ease absolute inset-0 flex h-full w-full -translate-x-full items-center justify-center bg-gray-500 text-white duration-300 group-hover:translate-x-0">
+        <span className="ease absolute inset-0 flex h-full w-full -translate-x-full items-center justify-center bg-gray-500 text-white duration-300 group-hover:translate-x-0">
           <svg
-            class="h-6 w-6"
+            className="h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             ></path>
           </svg>
         </span>
-        <span class="ease absolute flex h-full w-full transform items-center justify-center text-gray-500 transition-all duration-300 group-hover:translate-x-full">
+        <span className="ease absolute flex h-full w-full transform items-center justify-center transition-all duration-300 group-hover:translate-x-full">
           발주등록
         </span>
-        <span class="invisible relative">발주등록</span>
+        <span className="invisible relative">발주등록</span>
       </a>
       <div className="relative flex items-center justify-center pt-10">
         <Pagination

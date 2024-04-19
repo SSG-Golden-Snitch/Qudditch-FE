@@ -3,9 +3,9 @@
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 
+import { fetchExtended } from '@/utils/fetchExtended'
 import { Button, Label, TextInput } from 'flowbite-react'
 import { useEffect, useRef, useState } from 'react'
-import { fetchExtended } from '@/utils/fetchExtended'
 
 function Component() {
   const [fcmToken, setFcmToken] = useState()
@@ -94,8 +94,8 @@ function Component() {
       })
   }
 
+  //   중간정렬
   return (
-    //   중간정렬
     <form className="flex max-w-md flex-col gap-4" onSubmit={handleSubmit} ref={loginRef}>
       <div>
         <div className="mb-2 block">

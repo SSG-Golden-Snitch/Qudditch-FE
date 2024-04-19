@@ -95,10 +95,10 @@ export default function Stock() {
 
   if (isLoading) return <Loading />
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
+    <div className="flex h-screen flex-col bg-[#e4e4e4]  py-5 ">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
-      <div className="grid grid-cols-2">
-        <div className="px-3 pb-5 pt-5 text-right">
+      <div className="flex w-full py-3 pl-10">
+        <div className="pltext-right w-1/2">
           <Select
             className="w-32"
             id="categories"
@@ -119,8 +119,8 @@ export default function Stock() {
           </Select>
         </div>
 
-        <div className="pl-36 pt-3">
-          <form className="mx-auto max-w-md" onSubmit={handleSearch}>
+        <div className="mx-10 w-1/2  pl-10">
+          <form className="" onSubmit={handleSearch}>
             <label
               htmlFor="default-search"
               className="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -148,7 +148,7 @@ export default function Stock() {
               <input
                 type="search"
                 id="default-search"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4  ps-10 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
                 placeholder="검색할 제품명을 입력하세요"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
@@ -158,7 +158,7 @@ export default function Stock() {
                 type="submit"
                 className="absolute bottom-2.5 end-2.5 rounded-lg bg-gray-700 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               >
-                Search
+                검색
               </button>
             </div>
           </form>

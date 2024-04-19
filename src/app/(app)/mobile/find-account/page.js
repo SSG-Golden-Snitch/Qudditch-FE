@@ -133,7 +133,7 @@ export default function FindAccountPage() {
           </div>
           <button
             onClick={handleFindEmail}
-            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
+            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-extrabold text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
           >
             이메일찾기
           </button>
@@ -149,7 +149,7 @@ export default function FindAccountPage() {
           </div>
           <button
             onClick={handleResetPassword}
-            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
+            className=" w-full rounded-lg bg-amber-400 px-5 py-2.5 text-center text-sm font-extrabold text-white hover:bg-amber-400 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-600"
           >
             인증메일발송
           </button>

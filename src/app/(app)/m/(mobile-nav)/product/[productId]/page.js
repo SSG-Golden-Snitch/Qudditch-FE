@@ -9,6 +9,7 @@ import { Divider } from '@aws-amplify/ui-react'
 import { CiStar } from 'react-icons/ci'
 import { TiStarFullOutline } from 'react-icons/ti'
 import { getDistance } from '@/utils/mapUtil'
+import { IoIosArrowBack, IoIosInformationCircleOutline } from 'react-icons/io'
 
 const ProductSearchPage = () => {
   const params = useParams()
@@ -17,20 +18,16 @@ const ProductSearchPage = () => {
   const [loading, setLoading] = useState(true)
   const [product, setProduct] = useState(null)
   const [stores, setStores] = useState([])
-  const [currentLocation, setCurrentLocation] = useState(null)
+  const [currentLocation, setCurrentLocation] = useState({
+    latitude: 0,
+    longitude: 0,
+  })
 
   const handleProduct = async () => {
-    const params = new URLSearchParams(
-      currentLocation
-        ? {
-            currentWgs84X: currentLocation['longitude'],
-            currentWgs84Y: currentLocation['latitude'],
-          }
-        : {
-            currentWgs84X: 0,
-            currentWgs84Y: 0,
-          },
-    )
+    const params = new URLSearchParams({
+      currentWgs84X: currentLocation['longitude'],
+      currentWgs84Y: currentLocation['latitude'],
+    })
     await fetchExtended(`/api/product/store/${productId}?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
@@ -57,7 +54,7 @@ const ProductSearchPage = () => {
 
   useEffect(() => {
     handleProduct()
-  }, [productId])
+  }, [currentLocation, productId])
 
   const priceToWon = (price) => {
     return price
@@ -89,11 +86,13 @@ const ProductSearchPage = () => {
   }
 
   return (
-    <div className={'h-[calc(100vh-4rem)] w-full'}>
+    <div className={'h-[calc(100vh-5rem)] w-full'}>
       {loading && <Loading />}
       <div className={'flex flex-row items-center justify-between px-3 py-2 pb-14'}>
         <div className={'flex flex-row items-center'}>
-          <div className={'text-2xl'}>←</div>
+          <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
+            <IoIosArrowBack className="mr-2 mt-2 text-xl" />
+          </button>
         </div>
       </div>
       {product && (
@@ -120,12 +119,19 @@ const ProductSearchPage = () => {
                 <CiStar className={'h-8 w-8 text-amber-200'} onClick={handleAddBookmark} />
               )}
             </div>
-            <div className={'py-4'}>
+            <p className={'pt-1 text-xs text-gray-400'}>
+              ⓘ 재고 수량은 판매 상황 및 구매 시점에 따라 실제 점포 재고와 상이할 수 있습니다.
+            </p>
+            <div className={'py-3'}>
               <Divider size={'small'} />
             </div>
           </div>
-          <div className={'h-[13rem] w-full overflow-y-scroll'}>
-            {stores ? (
+          <div className={'h-[10rem] w-full overflow-y-scroll'}>
+            {currentLocation?.latitude === 0 ? (
+              <div className={'flex flex-col items-center justify-center'}>
+                <div className={'text-lg'}>위치 정보를 가져오는 중입니다.</div>
+              </div>
+            ) : stores && stores.length > 0 ? (
               stores.map((store, index) => (
                 <div
                   key={index}
@@ -153,7 +159,9 @@ const ProductSearchPage = () => {
                 </div>
               ))
             ) : (
-              <div className={'text-center'}>검색 결과가 없습니다.</div>
+              <div className={'flex flex-col items-center justify-center'}>
+                <div className={'text-lg'}>주변에 판매하는 매장이 없습니다.</div>
+              </div>
             )}
           </div>
         </div>

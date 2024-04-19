@@ -5,6 +5,7 @@ import MobileNavbar from '@/components/MobileNavbar'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { IoIosArrowBack } from 'react-icons/io'
 import Loading from '@/components/ui/Loading'
+import { CheckLogin } from '@/utils/user'
 
 const Point = () => {
   const [pointData, setPointData] = useState([])
@@ -16,6 +17,8 @@ const Point = () => {
   const [dataLoaded, setDataLoaded] = useState(false)
   const [showAllData, setShowAllData] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(true)
+
+  CheckLogin()
 
   useEffect(() => {
     if (!dataLoaded) {
@@ -79,7 +82,7 @@ const Point = () => {
     }
 
     return (
-      <div className="mb-4">
+      <div className="mb-4 px-3">
         {' '}
         <ul style={{ marginBottom: '20px' }}>
           {filteredData.map((item, index) => (
@@ -93,7 +96,9 @@ const Point = () => {
                   <p style={{ fontSize: '0.8rem', color: '#888888' }}>
                     {formatDate(item.orderedAt)}
                   </p>
-                  <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{item.name}</p>
+                  <p style={{ fontSize: '1.1rem' }} className="">
+                    {item.name}
+                  </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   {displayType === '전체' && item.usedPoint !== null && item.usedPoint !== 0 && (
@@ -119,7 +124,7 @@ const Point = () => {
         </ul>
         {showMoreButton && !showAllData && (
           <button
-            className="w-full rounded-md border border-black bg-white px-4 py-2 text-black hover:bg-gray-100"
+            className="mr-3 w-full rounded-md border bg-gray-100 px-4 py-2 text-black hover:bg-gray-300"
             onClick={handleLoadMore}
           >
             더보기
@@ -132,7 +137,10 @@ const Point = () => {
   return (
     <div className="min-h-screen bg-white">
       <MobileNavbar />
-      <div className="container mx-auto px-4 py-8">
+      <div
+        className="container mx-auto overflow-y-auto px-4 py-8"
+        style={{ height: 'calc(100vh - 100px)' }}
+      >
         <div>
           <button
             type="button"
@@ -140,10 +148,10 @@ const Point = () => {
             onClick={() => window.history.back()}
           >
             <IoIosArrowBack className="mr-2" />
-            <h2 className="text-xl font-bold">포인트</h2>
+            <h2 className="text-m font-semibold">포인트</h2>
           </button>
-          <div className="mb-6 text-center">
-            <p className="text-3xl font-bold">{totalEarnPoint - totalUsedPoint} P</p>
+          <div className="my-10 pt-4 text-center">
+            <p className="text-3xl">{totalEarnPoint - totalUsedPoint} P</p>
           </div>
         </div>
         <div className="mb-4 text-center">

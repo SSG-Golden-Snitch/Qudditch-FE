@@ -1,81 +1,59 @@
 'use client'
 
-import '../../globals.css'
-import React, { useState, useEffect, forwardRef, Fragment } from 'react'
-import Link from 'next/link'
-import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
-import { HiOutlineTag } from 'react-icons/hi'
-import { TbCalendarSmile } from 'react-icons/tb'
+import Loading from '@/components/ui/Loading'
+import { fetchExtended, apiUrl } from '@/utils/fetchExtended'
+import { Button, Pagination, Table } from 'flowbite-react'
+import { forwardRef, useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
-import { Button } from 'flowbite-react'
-import Loading from '@/components/ui/Loading'
 
 // 커스텀 입력 컴포넌트
-// eslint-disable-next-line react/display-name
 const CustomInput = forwardRef(({ value, onClick }, ref) => (
-  <button onClick={onClick} ref={ref} className="datepicker-button">
-    {/* <CalendarIcon className="calendar-icon" /> */}
+  <button
+    onClick={onClick}
+    ref={ref}
+    className="datepicker-button border border-gray-300 bg-white p-2 font-bold text-gray-500 shadow-sm hover:bg-gray-50"
+  >
     {value}
   </button>
 ))
 
+// 빌드 에러 해결
+// Component-definition-is-missing-display-name-에러
+CustomInput.displayName = 'CustomInput'
+
 const Sales = () => {
-  const [orders, setOrders] = useState([])
+  const [orderData, setOrderData] = useState({
+    history: [],
+    pagination: null,
+  })
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [totalSales, setTotalSales] = useState(0)
-  // const [isDatePickerOpen, setDatePickerOpen] = useState(false)
-  const [openDetails, setOpenDetails] = useState(null)
   const [viewType, setViewType] = useState(1) // 1: 판매, 2: 환불
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      const year = selectedDate.getFullYear()
-      const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
-      const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
-      const params = {
-        // userCustomerId: 20, // 예시 사용자 ID
-        monthYear: formattedDate,
-        status: viewType, // 상태 추가
-      }
+  async function getMonthlyOrderHistory(formmattedDate, viewType, page = 1, recordSize = 10) {
+    const response = await fetchExtended(
+      apiUrl +
+        `/api/order/history?monthYear=${formmattedDate}&status=${viewType}&page=${page}&recordSize=${recordSize}`,
+    )
+    const responseData = await response.json()
 
-      // 요청할 URL의 queryString 생성
-      const queryString = new URLSearchParams(params).toString()
-      const endpoint = `/api/order/history?${queryString}`
-
-      try {
-        setIsLoading(false)
-        const response = await fetchExtended(endpoint, {
-          method: 'GET', // HTTP 요청 메서드 지정
-          // credentials: 'include', // 인증 정보(쿠키, 인증 헤더 등) 포함 옵션
-        })
-
-        // 응답을 json 형태로 파싱
-        const responseData = await response.json()
-        if (!responseData) throw new Error('데이터 로딩 실패')
-
-        // 상태 업데이트
-        setOrders(responseData || [])
-
-        // 총 판매액 계산
-        const total = responseData.reduce((acc, order) => acc + order.customerOrder.totalAmount, 0)
-        setTotalSales(total)
-      } catch (error) {
-        console.error('주문 내역을 불러오는 중 오류가 발생했습니다.', error)
-        setOrders([])
-        setTotalSales(0)
-      }
-    }
-
-    fetchOrders()
-  }, [selectedDate, viewType]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
-
-  // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
-  const handleViewTypeChange = (type) => {
-    setViewType(type)
+    return responseData
   }
+
+  useEffect(() => {
+    const year = selectedDate.getFullYear()
+    const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
+    const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
+
+    getMonthlyOrderHistory(formattedDate, viewType).then((responseData) => {
+      setOrderData({
+        history: responseData.history,
+        pagination: responseData.pagination,
+      })
+      setIsLoading(false)
+    })
+  }, [viewType, selectedDate])
 
   const formatDateYMD = (date) => {
     // date가 문자열인 경우 Date 객체로 변환
@@ -88,146 +66,97 @@ const Sales = () => {
     return dateObj.toLocaleDateString('ko-KR')
   }
 
-  // // Helper 함수들
-  // const formatDateYM = (date) => {
-  //   const d = new Date(date)
-  //   const year = d.getFullYear()
-  //   const month = `0${d.getMonth() + 1}`.slice(-2)
-  //   return `${year}-${month}`
-  // }
+  // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
+  const handleViewTypeChange = (type) => {
+    setViewType(type)
+  }
+
+  const onPageChange = (page) => {
+    const year = selectedDate.getFullYear()
+    const month = selectedDate.getMonth() + 1 // getMonth()는 0부터 시작하기 때문에 +1
+    const formattedDate = `${year}-${month < 10 ? `0${month}` : month}`
+    setIsLoading(true)
+    getMonthlyOrderHistory(formattedDate, viewType, page).then((responseData) => {
+      setOrderData({
+        history: responseData.history,
+        pagination: responseData.pagination,
+      })
+      setIsLoading(false)
+    })
+  }
 
   const formatNumber = (number) => {
     if (!number) return '0'
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') // 세자리마다 , 표시 추가
   }
 
-  // const handlePreviousMonth = () => {
-  //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))
-  // }
-
-  // const handleNextMonth = () => {
-  //   setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))
-  // }
   if (isLoading) return <Loading />
+
+  const headers = [
+    { label: 'No', key: 'index' },
+    { label: 'Order Date', key: 'orderedAt' },
+    { label: 'Product Details', key: 'productDetails' },
+    { label: 'Total Amount', key: 'totalAmount' },
+  ]
+
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-5">
-      <div className="flex justify-between">
-        <div className="flex items-center justify-start">
+    <div className="flex h-screen w-full flex-col items-center justify-start bg-[#e4e4e4] p-10">
+      <div className="flex min-w-full items-center justify-between pb-3">
+        <div className="flex items-center">
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
             dateFormat="yyyy/MM"
             showMonthYearPicker
             customInput={<CustomInput />}
-            className="ml-4"
           />
         </div>
-
-        <div className="mb-4 flex w-full justify-center">
-          <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+        <div className="flex gap-4">
+          <Button onClick={() => handleViewTypeChange(1)} color={viewType === 1 ? 'gray' : 'light'}>
             판매내역 조회
           </Button>
-          <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+          <Button onClick={() => handleViewTypeChange(2)} color={viewType === 2 ? 'gray' : 'light'}>
             환불내역 조회
           </Button>
         </div>
       </div>
 
-      <div className="max-h-[calc(100vh-200px)] overflow-auto">
-        <table className="w-full max-w-4xl divide-y divide-gray-200 overflow-auto">
-          <thead className="bg-gray-100">
-            <tr>
-              {['No', '결제 일자', '상품 정보', '수량', '가격', '결제 금액'].map((header) => (
-                <th
-                  key={header}
-                  className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {orders.map((order, index) => (
-              <Fragment key={index}>
-                <tr className="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <td className="flex items-center px-6 py-4">
-                    <button
-                      onClick={() => setOpenDetails(openDetails === index ? null : index)}
-                      className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                    >
-                      {openDetails === index ? (
-                        <ChevronUpIcon className="h-5 w-5" />
-                      ) : (
-                        <ChevronDownIcon className="h-5 w-5" />
-                      )}
-                    </button>
-                    {index + 1}
-                  </td>
-                  {/* <td className="px-6 py-4">{index + 1}</td> */}
-                  <td className="px-6 py-4">
-                    <div>{formatDateYMD(order.customerOrder.orderedAt)}</div>
-
-                    <Link href={`/sales/receipt/${order.customerOrder.partnerOrderId}`}>
-                      [{order.customerOrder.partnerOrderId}]
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4">
-                    {order.customerOrderProducts && order.customerOrderProducts.length > 0
-                      ? `${order.customerOrderProducts[0].productName} 외 ${
-                          order.customerOrderProducts.length - 1
-                        }개`
-                      : '상품 정보 없음'}
-                  </td>
-                  <td className="px-6 py-4">{order.customerOrderProducts.qty}</td>
-                  <td className="px-6 py-4">{order.customerOrderProducts.price}</td>
-                  <td className="px-6 text-right">
-                    {formatNumber(order.customerOrder.totalAmount)}
-                  </td>
-                </tr>
-                {openDetails === index && (
-                  <tr className="bg-gray-50 dark:bg-gray-700">
-                    <td colSpan="6" className="px-6 py-4">
-                      <table className="w-full">
-                        <tbody>
-                          {order.customerOrderProducts.map((product, prodIndex) => {
-                            // 주문 상품의 총액 계산
-                            const productTotalAmount = product.qty * product.price
-                            return (
-                              <tr key={prodIndex} className="border-b">
-                                <td className="flex items-center px-6 py-4">
-                                  <HiOutlineTag />
-                                </td>
-                                <td className="px-6 py-4">
-                                  {formatDateYMD(order.customerOrder.orderedAt)}
-                                </td>
-                                <td className="px-6 py-4 text-left">{product.productName}</td>
-                                <td className="px-6 py-4 text-right">{product.qty}</td>
-                                <td className="px-6 py-4 text-right">
-                                  {formatNumber(product.price)}
-                                </td>
-                                <td className="px-6 text-right">
-                                  {formatNumber(productTotalAmount)}
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
+      <div className="w-full">
+        <Table striped={true} className="text-center text-black">
+          <Table.Head>
+            {headers.map((header, index) => (
+              <Table.HeadCell key={index}>{header.label}</Table.HeadCell>
             ))}
-            <tr className="bg-gray-50 dark:bg-gray-700">
-              <td colSpan="5" className="px-6 py-4 text-right">
-                합계
-              </td>
-              <td className="px-6 py-4 text-right font-medium">{formatNumber(totalSales)}</td>
-            </tr>
-          </tbody>
-        </table>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {orderData &&
+              orderData.history.map((order, idx) => {
+                const customerOrder = order['customerOrder']
+                const customerOrderProducts = order['customerOrderProducts']
+                return (
+                  <Table.Row key={idx} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <Table.Cell>{customerOrder.id}</Table.Cell>
+                    <Table.Cell>{formatDateYMD(customerOrder.orderedAt)}</Table.Cell>
+                    <Table.Cell>
+                      {customerOrderProducts && customerOrderProducts.length > 0
+                        ? customerOrderProducts.length == 1
+                          ? customerOrderProducts[0].productName
+                          : `${customerOrderProducts[0].productName} 외 ${customerOrderProducts.length - 1}개`
+                        : '상품 정보 없음'}
+                    </Table.Cell>
+                    <Table.Cell>{formatNumber(customerOrder.totalAmount)}</Table.Cell>
+                  </Table.Row>
+                )
+              })}
+          </Table.Body>
+        </Table>
+        <div className="mt-4 flex justify-center">
+          <Pagination
+            currentPage={orderData.pagination.paginationParam.page}
+            totalPages={orderData.pagination.totalPageCount || 1}
+            onPageChange={onPageChange}
+          />
+        </div>
       </div>
     </div>
   )

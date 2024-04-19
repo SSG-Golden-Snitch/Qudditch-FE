@@ -40,12 +40,12 @@ const SalesGraph = ({ dateInput }) => {
       },
       title: {
         display: true,
-        text: '일일 매출 현황',
+        text: '매출 현황',
         font: {
-          size: 25,
+          size: 22,
         },
         padding: {
-          bottom: 20,
+          bottom: 22,
         },
       },
     },
@@ -98,8 +98,15 @@ const SalesGraph = ({ dateInput }) => {
         {
           label: '매출',
           data: bindingList.map((itm) => itm.sales),
-          borderColor: graphColors[3],
-          backgroundColor: graphColors[5],
+          borderColor: '#fde047',
+          tension: 0.3,
+          backgroundColor: (context) => {
+            const ctx = context.chart.ctx
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+            gradient.addColorStop(0, '#ffe454')
+            gradient.addColorStop(1, '#fff')
+            return gradient
+          },
           fill: true,
         },
       ],

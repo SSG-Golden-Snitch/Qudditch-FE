@@ -46,9 +46,9 @@ export const VisitorGraph = ({ dateInput }) => {
       },
       title: {
         display: true,
-        text: '일일 방문자 현황',
+        text: '방문자 현황',
         font: {
-          size: 25,
+          size: 22,
         },
         padding: {
           bottom: 20,
@@ -140,6 +140,8 @@ export const VisitorGraph = ({ dateInput }) => {
           data: finalDatas,
           borderWidth: 3,
           borderColor: graphColors[index],
+          backgroundColor: 'transparent',
+          tension: 0.4,
         }
       }),
     }

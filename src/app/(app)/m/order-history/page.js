@@ -10,6 +10,8 @@ import { IoIosArrowBack } from 'react-icons/io'
 import ReceiptModal from '@/components/ReceiptModal'
 import Loading from '@/components/ui/Loading'
 import { useRouter } from 'next/navigation'
+import MobileNavbar from '@/components/MobileNavbar'
+import { CheckLogin } from '@/utils/user'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -34,6 +36,8 @@ const OrderHistory = () => {
   const [activeOrderId, setActiveOrderId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  CheckLogin()
+
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true) // 데이터 로딩 시작
@@ -48,7 +52,7 @@ const OrderHistory = () => {
 
       // 요청할 URL의 queryString 생성
       const queryString = new URLSearchParams(params).toString()
-      const endpoint = `/api/order/history?${queryString}`
+      const endpoint = `/api/order/history/c?${queryString}`
 
       try {
         const response = await fetchExtended(endpoint, {
@@ -76,7 +80,7 @@ const OrderHistory = () => {
     }
 
     fetchOrders()
-  }, [selectedDate, viewType, selectedDate]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
+  }, [selectedDate, viewType]) // currentDate가 변경될 때마다 fetchOrders 함수를 다시 실행한다.
 
   // 추가된 부분: 판매내역 조회와 환불내역 조회를 위한 버튼 핸들러
   const handleViewTypeChange = (type) => {
@@ -124,12 +128,12 @@ const OrderHistory = () => {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="flex min-h-screen bg-white">
       <div className="container mx-auto px-4 py-8">
         <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
             <IoIosArrowBack className="mr-2" />
-            <h2 className="text-xl font-bold">구매목록</h2>
+            <h2 className="text-m font-semibold">구매내역</h2>
           </button>
           <DatePicker
             selected={selectedDate}
@@ -144,10 +148,11 @@ const OrderHistory = () => {
         {isLoading && <Loading />}
 
         <div className="mt-20 flex w-full justify-center">
-          <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+          <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => setViewType(1)} outline>
             구매내역 조회
           </Button>
-          <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+          <div style={{ width: '20px' }}></div>
+          <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => setViewType(2)} outline>
             환불내역 조회
           </Button>
         </div>
@@ -185,6 +190,7 @@ const OrderHistory = () => {
           <ReceiptModal partnerOrderId={activeOrderId} onClose={() => setShowReceipt(false)} />
         )}
       </div>
+      <MobileNavbar />
     </div>
   )
 }

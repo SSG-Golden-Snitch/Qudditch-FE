@@ -24,9 +24,9 @@ const MonthlyVisitor = ({ dateInput }) => {
   }, [yearMonth])
 
   return (
-    <div className="text-center">
-      <h4 className="text-2xl font-bold text-gray-500">총 방문자수</h4>
-      <h3 className="text-3xl font-bold text-gray-800">{result ? result + '명' : '0명'}</h3>
+    <div className="text-center ">
+      <h4 className="text-m font-semibold text-gray-500">총 방문자수</h4>
+      <h3 className="text-2xl font-bold text-gray-800">{result ? result + '명' : '0명'}</h3>
     </div>
   )
 }

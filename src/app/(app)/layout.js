@@ -1,7 +1,7 @@
 import '@/app/globals.css'
 import '@aws-amplify/ui-react/styles.css'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 const APP_NAME = 'PWA App'
 const APP_DEFAULT_TITLE = 'My Awesome PWA App'
 const APP_TITLE_TEMPLATE = '%s - PWA App'

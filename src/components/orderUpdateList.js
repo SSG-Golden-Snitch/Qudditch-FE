@@ -124,7 +124,7 @@ export default function GetDetail({ id }) {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+        <div className=" h-screen overflow-x-auto px-10 py-10">
           {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
           <form
             className="relative mx-auto max-w-md"
@@ -134,12 +134,7 @@ export default function GetDetail({ id }) {
             }}
           >
             <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center pl-3">
-              <svg
-                className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
+              <svg className="h-4 w-4 " aria-hidden="true" fill="none" viewBox="0 0 20 20">
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
@@ -167,7 +162,7 @@ export default function GetDetail({ id }) {
           </form>
           <br />
           <br />
-          <Table>
+          <Table className="text-center text-black">
             <Table.Head>
               <Table.HeadCell>ID</Table.HeadCell>
               <Table.HeadCell>Brand</Table.HeadCell>
@@ -217,9 +212,9 @@ export default function GetDetail({ id }) {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M14 5l7 7m0 0l-7 7m7-7H3"
                 ></path>
               </svg>

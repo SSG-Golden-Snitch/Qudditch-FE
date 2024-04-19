@@ -46,7 +46,7 @@ const PayResult = () => {
       <div className="fixed left-0 top-0 z-10 flex w-full justify-between bg-white p-4 shadow-md">
         <button type="button" className="mb-4 flex items-center" onClick={() => router.push('/m')}>
           <IoIosArrowBack className="mr-2" />
-          <h2 className="text-xl font-bold">홈으로</h2>
+          <h2 className="text-m font-semibold">홈</h2>
         </button>
       </div>
 

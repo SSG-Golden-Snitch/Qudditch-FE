@@ -4,6 +4,7 @@ import { CustomAlert } from '@/components/CustomAlert'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Table, Button } from 'flowbite-react'
 import { useEffect, useState } from 'react'
+import Loading from '@/components/ui/Loading'
 
 export default function AdminOrderDetail({ params: { id } }) {
   const [error, setError] = useState(null)
@@ -84,10 +85,10 @@ export default function AdminOrderDetail({ params: { id } }) {
     handleData()
   }, [])
 
-  if (isLoading) return <div className="h-screen bg-gray-100 p-6 py-16 ">Loading...</div>
+  if (isLoading) return <Loading />
 
   return (
-    <div className="flex h-screen flex-col bg-gray-100 px-10 py-10">
+    <div className="flex h-screen flex-col bg-[#e4e4e4] py-10">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}
 
       <div className="flex flex-col items-center pt-16">
@@ -123,7 +124,13 @@ export default function AdminOrderDetail({ params: { id } }) {
           </div>
         )}
         <div className="relative items-center pt-10">
-          <Button id="approvalBtn" onClick={handleApproval} disabled={isApprovalLoading || state}>
+          <Button
+            style={{ 'background-color': '#fbbf24' }}
+            id="approvalBtn"
+            onClick={handleApproval}
+            disabled={isApprovalLoading || state}
+            className="font-extrabold "
+          >
             {isApprovalLoading ? '처리중...' : '승인'}
           </Button>
         </div>
