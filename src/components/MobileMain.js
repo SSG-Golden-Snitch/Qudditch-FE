@@ -103,6 +103,17 @@ const MobileMain = () => {
   const [onNotify, setNotify] = useState(false)
   const [fcmToken, setFcmToken] = useState()
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      Notification.requestPermission()
+        .then(function (permission) {
+          console.log('Permission:', permission)
+        })
+        .catch(function (error) {
+          console.error('Permission error:', error)
+        })
+    }
+  }, [])
   // fcm을 위한 device 토큰 get
   useEffect(() => {
     const firebaseApp = initializeApp({
@@ -132,17 +143,6 @@ const MobileMain = () => {
   }, [])
 
   // 알림 권한 요청
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      Notification.requestPermission()
-        .then(function (permission) {
-          console.log('Permission:', permission)
-        })
-        .catch(function (error) {
-          console.error('Permission error:', error)
-        })
-    }
-  }, [])
 
   // SSE 이벤트 핸들러(알림이 왔을때 알림 아이콘 변경을 위함)
   useEffect(() => {
@@ -215,7 +215,12 @@ const MobileMain = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll  ">
+    <div
+      className="h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll"
+      onLoad={() => {
+        Notification.requestPermission().then(function (permission) {})
+      }}
+    >
       <div className="   items-center  justify-items-center  bg-stone-500 pt-10">
         <div className=" items-center justify-items-stretch text-center">
           <div className="flex justify-center pl-24">
