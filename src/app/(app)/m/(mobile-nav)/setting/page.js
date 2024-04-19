@@ -175,7 +175,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className="block w-full p-6" href="/m/app-info">
+        <Link className="block w-full p-6" href="/m/info">
           <div className="flex">
             <FaMobileAlt className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>
