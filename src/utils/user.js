@@ -1,5 +1,4 @@
 import { fetchExtended } from './fetchExtended'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const CheckLogin = () => {

@@ -23,7 +23,6 @@ const WebSettingPage = () => {
   const [totalEarnPoint, setTotalEarnPoint] = useState(0)
   const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
 
-  CheckLogin()
   useEffect(() => {
     async function getTopDatas() {
       async function getBookmarkStore() {
@@ -41,7 +40,7 @@ const WebSettingPage = () => {
               setBookmarkStore(data[0].name)
             }
           } else {
-            throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+            new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
           }
         } catch (error) {
           setTopMessage(error.message)
@@ -67,8 +66,7 @@ const WebSettingPage = () => {
               ),
             )
             setName(decodedJWT.name)
-          }
-          window.location.href = '/mobile/login'
+          } else window.location.href = '/mobile/login'
         }
       }
 
@@ -232,7 +230,7 @@ function Toggle() {
         setIsChecked(data.state)
         setIsLoading(false)
       } else {
-        throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+        new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
       }
     } catch (error) {
       setMessage(error.message)

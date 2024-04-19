@@ -15,8 +15,6 @@ export default function AlertListPage() {
   const [alerts, setAlerts] = useState()
   const [message, setMessage] = useState()
 
-  CheckLogin()
-
   useEffect(() => {
     fetchNotification()
   }, [])
