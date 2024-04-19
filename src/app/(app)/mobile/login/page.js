@@ -1,6 +1,7 @@
 // src/app/mobile/login/page.js
 'use client'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { fetchExtended } from '@/utils/fetchExtended'
@@ -10,6 +11,8 @@ import { getMessaging, getToken } from 'firebase/messaging'
 
 export default function MobileUserLogin() {
   // 이메일과 비밀번호 상태 관리
+  const router = useRouter()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false) // 로딩 상태 관리
@@ -57,6 +60,7 @@ export default function MobileUserLogin() {
       .then((res) => {
         if (res['token'].length > 0 || res['token']) {
           localStorage.setItem('token', res['token'].replaceAll('"', ''))
+          setLoading(false)
         } else {
           setMessage('아이디와 비밀번호를 확인하세요')
           setLoading(false)
@@ -70,8 +74,9 @@ export default function MobileUserLogin() {
           })
             .then((res) => {
               if (res.status === 200) {
+                handleAlert('success', '로그인 성공')
                 setLoading(false)
-                window.location.href = '/m'
+                router.push('/m')
               }
             })
             .catch((err) => {
