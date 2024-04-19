@@ -92,7 +92,7 @@ export default function Input() {
                 { label: 'No', col_name: 'storeInputId' },
                 { label: 'products', col_name: 'items' },
                 { label: 'input', col_name: 'inputAt' },
-                { label: 'state', col_name: 'state' },
+                // { label: 'state', col_name: 'state' },
                 { label: 'download', col_name: 'download' },
               ]}
             />
