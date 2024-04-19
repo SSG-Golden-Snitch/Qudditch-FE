@@ -4,9 +4,9 @@ import { signIn } from 'next-auth/react'
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useEffect, useState } from 'react'
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
+import { useEffect, useState } from 'react'
 
 export default function MobileUserLogin() {
   // 이메일과 비밀번호 상태 관리
