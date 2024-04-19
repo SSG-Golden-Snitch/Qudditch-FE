@@ -12,6 +12,8 @@ import FaceId from '/public/FaceID.svg'
 import SmallShop from '/public/SmallShop.svg'
 import ProductRank from './ProductRank'
 import { VscBellDot } from 'react-icons/vsc'
+import { initializeApp } from 'firebase/app'
+import { getMessaging, getToken } from 'firebase/messaging'
 
 const carouselData = ['/1.png', '/2.png', '/3.png', '/4.png', '/5.png']
 
@@ -99,6 +101,35 @@ const ProductSearchBar = () => {
 const MobileMain = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [onNotify, setNotify] = useState(false)
+  const [fcmToken, setFcmToken] = useState()
+
+  // fcm을 위한 device 토큰 get
+  useEffect(() => {
+    const firebaseApp = initializeApp({
+      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
+      authDomain: process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN,
+      projectId: process.env.NEXT_PUBLIC_FCM_PROJECT_ID,
+      storageBucket: process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET,
+      messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID,
+      appId: process.env.NEXT_PUBLIC_FCM_APP_ID,
+    })
+
+    const messaging = getMessaging(firebaseApp)
+
+    getToken(messaging, {
+      vapidKey: process.env.NEXT_PUBLIC_FCM_VAP_ID_KEY,
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          setFcmToken(currentToken)
+        } else {
+          console.log('No registration token available. Request permission to generate one.')
+        }
+      })
+      .catch((err) => {
+        console.log('An error occurred while retrieving token. ', err)
+      })
+  }, [])
 
   // 알림 권한 요청
   useEffect(() => {
@@ -133,6 +164,13 @@ const MobileMain = () => {
       )
 
       let userEmail = decodedJWT.sub
+
+      fetchExtended('/api/fcm/login-device', {
+        method: 'POST',
+        body: JSON.stringify({ userEmail, deviceToken: fcmToken }),
+      }).catch((err) => {
+        console.log(err)
+      })
 
       const sse_url = `${process.env.NEXT_PUBLIC_API_URL}/api/fcm/connect?userEmail=${userEmail}`
       console.info('sse url', sse_url)
