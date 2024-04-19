@@ -217,7 +217,7 @@ const MobileMain = () => {
   return (
     <div
       className="h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll"
-      onLoad={() => {
+      onClick={() => {
         Notification.requestPermission().then(function (permission) {})
       }}
     >
