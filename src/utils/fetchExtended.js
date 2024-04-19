@@ -25,6 +25,10 @@ export const fetchExtended = returnFetch({
       ) {
         args[1].headers.set('Content-Type', 'application/json')
       }
+      if (args[0].pathname in ['/login', '/register']) {
+        console.log('login request')
+        args[1].headers.delete('authorization')
+      }
       return args
     },
 

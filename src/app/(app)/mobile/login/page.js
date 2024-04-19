@@ -1,6 +1,7 @@
 // src/app/mobile/login/page.js
 'use client'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { fetchExtended } from '@/utils/fetchExtended'
@@ -10,6 +11,8 @@ import { getMessaging, getToken } from 'firebase/messaging'
 
 export default function MobileUserLogin() {
   // 이메일과 비밀번호 상태 관리
+  const router = useRouter()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false) // 로딩 상태 관리
@@ -17,78 +20,97 @@ export default function MobileUserLogin() {
   const [fcmToken, setFcmToken] = useState()
 
   // fcm을 위한 device 토큰 get
-  useEffect(() => {
-    const firebaseApp = initializeApp({
-      apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
-      authDomain: process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN,
-      projectId: process.env.NEXT_PUBLIC_FCM_PROJECT_ID,
-      storageBucket: process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET,
-      messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID,
-      appId: process.env.NEXT_PUBLIC_FCM_APP_ID,
-    })
-
-    const messaging = getMessaging(firebaseApp)
-
-    getToken(messaging, {
-      vapidKey: process.env.NEXT_PUBLIC_FCM_VAP_ID_KEY,
-    })
-      .then((currentToken) => {
-        if (currentToken) {
-          setFcmToken(currentToken)
-        } else {
-          console.log('No registration token available. Request permission to generate one.')
-        }
-      })
-      .catch((err) => {
-        console.log('An error occurred while retrieving token. ', err)
-      })
-  }, [])
+  useEffect(() => {}, [])
 
   // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
 
-    await fetchExtended('/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res['token'].length > 0 || res['token']) {
-          localStorage.setItem('token', res['token'].replaceAll('"', ''))
-        } else {
-          setMessage('아이디와 비밀번호를 확인하세요')
-          setLoading(false)
-        }
-      })
-      .then((res) => {
-        if (fcmToken) {
-          fetchExtended('/api/fcm/login-device', {
-            method: 'POST',
-            body: JSON.stringify({ email, deviceToken: fcmToken }),
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.')
+        const firebaseApp = initializeApp({
+          apiKey: process.env.NEXT_PUBLIC_FCM_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_FCM_AUTH_DOMAIN,
+          projectId: process.env.NEXT_PUBLIC_FCM_PROJECT_ID,
+          storageBucket: process.env.NEXT_PUBLIC_FCM_STORAGE_BUCKET,
+          messagingSenderId: process.env.NEXT_PUBLIC_FCM_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_FCM_APP_ID,
+        })
+
+        const messaging = getMessaging(firebaseApp)
+
+        getToken(messaging, {
+          vapidKey: process.env.NEXT_PUBLIC_FCM_VAP_ID_KEY,
+        })
+          .then((currentToken) => {
+            if (currentToken) {
+              fetchExtended('/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+              })
+                .then((res) => res.json())
+                .then((res) => {
+                  if (res['token'].length > 0 || res['token']) {
+                    localStorage.setItem('token', res['token'].replaceAll('"', ''))
+                    setLoading(false)
+                  } else {
+                    setMessage('아이디와 비밀번호를 확인하세요')
+                    setLoading(false)
+                  }
+                })
+                .then((res) => {
+                  if (currentToken) {
+                    fetchExtended('/api/fcm/login-device', {
+                      method: 'POST',
+                      body: JSON.stringify({ email, deviceToken: currentToken }),
+                    })
+                      .then((res) => {
+                        if (res.status === 200) {
+                          handleAlert('success', '로그인 성공')
+                          setLoading(false)
+                          router.push('/m')
+                        }
+                      })
+                      .catch((err) => {
+                        console.log(err)
+                      })
+                  }
+                })
+                .catch((err) => {
+                  setMessage('로그인 실패')
+                  setLoading(false)
+                })
+            } else {
+              console.log('No registration token available. Request permission to generate one.')
+            }
           })
-            .then((res) => {
-              if (res.status === 200) {
-                setLoading(false)
-                window.location.href = '/m'
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        }
-      })
-      .catch((err) => {
-        setMessage('로그인 실패')
-        setLoading(false)
-      })
+          .catch((err) => {
+            console.log('An error occurred while retrieving token. ', err)
+          })
+      } else {
+        console.log('Unable to get permission to notify.')
+      }
+    })
   }
 
   const kakaoLogin = () => {
-    window?.Kakao.Auth.authorize({
-      redirectUri: `${window.location.origin}/mobile/login/kakao`,
-    })
+    Notification.requestPermission().then(
+      (permission) => {
+        if (permission === 'granted') {
+          console.log('Notification permission granted.')
+          window?.Kakao.Auth.authorize({
+            redirectUri: `${window.location.origin}/mobile/login/kakao`,
+          })
+        } else {
+          console.log('Unable to get permission to notify.')
+        }
+      },
+      (err) => {
+        console.log(err)
+      },
+    )
   }
 
   const handleAlert = () => {

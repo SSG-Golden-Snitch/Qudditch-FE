@@ -23,7 +23,8 @@ const CustomSidebar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    if (typeof window !== 'undefined' && token) {
+    if (token == null) window.location.href = '/mobile/login'
+    if (typeof window !== 'undefined') {
       const base64Payload = token.split('.')[1]
       const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
       const decodedJWT = JSON.parse(

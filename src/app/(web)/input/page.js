@@ -2,7 +2,7 @@
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { CustomTable } from '@/components/CustomTable'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination } from 'flowbite-react'
 import { useEffect, useState } from 'react'
@@ -72,7 +72,7 @@ export default function Input() {
     handleStoreInput(page)
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
 
   return (
     <div className="flex h-screen flex-col bg-[#e4e4e4]  py-10">

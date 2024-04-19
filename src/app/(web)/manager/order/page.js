@@ -4,7 +4,7 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination, Table, Button } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 export default function Manager() {
   const router = useRouter()
@@ -66,7 +66,7 @@ export default function Manager() {
     handleStoreOrder(page)
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
 
   const orderDetailClick = (storeOrderId) => {
     router.push(`order/${storeOrderId}`)
