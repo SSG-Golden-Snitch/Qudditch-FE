@@ -267,47 +267,63 @@ export default function OrderInsertPage() {
           <br />
           <br />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="md:col-span-1">
-              <Table>
-                <Table.Body className="divide-y">
-                  {searchResults.map((product) => (
-                    <Table.Row
-                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                      key={product.id}
-                    >
-                      <Table.Cell>
-                        <Image src={product.image} alt={product.name} width="70" height="70" />
-                      </Table.Cell>
-                      <Table.Cell>{product.brand}</Table.Cell>
-                      <Table.Cell>{product.name}</Table.Cell>
-                      <Table.Cell>
-                        <button
-                          type="button"
-                          className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-                          onClick={() => addToOrder(product)}
-                        >
-                          <svg
-                            className="mr-2 h-3.5 w-3.5"
-                            aria-hidden="true"
-                            fill="currentColor"
-                            viewBox="0 0 18 21"
+            {searchResults.length > 0 && (
+              <div className="md:col-span-1">
+                <Table className="mt-12">
+                  <Table.Head>
+                    <Table.HeadCell>image</Table.HeadCell>
+                    <Table.HeadCell>Brand</Table.HeadCell>
+                    <Table.HeadCell>Name</Table.HeadCell>
+                    <Table.HeadCell></Table.HeadCell>
+                  </Table.Head>
+                  <Table.Body className="divide-y">
+                    {searchResults.map((product) => (
+                      <Table.Row
+                        className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                        key={product.id}
+                      >
+                        <Table.Cell>
+                          <Image src={product.image} alt={product.name} width="70" height="70" />
+                        </Table.Cell>
+                        <Table.Cell>{product.brand}</Table.Cell>
+                        <Table.Cell>{product.name}</Table.Cell>
+                        <Table.Cell>
+                          <button
+                            type="button"
+                            className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                            onClick={() => addToOrder(product)}
                           >
-                            <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
-                          </svg>
-                          +
-                        </button>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+                            <svg
+                              className="mr-2 h-3.5 w-3.5"
+                              aria-hidden="true"
+                              fill="currentColor"
+                              viewBox="0 0 18 21"
+                            >
+                              <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                            </svg>
+                            +
+                          </button>
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
+            )}
             {recommend.length > 0 && (
               <div className="md:col-span-1">
-                <h1 className="mb-4 text-4xl leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-2xl">
-                  발주 추천 상품
-                </h1>
-                <Table>
+                <div className="flex shrink-0">
+                  <h1 class="mb-1 text-2xl font-semibold leading-none tracking-tight text-gray-900  md:text-2xl lg:text-2xl">
+                    발주{' '}
+                    <span class="underline-offset-3 underline decoration-blue-400 decoration-4 ">
+                      추천 상품
+                    </span>
+                  </h1>
+                  <p class="text-l lg:text-l ml-3 mt-2 font-normal text-gray-500 dark:text-gray-400">
+                    재고가 10개 이하인 제품들의 추천제품 목록입니다.
+                  </p>
+                </div>
+                <Table className="mt-3">
                   <Table.Head>
                     <Table.HeadCell>image</Table.HeadCell>
                     <Table.HeadCell>Brand</Table.HeadCell>

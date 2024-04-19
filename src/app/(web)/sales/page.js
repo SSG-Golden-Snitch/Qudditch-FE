@@ -122,7 +122,7 @@ const Sales = () => {
       </div>
 
       <div className="w-full">
-        <Table striped={true} className="text-center">
+        <Table striped={true} className="text-center text-black">
           <Table.Head>
             {headers.map((header, index) => (
               <Table.HeadCell key={index}>{header.label}</Table.HeadCell>

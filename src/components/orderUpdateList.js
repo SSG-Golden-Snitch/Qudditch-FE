@@ -124,7 +124,7 @@ export default function GetDetail({ id }) {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="h-screen overflow-x-auto bg-gray-100 px-10 py-10">
+        <div className=" h-screen overflow-x-auto px-10 py-10">
           {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
           <form
             className="relative mx-auto max-w-md"
@@ -162,7 +162,7 @@ export default function GetDetail({ id }) {
           </form>
           <br />
           <br />
-          <Table>
+          <Table className="text-center text-black">
             <Table.Head>
               <Table.HeadCell>ID</Table.HeadCell>
               <Table.HeadCell>Brand</Table.HeadCell>

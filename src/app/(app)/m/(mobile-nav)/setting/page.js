@@ -170,7 +170,7 @@ const WebSettingPage = () => {
         <Link className="block w-full p-6" href="/m/customer-service">
           <div className="flex">
             <IoStorefront className="ml-2 text-xl text-gray-400" />
-            <div className="ms-3 text-lg font-medium text-gray-900">고객센터</div>
+            <div className="ms-3 text-lg font-medium text-gray-900">FAQ</div>
           </div>
         </Link>
       </div>

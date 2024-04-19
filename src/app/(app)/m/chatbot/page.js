@@ -25,6 +25,19 @@ function Chatbot() {
   }
 
   useEffect(() => {
+    console.log(messages)
+  }, [messages])
+
+  function parseJSON(jsonString) {
+    try {
+      // UTF-8 디코딩 후 JSON 파싱
+      return JSON.parse(jsonString.substring(1, jsonString.length - 1))
+    } catch (error) {
+      console.error('Invalid JSON string:', error)
+      return null
+    }
+  }
+  useEffect(() => {
     scrollToBottom()
   }, [messages])
 
@@ -130,10 +143,117 @@ function Chatbot() {
             resultMessage += decoder.decode(value)
           }
 
+          const responseObject = parseJSON(resultMessage)
+          let msg
+          if (responseObject) {
+            if (responseObject.type === 'best') {
+              msg = (
+                <table className={'table-auto p-6 text-center'}>
+                  <thead>
+                    <tr>
+                      <th>BEST 제품명</th>
+                      <th>가격</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {responseObject.data.map((item, idx) => (
+                      <tr key={idx}>
+                        <td className={'pr-5 text-left'}>{item.name}</td>
+                        <td className={'whitespace-nowrap'}>{item.price}원</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+            } else if (responseObject.type === 'random') {
+              msg = (
+                <table className={'table-auto p-6 text-center'}>
+                  <thead>
+                    <tr>
+                      <th>오늘의 추천 제품</th>
+                      <th>가격</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {responseObject.data.map((item, idx) => (
+                      <tr key={idx}>
+                        <td className={'pr-5 text-left'}>{item.name}</td>
+                        <td className={'whitespace-nowrap'}>{item.price}원</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+            } else if (responseObject.type === 'price') {
+              msg = (
+                <table className={'table-auto p-6 text-center'}>
+                  <thead>
+                    <tr>
+                      <th>제품명</th>
+                      <th>가격</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {responseObject.data.map((item, idx) => (
+                      <tr key={idx}>
+                        <td className={'pr-5 text-left'}>{item.name}</td>
+                        <td className={'whitespace-nowrap'}>{item.price}원</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+            } else if (responseObject.type === 'select002') {
+              msg = (
+                <table className={'table-auto p-6 text-center'}>
+                  <thead>
+                    <tr>
+                      <th className={'text-left'}>가게명</th>
+                      <th className={'text-center'}>주소</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {responseObject.data.map((item, idx) => (
+                      <tr key={idx}>
+                        <td className={'whitespace-nowrap pr-5 text-left'}>{item.name}</td>
+                        <td className={'text-left'}>{item.address}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+            } else if (responseObject.type === 'select001') {
+              msg = (
+                <table className={'table-auto p-6 text-center'}>
+                  <thead>
+                    <tr>
+                      <th className={'text-left'}>제품명</th>
+                      <th>주소</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {responseObject.data.map((item, idx) => {
+                      if (item.stores && item.stores.length > 0) {
+                        return (
+                          <tr key={idx}>
+                            <td className={'whitespace-nowrap pr-5 text-left'}>{item.name}</td>
+                            <td className={'text-left'}>{item.stores[0].address}</td>
+                          </tr>
+                        )
+                      }
+                    })}
+                  </tbody>
+                </table>
+              )
+            }
+          } else {
+            msg = resultMessage
+          }
+
           setMessages((prevMessages) => [
             ...prevMessages,
             { text: inputValue, sender: '나', time: getTime() },
-            { text: resultMessage, sender: '도비', time: getTime() },
+            { text: msg, sender: '도비', time: getTime() },
           ])
 
           setInputValue('')
@@ -211,7 +331,7 @@ function Chatbot() {
                     }
                     style={{ whiteSpace: 'pre-line' }}
                   >
-                    <p className="text-gray-800">{message.text}</p>
+                    <div className="text-gray-800">{message.text}</div>
                     <span className="timestamp block text-right text-xs text-gray-500">
                       {message.time}
                     </span>
