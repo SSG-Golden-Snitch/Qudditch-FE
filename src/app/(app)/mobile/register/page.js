@@ -207,7 +207,7 @@ export default function Register() {
                   color={'warning'}
                   onClick={checkEmail}
                   disabled={loading || !email || emailError}
-                  className=" rounded-lg bg-amber-400 px-0 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
+                  className="shrink-0 rounded-lg bg-amber-400 px-0 text-center text-sm font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-primary-300"
                 >
                   확인
                 </Button>
@@ -231,7 +231,7 @@ export default function Register() {
                   <Button
                     color={'warning'}
                     onClick={() => handleVerifyCode()}
-                    className=" bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className=" shrink-0 bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     인증
                   </Button>
@@ -239,7 +239,7 @@ export default function Register() {
                   <Button
                     color={'warning'}
                     onClick={() => sendVerifyCode()}
-                    className="  bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
+                    className=" shrink-0 bg-amber-400 px-0 text-center text-xs font-extrabold text-white hover:bg-amber-500 focus:outline-none focus:ring-4"
                   >
                     전송
                   </Button>
