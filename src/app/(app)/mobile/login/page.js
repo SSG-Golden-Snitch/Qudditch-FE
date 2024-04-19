@@ -1,26 +1,19 @@
 // src/app/mobile/login/page.js
 'use client'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 
 import { CustomAlert } from '@/components/CustomAlert'
 import { fetchExtended } from '@/utils/fetchExtended'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken } from 'firebase/messaging'
 
 export default function MobileUserLogin() {
   // 이메일과 비밀번호 상태 관리
-  const router = useRouter()
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false) // 로딩 상태 관리
   const [message, setMessage] = useState('') // 메시지 상태 관리
-  const [fcmToken, setFcmToken] = useState()
-
-  // fcm을 위한 device 토큰 get
-  useEffect(() => {}, [])
 
   // 로그인 처리 함수
   const handleLogin = async (e) => {
@@ -68,9 +61,8 @@ export default function MobileUserLogin() {
                     })
                       .then((res) => {
                         if (res.status === 200) {
-                          handleAlert('success', '로그인 성공')
                           setLoading(false)
-                          router.push('/m')
+                          window.location.href = '/m'
                         }
                       })
                       .catch((err) => {
