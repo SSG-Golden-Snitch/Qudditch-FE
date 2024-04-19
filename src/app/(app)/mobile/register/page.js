@@ -55,7 +55,7 @@ export default function Register() {
         }
         if (res['status'] === 'success') {
           handleAlert('success', res['message'])
-          router.push('/login')
+          router.push('/mobile/login')
         }
       })
   }
