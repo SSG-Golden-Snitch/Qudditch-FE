@@ -11,6 +11,7 @@ import ReceiptModal from '@/components/ReceiptModal'
 import Loading from '@/components/ui/Loading'
 import { useRouter } from 'next/navigation'
 import MobileNavbar from '@/components/MobileNavbar'
+import { CheckLogin } from '@/utils/user'
 
 // 커스텀 입력 컴포넌트
 // eslint-disable-next-line react/display-name
@@ -34,6 +35,8 @@ const OrderHistory = () => {
   const [showReceipt, setShowReceipt] = useState(false)
   const [activeOrderId, setActiveOrderId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  CheckLogin()
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -125,26 +128,28 @@ const OrderHistory = () => {
   const router = useRouter()
 
   return (
-    <div className="flex min-h-screen bg-white">
-      <div className="container mx-auto px-4 py-8">
+    <div className="flex h-screen w-full bg-white">
+      <div className="container px-6 py-8">
         <div className="fixed left-0 right-0 top-0 z-10 flex w-full items-center justify-between bg-white p-4 shadow-md">
           <button type="button" className="flex items-center" onClick={() => router.push('/m')}>
             <IoIosArrowBack className="mr-2" />
             <h2 className="text-m font-semibold">구매내역</h2>
           </button>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="yyyy/MM"
-            showMonthYearPicker
-            customInput={<CustomInput />}
-            className="ml-4"
-          />
+          <div className="flex items-center pr-20">
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy/MM"
+              showMonthYearPicker
+              // options={{ datepickerClassNames: 'right-4' }}
+              customInput={<CustomInput />}
+            />
+          </div>
         </div>
 
         {isLoading && <Loading />}
 
-        <div className="mt-20 flex w-full justify-center">
+        <div className="mt-16 flex w-full justify-center">
           <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
             구매내역 조회
           </Button>
@@ -156,7 +161,7 @@ const OrderHistory = () => {
         <div className="overflow-auto">
           {orders.map((order, index) => (
             <Fragment key={index}>
-              <div className="mb-4 border-b-2 bg-white p-4">
+              <div className="mb-2 border-b-2 bg-white p-4">
                 <div>
                   <div className="flex justify-between">
                     <span>

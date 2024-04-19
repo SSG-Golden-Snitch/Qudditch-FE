@@ -50,12 +50,13 @@ const CameraPage = () => {
       console.error('Error adding item to cart:', error)
     }
 
-    setTimeout(() => setIsScanning(false), 1000) // 1초 후에 다시 스캔 가능
+    setTimeout(() => setIsScanning(false), 2000) // 2초 후에 다시 스캔 가능
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="mb-4 flex items-center">
+    <div className="flex min-h-screen flex-col items-center bg-gray-100 p-4">
+      <div className="mb-4 flex items-center justify-start">
+        <div></div>
         <h1 className="text-2xl font-bold">제품QR을 인식해주세요</h1>
         {/* <div className="relative"> */}
         <Link href={`/m/store-select/cart`}>
@@ -68,7 +69,6 @@ const CameraPage = () => {
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}{' '}
         {/* 에러 메시지 표시 */}
       </div>
-
       <QRCodeScanner onScan={handleScan} />
     </div>
   )

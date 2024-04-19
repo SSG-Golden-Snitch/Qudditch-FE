@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { Button } from 'flowbite-react'
 import Link from 'next/link'
-import MobileNavbar from '@/components/MobileNavbar'
 import { getDistance } from '@/utils/mapUtil'
+import MobileNavbar from '@/components/MobileNavbar'
 
 const StoreSelectPage = () => {
   const [stores, setStores] = useState([])
