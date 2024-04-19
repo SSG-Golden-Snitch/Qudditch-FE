@@ -164,10 +164,10 @@ const MobileMain = () => {
       )
 
       let userEmail = decodedJWT.sub
-
+      console.log(fcmToken)
       fetchExtended('/api/fcm/login-device', {
         method: 'POST',
-        body: JSON.stringify({ userEmail, deviceToken: fcmToken }),
+        body: JSON.stringify({ email: userEmail, deviceToken: fcmToken }),
       }).catch((err) => {
         console.log(err)
       })
@@ -217,7 +217,7 @@ const MobileMain = () => {
   return (
     <div
       className="h-[calc(100vh-4rem)] items-center justify-items-center overflow-y-scroll"
-      onLoad={() => {
+      onClick={() => {
         Notification.requestPermission().then(function (permission) {})
       }}
     >
