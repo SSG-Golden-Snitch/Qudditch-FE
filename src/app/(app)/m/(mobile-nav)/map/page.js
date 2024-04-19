@@ -10,8 +10,6 @@ const HomePage = () => {
   const [currentPosition, setCurrentPosition] = useState(null)
   const [data, setData] = useState(null)
 
-  CheckLogin()
-
   useEffect(() => {
     const fetchLocationData = async ({ latitude, longitude }) => {
       try {

@@ -20,8 +20,6 @@ export default function Access() {
   const [expired, setExpired] = useState(false)
   const { Canvas } = useQRCode()
 
-  CheckLogin()
-
   const accessReqUrl = new URL(apiUrl + '/api/access/qrcode/request')
 
   const handleAccess = async () => {

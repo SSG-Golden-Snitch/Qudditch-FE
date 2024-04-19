@@ -18,8 +18,6 @@ const Point = () => {
   const [showAllData, setShowAllData] = useState(false)
   const [showMoreButton, setShowMoreButton] = useState(true)
 
-  CheckLogin()
-
   useEffect(() => {
     if (!dataLoaded) {
       fetchPointData()

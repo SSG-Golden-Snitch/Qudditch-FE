@@ -36,8 +36,6 @@ const OrderHistory = () => {
   const [activeOrderId, setActiveOrderId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  CheckLogin()
-
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true) // 데이터 로딩 시작
