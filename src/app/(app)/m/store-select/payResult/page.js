@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, Suspense } from 'react'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { IoIosArrowBack } from 'react-icons/io'
@@ -32,7 +32,7 @@ const PayRequest = () => {
   }, [pg])
 
   if (isLoading) {
-    return <Loading /> // 로딩 컴포넌트 표시
+    return <CustomLoading /> // 로딩 컴포넌트 표시
   }
 
   return <div>결제가 완료되었습니다.</div>
@@ -52,7 +52,7 @@ const PayResult = () => {
 
       <div className="flex flex-1 items-center justify-center p-4">
         <div className="w-full max-w-sm rounded-lg bg-white p-6 text-center shadow-lg">
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<CustomLoading />}>
             <PayRequest />
           </Suspense>
         </div>

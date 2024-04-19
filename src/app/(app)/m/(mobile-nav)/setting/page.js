@@ -9,7 +9,7 @@ import { FaBox } from 'react-icons/fa'
 import { IoStorefront } from 'react-icons/io5'
 import { FaMobileAlt } from 'react-icons/fa'
 import { SlLocationPin } from 'react-icons/sl'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { CheckLogin, logout, logoutDevice } from '@/utils/user'
 import AppLogo from '/public/WebLogo.svg'
@@ -22,8 +22,6 @@ const WebSettingPage = () => {
   const [totalUsedPoint, setTotalUsedPoint] = useState(0)
   const [totalEarnPoint, setTotalEarnPoint] = useState(0)
   const [startIndex, setStartIndex] = useState(0) // 시작 인덱스 추가
-
-  CheckLogin()
 
   useEffect(() => {
     async function getTopDatas() {
@@ -42,7 +40,7 @@ const WebSettingPage = () => {
               setBookmarkStore(data[0].name)
             }
           } else {
-            throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+            new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
           }
         } catch (error) {
           setTopMessage(error.message)
@@ -53,21 +51,22 @@ const WebSettingPage = () => {
       function getUsername() {
         if (typeof window !== 'undefined') {
           const token = localStorage.getItem('token')
-          const base64Payload = token.split('.')[1]
-          const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
-          const decodedJWT = JSON.parse(
-            decodeURIComponent(
-              window
-                .atob(base64)
-                .split('')
-                .map(function (c) {
-                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-                })
-                .join(''),
-            ),
-          )
-
-          setName(decodedJWT.name)
+          if (token && token.length > 0) {
+            const base64Payload = token?.split('.')[1]
+            const base64 = base64Payload?.replace(/-/g, '+').replace(/_/g, '/')
+            const decodedJWT = JSON.parse(
+              decodeURIComponent(
+                window
+                  .atob(base64)
+                  .split('')
+                  .map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                  })
+                  .join(''),
+              ),
+            )
+            setName(decodedJWT.name)
+          } else window.location.href = '/mobile/login'
         }
       }
 
@@ -118,7 +117,7 @@ const WebSettingPage = () => {
         <AppLogo />
       </div>
       {isTopLoading ? (
-        <Loading />
+        <CustomLoading />
       ) : topMessage != null ? (
         topMessage
       ) : (
@@ -231,7 +230,7 @@ function Toggle() {
         setIsChecked(data.state)
         setIsLoading(false)
       } else {
-        throw new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
+        new Error('푸시 알림 정보를 가져오는데 실패했습니다.')
       }
     } catch (error) {
       setMessage(error.message)
@@ -310,26 +309,4 @@ function MiniLoading() {
       <span className="sr-only">Loading...</span>
     </div>
   )
-}
-
-function getNameFromToken() {
-  if (typeof window !== 'undefined') {
-    // JWT 토큰 가져오기
-    const token = localStorage.getItem('token') // 세션 스토리지에서 토큰을 가져옵니다.
-    const base64Payload = token.split('.')[1]
-    const base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/')
-    const decodedJWT = JSON.parse(
-      decodeURIComponent(
-        window
-          .atob(base64)
-          .split('')
-          .map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-          })
-          .join(''),
-      ),
-    )
-
-    return decodedJWT
-  }
 }

@@ -37,27 +37,50 @@ export default function Register() {
   const [confirmPWColor, setConfirmPWColor] = useState('gray')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
   const [agree, setAgree] = useState(false)
+  const [emailState, setEmailState] = useState('')
+  const [state, setState] = useState('0')
 
   const handleSubmit = () => {
-    const submitReqUrl = new URL(apiUrl + `/register/customer`)
-    fetchExtended(submitReqUrl, {
-      method: 'POST',
-      body: JSON.stringify({ name, email, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res)
-        if (res['status'] === 'fail') {
-          handleAlert('failure', res['message'])
-        }
-        if (res['status'] === 'success') {
-          handleAlert('success', res['message'])
-          router.push('/mobile/login')
-        }
+    if (!email || !password || !confirmPassword || !name || !verificationCode) {
+      handleAlert('failure', '모든 항목을 입력해주세요.')
+      return
+    }
+    if (emailState !== 'verified') {
+      handleAlert('failure', '이메일 인증을 완료해주세요.')
+      return
+    }
+    if (!agree) {
+      handleAlert('failure', '개인정보 처리방침에 동의해주세요.')
+      return
+    }
+    if (password.length < 8) {
+      handleAlert('failure', '비밀번호는 8자리 이상이어야 합니다.')
+      return
+    }
+    if (password !== confirmPassword) {
+      handleAlert('failure', '비밀번호가 일치하지 않습니다.')
+      return
+    } else {
+      const submitReqUrl = new URL(apiUrl + `/register/user`)
+      fetchExtended(submitReqUrl, {
+        method: 'POST',
+        body: JSON.stringify({ name, email, password, state }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res)
+          if (res['status'] === 'fail') {
+            handleAlert('failure', res['message'])
+          }
+          if (res['status'] === 'success') {
+            handleAlert('success', res['message'])
+            router.push('/mobile/login')
+          }
+        })
+    }
   }
 
   const handleAlert = (type, message) => {
@@ -67,7 +90,7 @@ export default function Register() {
 
   const handleVerifyCode = () => {
     const data = { email: email, code: verificationCode }
-    fetchExtended('/verify-account', {
+    fetchExtended('/verify-user', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -77,6 +100,7 @@ export default function Register() {
       .then((res) => res.json())
       .then((res) => {
         if (res.status === 'fail') {
+          console.log(res)
           setCodeText('인증번호가 일치하지 않습니다.')
           setCodeCss('flex items-center pt-1 text-sm text-red-500')
           setCodeColor('failure')
@@ -84,6 +108,7 @@ export default function Register() {
         if (res.status === 'success') {
           setCodeText('인증이 완료되었습니다.')
           setCodeCss('flex items-center pt-1 text-sm text-green-500')
+          setEmailState('verified')
           setCodeColor('success')
         }
       })
@@ -101,6 +126,7 @@ export default function Register() {
       })
       const data = await response.json()
       if (data.message === '사용 가능한 이메일입니다.') {
+        setEmailVerified(true)
         setEmailDupleText(data.message)
         setEmailDupleCss('flex items-center pt-1 text-sm text-green-500')
         setEmailColor('success')
@@ -119,25 +145,30 @@ export default function Register() {
   }
 
   const sendVerifyCode = () => {
-    const sendVerifyCodeReqUrl = new URL(apiUrl + `/request-verification`)
+    if (!emailVerified) {
+      handleAlert('failure', '이메일 중복확인을 해주세요.')
+      return
+    } else {
+      const sendVerifyCodeReqUrl = new URL(apiUrl + `/request-verification-user`)
 
-    fetchExtended(sendVerifyCodeReqUrl, {
-      method: 'POST',
-      body: JSON.stringify({ email }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.status === 'fail') {
-          handleAlert('failure', res['message'])
-        }
-        if (res.status === 'success') {
-          handleAlert('success', '인증번호가 발송되었습니다.')
-          setSendBtn(true)
-        }
+      fetchExtended(sendVerifyCodeReqUrl, {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.status === 'fail') {
+            handleAlert('failure', res['message'])
+          }
+          if (res.status === 'success') {
+            handleAlert('success', '인증번호가 발송되었습니다.')
+            setSendBtn(true)
+          }
+        })
+    }
   }
 
   const handlePassword = (value) => {

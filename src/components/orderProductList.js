@@ -2,7 +2,7 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import { Table } from 'flowbite-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import Loading from './ui/Loading'
+import CustomLoading from './ui/CustomLoading'
 export async function getOrder(id) {
   const response = await fetchExtended(`/api/store/order/detail/${id}`)
   return response.json()
@@ -25,7 +25,7 @@ export default function OrderDetailPage({ id }) {
   return (
     <>
       {isLoading ? (
-        <Loading />
+        <CustomLoading />
       ) : (
         <Table className="items-center text-black">
           <Table.Head>

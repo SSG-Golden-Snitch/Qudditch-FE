@@ -43,6 +43,7 @@ const EmotionRecommend = () => {
       const token = localStorage.getItem('token')
       if (!token) {
         console.log('token is null')
+        if (token == null) window.location.href = '/mobile/login'
         return
       }
       const base64Payload = token.split('.')[1]
