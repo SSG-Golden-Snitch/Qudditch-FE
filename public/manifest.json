@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/mobile/splash",
-  "name": "Golden Snitch",
-  "short_name": "snitch",
-  "description": "team2",
+  "name": "SSGmart24",
+  "short_name": "SSGmart24",
+  "description": "SSGmart24",
   "icons": [
     {
       "src": "/image/icon/icon-192x192.png",
@@ -28,5 +28,17 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "id": "GoldenSnitch.SSGmart24",
+  "dir": "auto",
+  "lang": "ko",
+  "categories": ["lifestyle"],
+  "orientation": "portrait",
+  "display_override": [
+    "standalone",
+    "fullscreen",
+    "browser",
+    "minimal-ui",
+    "window-controls-overlay"
   ]
 }
