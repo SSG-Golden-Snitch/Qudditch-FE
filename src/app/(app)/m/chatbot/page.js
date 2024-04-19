@@ -18,15 +18,9 @@ function Chatbot() {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
 
-  CheckLogin()
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-
-  useEffect(() => {
-    console.log(messages)
-  }, [messages])
 
   function parseJSON(jsonString) {
     try {

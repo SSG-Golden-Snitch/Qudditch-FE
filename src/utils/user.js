@@ -1,17 +1,15 @@
 import { fetchExtended } from './fetchExtended'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const CheckLogin = () => {
   'use client'
-  const router = useRouter()
   useEffect(() => {
     function getToken() {
       if (typeof window !== 'undefined') {
         const token = localStorage.getItem('token')
 
         if (!token) {
-          router.push('/mobile/login')
+          window.location.href = '/mobile/login'
         }
       }
     }

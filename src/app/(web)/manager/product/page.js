@@ -6,7 +6,7 @@ import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { Pagination, Table } from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 export default function Product() {
   const [pagination, setPagination] = useState({
@@ -75,7 +75,7 @@ export default function Product() {
     handleProduct(page)
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
   return (
     <div className="flex h-screen flex-col bg-[#e4e4e4] py-16">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}

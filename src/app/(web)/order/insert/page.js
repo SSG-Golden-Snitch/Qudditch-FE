@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
 import { CustomAlert } from '@/components/CustomAlert'
 import Image from 'next/image'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 async function searchProductByName(productName) {
   const URL = `/api/product/find/${productName}`
@@ -155,7 +155,7 @@ export default function OrderInsertPage() {
   return (
     <>
       {isLoading ? (
-        <Loading />
+        <CustomLoading />
       ) : (
         <div className="h-screen overflow-x-auto bg-[#e4e4e4] px-10 py-10">
           {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
