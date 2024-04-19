@@ -68,7 +68,7 @@ const WebSettingPage = () => {
             )
             setName(decodedJWT.name)
           }
-          window.location.href = '/m'
+          window.location.href = '/mobile/login'
         }
       }
 
