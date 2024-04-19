@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { useParams } from 'next/navigation'
 import QRCodeScanner from '@/components/QRCodeScanner'
+import { IoIosArrowBack } from 'react-icons/io'
 
 const CameraPage = () => {
   const { storeId } = useParams()
@@ -54,16 +55,24 @@ const CameraPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center bg-gray-100 p-4">
-      <div className="mb-4 flex items-center justify-start">
-        <div></div>
+    <div className="flex min-h-screen flex-col bg-gray-100 p-4">
+      <div className="mb-4 flex justify-start">
+        <button
+          type="button"
+          className="flex items-center justify-center"
+          onClick={() => window.history.back()}
+        >
+          <IoIosArrowBack className="mr-2" />
+        </button>
+      </div>
+      <div className="mb-4 flex items-center place-self-center pt-10">
         <h1 className="text-2xl font-bold">제품QR을 인식해주세요</h1>
         {/* <div className="relative"> */}
         <Link href={`/m/store-select/cart`}>
-          <FiShoppingCart className="text-2xl" />
           <span className="ml-1 rounded-full bg-red-600 px-2 py-1 text-sm font-semibold text-white">
             {cartItemCount}
           </span>
+          <FiShoppingCart className="text-2xl" />
         </Link>
         {/* </div> */}
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}{' '}
