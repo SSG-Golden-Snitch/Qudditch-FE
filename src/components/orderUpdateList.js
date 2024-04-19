@@ -5,7 +5,7 @@ import { Table } from 'flowbite-react'
 import { RiDeleteBack2Line } from 'react-icons/ri'
 import { fetchExtended } from '@/utils/fetchExtended'
 import { CustomAlert } from '@/components/CustomAlert'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 async function searchProductByName(productName) {
   const URL = `/api/product/find/${productName}`
@@ -94,7 +94,7 @@ export default function GetDetail({ id }) {
   if (!order) {
     return (
       <div>
-        <Loading />
+        <CustomLoading />
       </div>
     )
   }
@@ -122,7 +122,7 @@ export default function GetDetail({ id }) {
   return (
     <>
       {isLoading ? (
-        <Loading />
+        <CustomLoading />
       ) : (
         <div className=" h-screen overflow-x-auto px-10 py-10">
           {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}

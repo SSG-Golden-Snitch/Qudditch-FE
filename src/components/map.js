@@ -155,8 +155,8 @@ const MapComponent = ({ defaultPosition, stores }) => {
   }, [router])
 
   return (
-    <div>
-      <div id="map" style={{ width: '100vw', height: '90vh' }}></div>
+    <div className={'h-[calc(100vh-5rem)]'}>
+      <div id="map" style={{ width: '100vw', height: '100%' }}></div>
       {alertMessage && <CustomAlert message={alertMessage} handleDismiss={handleAlert} />}
       {selectStore && (
         <Modal

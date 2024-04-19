@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css' // 기본 스타일
 import { Button } from 'flowbite-react'
 import { IoIosArrowBack } from 'react-icons/io'
 import ReceiptModal from '@/components/ReceiptModal'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { useRouter } from 'next/navigation'
 import MobileNavbar from '@/components/MobileNavbar'
 import { CheckLogin } from '@/utils/user'
@@ -145,7 +145,7 @@ const OrderHistory = () => {
           />
         </div>
 
-        {isLoading && <Loading />}
+        {isLoading && <CustomLoading />}
 
         <div className="mt-20 flex w-full justify-center">
           <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => setViewType(1)} outline>

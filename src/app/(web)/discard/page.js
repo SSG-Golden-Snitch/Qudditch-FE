@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { MdOutlineQrCodeScanner } from 'react-icons/md'
 import BarcodeScanner from '@/components/BarcodeScanner'
 import { BrowserQRCodeReader } from '@zxing/library'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 export default function Input() {
   const [pagination, setPagination] = useState({
@@ -125,7 +125,7 @@ export default function Input() {
     handlsDisposalItems(page)
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
   return (
     <div className="flex h-screen flex-col bg-[#e4e4e4] px-10 py-10">
       {message && <CustomAlert type={color} message={message} handleDismiss={setMessage} />}

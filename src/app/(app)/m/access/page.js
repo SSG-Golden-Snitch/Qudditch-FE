@@ -155,7 +155,7 @@ export default function Access() {
                     </div>
                   </div>
                 ) : (
-                  <Spinner size="xl" aria-label="Loading spinner" />
+                  <Spinner size="xl" aria-label="CustomLoading spinner" />
                 )}
               </div>
             )}

@@ -1,4 +1,4 @@
-const Loading = () => {
+const CustomLoading = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <svg
@@ -25,4 +25,4 @@ const Loading = () => {
   )
 }
 
-export default Loading
+export default CustomLoading

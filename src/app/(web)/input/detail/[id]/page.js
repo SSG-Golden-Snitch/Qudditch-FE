@@ -4,7 +4,7 @@ import { CustomTable } from '@/components/CustomTable'
 import { apiUrl, fetchExtended } from '@/utils/fetchExtended'
 import { useEffect, useState } from 'react'
 import { CustomAlert } from '@/components/CustomAlert'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 export default function InputDetail({ params: { id } }) {
   const [error, setError] = useState(null)
@@ -48,7 +48,7 @@ export default function InputDetail({ params: { id } }) {
     handleData()
   }, [])
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <CustomLoading />
 
   return (
     <div className="flex h-screen flex-col bg-[#e4e4e4]  py-10">

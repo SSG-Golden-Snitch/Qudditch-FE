@@ -5,7 +5,7 @@ import { fetchExtended } from '@/utils/fetchExtended'
 import { IoMdClose, IoIosArrowBack } from 'react-icons/io'
 import CartNavbar from '@/components/CartNavbar'
 import EmotionRecommend from '@/components/EmotionRecommend'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([])
@@ -304,7 +304,7 @@ const CartPage = () => {
 
       <EmotionRecommend></EmotionRecommend>
 
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<CustomLoading />}>
         <CartNavbar
           allSelected={allSelected}
           handleSelectAllChange={handleSelectAllChange}

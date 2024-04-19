@@ -30,13 +30,13 @@ function Chatbot() {
 
   function parseJSON(jsonString) {
     try {
-      // UTF-8 디코딩 후 JSON 파싱
       return JSON.parse(jsonString.substring(1, jsonString.length - 1))
     } catch (error) {
       console.error('Invalid JSON string:', error)
       return null
     }
   }
+
   useEffect(() => {
     scrollToBottom()
   }, [messages])
@@ -50,7 +50,6 @@ function Chatbot() {
   }, [transcript])
 
   useEffect(() => {
-    // 컴포넌트가 처음 렌더링될 때 웰컴 메시지를 추가.
     setMessages([
       {
         text: (
@@ -90,9 +89,18 @@ function Chatbot() {
     }
   }
 
+  const recognitionRef = useRef(null) // recognition 객체를 useRef를 사용하여 상태로 관리
+
   const startListening = () => {
+    if (recognitionRef.current && recognitionRef.current.state === 'listening') {
+      recognitionRef.current.stop()
+      setListening(false)
+      return
+    }
+
     const recognition = new window.webkitSpeechRecognition()
-    recognition.lang = 'ko-KR' // 한국어로 인식하도록 설정
+    recognition.lang = 'ko-KR'
+    recognitionRef.current = recognition // recognition 객체를 useRef를 통해 상태로 관리
     recognition.onresult = (event) => {
       const last = event.results.length - 1
       const text = event.results[last][0].transcript
@@ -100,7 +108,6 @@ function Chatbot() {
     }
     recognition.onstart = () => {
       setListening(true)
-      // 5초 후에 음성 인식을 중지합니다.
       setTimeout(() => {
         recognition.stop()
       }, 5000)
@@ -112,7 +119,7 @@ function Chatbot() {
   }
 
   const stopListening = () => {
-    setListening(false) // 음성 인식 중 상태를 해제.
+    setListening(false)
   }
 
   const handleMessageSend = async () => {
@@ -123,7 +130,6 @@ function Chatbot() {
         return
       }
 
-      // 위치 정보가 허용되었을 때만 메시지 전송
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const latitude = position.coords.latitude
@@ -260,7 +266,6 @@ function Chatbot() {
         },
         (error) => {
           console.error('Geolocation error:', error)
-          // 위치 정보를 사용할 수 없는 경우 적절한 안내 메시지를 추가합니다.
           setMessages((prevMessages) => [
             ...prevMessages,
             {
@@ -302,13 +307,11 @@ function Chatbot() {
         <div className="chat-messages flex-1 overflow-y-auto p-5">
           {messages.map((message, index) => (
             <div key={index}>
-              {/* 발신자의 이름이 있는 경우에만 표시 */}
               {message.sender && (
                 <div
                   className="sender-info mb-2 font-medium text-gray-600"
                   style={{ textAlign: message.sender === '나' ? 'right' : 'left' }}
                 >
-                  {/* 발신자가 '나'이면 그대로 표시, 그 외에는 이미지로 대체 */}
                   {message.sender === '나' ? (
                     message.sender
                   ) : (
@@ -363,7 +366,7 @@ function Chatbot() {
           />
           <button
             onTouchStart={handleMessageSend}
-            disabled={!inputValue} // inputValue가 비어있을 때 버튼을 비활성화합니다.
+            disabled={!inputValue}
             className="ml-2 rounded-full bg-gray-500 px-4 py-2 text-white hover:bg-blue-600 focus:bg-blue-600 focus:outline-none"
           >
             <VscSend />

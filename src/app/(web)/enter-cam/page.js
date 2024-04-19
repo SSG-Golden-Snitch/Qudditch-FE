@@ -19,7 +19,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import Webcam from 'react-webcam'
 import CameraSelect from '@/components/model-settings/CameraSelect'
 import { fetchExtended } from '@/utils/fetchExtended'
-import Loading from '@/components/ui/Loading'
+import CustomLoading from '@/components/ui/CustomLoading'
 import { useZxing } from 'react-zxing'
 
 const Home = () => {
@@ -167,7 +167,7 @@ const Home = () => {
   return (
     <>
       {loading ? (
-        <Loading />
+        <CustomLoading />
       ) : (
         <div className="flex h-screen flex-row items-center justify-between bg-[#e4e4e4] pt-6 ">
           {/* Camera area */}
