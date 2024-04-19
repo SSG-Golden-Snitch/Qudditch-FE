@@ -77,7 +77,7 @@ const ProductSearchBar = () => {
       options={products}
       placeholder="상품명을 입력해주세요"
       size="medium"
-      style={{ 'border-radius': '20px' }}
+      style={{ borderRadius: '20px' }}
       isLoading={isLoading}
       onChange={onChange}
       onClear={onClear}

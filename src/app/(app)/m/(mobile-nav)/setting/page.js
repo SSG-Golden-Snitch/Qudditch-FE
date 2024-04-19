@@ -12,7 +12,7 @@ import { SlLocationPin } from 'react-icons/sl'
 import Loading from '@/components/ui/Loading'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { CheckLogin, logout, logoutDevice } from '@/utils/user'
-
+import AppLogo from '/public/WebLogo.svg'
 const WebSettingPage = () => {
   const [topMessage, setTopMessage] = useState()
   const [isTopLoading, setIsTopLoading] = useState(true)
@@ -109,18 +109,27 @@ const WebSettingPage = () => {
   }, [])
 
   return (
-    <div className={'h-[calc(100vh-4rem)] overflow-y-scroll'}>
+    <div
+      className={
+        'flex h-[calc(100vh-4rem)] flex-col justify-items-center overflow-y-scroll pb-20 pt-4'
+      }
+    >
+      <div className="flex  items-center justify-center p-6 ">
+        <AppLogo />
+      </div>
       {isTopLoading ? (
         <Loading />
       ) : topMessage != null ? (
         topMessage
       ) : (
-        <div className="mx-3 mt-3  rounded-3xl bg-gray-200 p-8">
+        <div className="mx-3 rounded-3xl bg-gray-200 p-6">
           <div className="flex">
             <SlLocationPin className=" text-m ml-2 text-gray-900" />
-            <div className="ml-2 text-sm">{bookmarkStore}</div>
+            <div className="ml-2">{bookmarkStore}</div>
           </div>
-          <div className="ml-2 mt-2 text-2xl font-semibold">{name}님, 반가워요!</div>
+          <div className="ml-2 mt-1 text-2xl ">
+            <span className="font-semibold">{name}님</span>, 반가워요!
+          </div>
           <div className="mx-2 mb-2 mt-3 rounded-lg bg-gray-100">
             <Link className="block  w-full p-4" href="/m/point">
               <div className="flex flex-col items-center">
@@ -150,7 +159,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className="block w-full p-6" href="/m/bookmark/product">
+        <Link className="block w-full p-6" href="/m/favorite">
           <div className="flex">
             <FaBox className="ml-3 text-xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900 ">관심상품 관리</div>
@@ -166,7 +175,7 @@ const WebSettingPage = () => {
         </Link>
       </div>
       <div className="flex justify-between border-b-2 border-gray-200">
-        <Link className="block w-full p-6" href="/m/app-info">
+        <Link className="block w-full p-6" href="/m/info">
           <div className="flex">
             <FaMobileAlt className="ml-2 text-2xl text-gray-400" />
             <div className="ms-3 text-lg font-medium text-gray-900">앱 정보</div>

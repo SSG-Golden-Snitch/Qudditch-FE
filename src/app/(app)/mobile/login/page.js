@@ -103,7 +103,14 @@ export default function MobileUserLogin() {
       {message && <CustomAlert message={message} handleDismiss={handleAlert} />}
       <div className="flex w-full flex-col items-center justify-center px-6 py-8 md:h-screen lg:p-0">
         <span className="pb-1 text-gray-500">딜리셔스 아이디어</span>
-        <img className="h-50 w-50 mr-2" src="/WebLogo.svg" alt="logo"></img>
+        <img
+          className="h-50 w-50 mr-2"
+          src="/WebLogo.svg"
+          alt="logo"
+          onClick={() => {
+            window.location.href = '/m'
+          }}
+        ></img>
         <form onSubmit={handleLogin} className="min-w-full space-y-4 md:space-y-4">
           <div>
             <label

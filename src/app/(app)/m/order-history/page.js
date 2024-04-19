@@ -148,10 +148,11 @@ const OrderHistory = () => {
         {isLoading && <Loading />}
 
         <div className="mt-20 flex w-full justify-center">
-          <Button onClick={() => setViewType(1)} color={viewType === 1 ? 'gray' : 'white'}>
+          <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => setViewType(1)} outline>
             구매내역 조회
           </Button>
-          <Button onClick={() => setViewType(2)} color={viewType === 2 ? 'gray' : 'white'}>
+          <div style={{ width: '20px' }}></div>
+          <Button style={{ backgroundColor: '#FBBF24' }} onClick={() => setViewType(2)} outline>
             환불내역 조회
           </Button>
         </div>

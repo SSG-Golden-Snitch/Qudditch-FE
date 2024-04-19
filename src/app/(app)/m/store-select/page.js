@@ -6,6 +6,7 @@ import { Button } from 'flowbite-react'
 import Link from 'next/link'
 import MobileNavbar from '@/components/MobileNavbar'
 import { getDistance } from '@/utils/mapUtil'
+import { IoIosArrowBack } from 'react-icons/io'
 
 const StoreSelectPage = () => {
   const [stores, setStores] = useState([])
@@ -120,7 +121,16 @@ const StoreSelectPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="mb-6 text-center text-2xl font-bold">매장 설정</h1>
+      <div className="mb-4 flex justify-start">
+        <button
+          type="button"
+          className="mb-2 flex items-center"
+          onClick={() => window.history.back()}
+        >
+          <IoIosArrowBack className="mr-2" />
+        </button>
+      </div>
+      <h1 className="mb-6 text-center text-lg font-bold">매장 설정</h1>
       {message && <div className="mb-4 rounded bg-blue-100 p-3 text-blue-800">{message}</div>}
 
       <h3 className="mb-4 border-b-2">거리순</h3>
@@ -151,7 +161,6 @@ const StoreSelectPage = () => {
               onClick={() => handleStoreSelect(store.id)} // 클릭 시 매장 선택 이벤트 처리
             >
               <Link href={`/m/store-select/camera/${store.id}`}>
-                <p className="mb-2 font-bold">{store.id}</p>
                 <div className="flex items-center justify-between">
                   <p className="mb-2 font-bold">{store.name}</p>
                   <p>
