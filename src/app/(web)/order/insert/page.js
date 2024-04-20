@@ -55,12 +55,19 @@ async function recommendOrder() {
   return result.list
 }
 
+const recommendOrderBest = async () =>
+  await fetchExtended('/api/store/recommend/best')
+    .then((res) => res.json())
+    .then((data) => data.data)
+    .catch((error) => Promise.reject(error))
+
 export default function OrderInsertPage() {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [orderProducts, setOrderProducts] = useState([])
   const [recommend, setRecommend] = useState([])
+  const [bestRecommend, setBestRecommend] = useState([])
   const [alertMessage, setAlertMessage] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -72,8 +79,10 @@ export default function OrderInsertPage() {
     const fetchRecommend = async () => {
       try {
         const recommended = await recommendOrder()
+        const best = await recommendOrderBest()
         setIsLoading(false)
         setRecommend(recommended)
+        setBestRecommend(best)
       } catch (error) {
         console.error('추천 목록 불러오기 실패:', error)
       }
@@ -91,6 +100,7 @@ export default function OrderInsertPage() {
   }
 
   const addToOrder = (product) => {
+    console.log('product:', product)
     const id = product.productId || product.id
 
     // 이미 추가된 제품인지 확인
@@ -267,7 +277,118 @@ export default function OrderInsertPage() {
           <br />
           <br />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {searchResults.length > 0 && (
+            <div>
+              {bestRecommend?.length > 0 && (
+                <div className="md:col-span-1">
+                  <div className="flex shrink-0">
+                    <h1 className="mb-1 text-2xl font-semibold leading-none tracking-tight text-gray-900  md:text-2xl lg:text-2xl">
+                      발주{' '}
+                      <span className="underline-offset-3 underline decoration-blue-400 decoration-4 ">
+                        추천 상품
+                      </span>
+                    </h1>
+                    <p className="text-l lg:text-l ml-3 mt-2 font-normal text-gray-500 dark:text-gray-400">
+                      매출 상위 제품 목록입니다.
+                    </p>
+                  </div>
+                  <Table className="mt-3 h-full">
+                    <Table.Head>
+                      <Table.HeadCell>image</Table.HeadCell>
+                      <Table.HeadCell>Brand</Table.HeadCell>
+                      <Table.HeadCell>Name</Table.HeadCell>
+                      <Table.HeadCell></Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y overflow-y-scroll">
+                      {bestRecommend.map((product, idx) => (
+                        <Table.Row
+                          className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                          key={idx}
+                        >
+                          <Table.Cell>
+                            <Image src={product.image} alt={product.name} width="70" height="70" />
+                          </Table.Cell>
+                          <Table.Cell>{product.brand}</Table.Cell>
+                          <Table.Cell>{product.name}</Table.Cell>
+                          <Table.Cell>
+                            <button
+                              type="button"
+                              className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                              onClick={() => addToOrder(product)}
+                            >
+                              <svg
+                                className="mr-2 h-3.5 w-3.5"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 18 21"
+                              >
+                                <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                              </svg>
+                              +
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                </div>
+              )}
+              {recommend?.length > 0 && (
+                <div className="pt-4 md:col-span-1">
+                  <div className="flex shrink-0">
+                    <h1 className="mb-1 text-2xl font-semibold leading-none tracking-tight text-gray-900  md:text-2xl lg:text-2xl">
+                      재고{' '}
+                      <span className="underline-offset-3 underline decoration-blue-400 decoration-4 ">
+                        부족 상품
+                      </span>
+                    </h1>
+                    <p className="text-l lg:text-l ml-3 mt-2 font-normal text-gray-500 dark:text-gray-400">
+                      재고가 10개 이하인 제품 목록입니다.
+                    </p>
+                  </div>
+                  <Table className="mt-3 h-full">
+                    <Table.Head>
+                      <Table.HeadCell>image</Table.HeadCell>
+                      <Table.HeadCell>Brand</Table.HeadCell>
+                      <Table.HeadCell>Name</Table.HeadCell>
+                      <Table.HeadCell></Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y overflow-y-scroll">
+                      {recommend.map((product, idx) => (
+                        <Table.Row
+                          className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                          key={idx}
+                        >
+                          <Table.Cell>
+                            <Image src={product.image} alt={product.name} width="70" height="70" />
+                          </Table.Cell>
+                          <Table.Cell>{product.brand}</Table.Cell>
+                          <Table.Cell>{product.name}</Table.Cell>
+                          <Table.Cell>
+                            <button
+                              type="button"
+                              className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+                              onClick={() => addToOrder(product)}
+                            >
+                              <svg
+                                className="mr-2 h-3.5 w-3.5"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 18 21"
+                              >
+                                <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
+                              </svg>
+                              +
+                            </button>
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
+                </div>
+              )}
+            </div>
+
+            {searchResults?.length > 0 && (
               <div className="md:col-span-1">
                 <Table className="mt-12">
                   <Table.Head>
@@ -281,60 +402,6 @@ export default function OrderInsertPage() {
                       <Table.Row
                         className="bg-white dark:border-gray-700 dark:bg-gray-800"
                         key={product.id}
-                      >
-                        <Table.Cell>
-                          <Image src={product.image} alt={product.name} width="70" height="70" />
-                        </Table.Cell>
-                        <Table.Cell>{product.brand}</Table.Cell>
-                        <Table.Cell>{product.name}</Table.Cell>
-                        <Table.Cell>
-                          <button
-                            type="button"
-                            className="mr-2 inline-flex items-center rounded-lg bg-gray-400 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-                            onClick={() => addToOrder(product)}
-                          >
-                            <svg
-                              className="mr-2 h-3.5 w-3.5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 18 21"
-                            >
-                              <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z" />
-                            </svg>
-                            +
-                          </button>
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
-            )}
-            {recommend.length > 0 && (
-              <div className="md:col-span-1">
-                <div className="flex shrink-0">
-                  <h1 class="mb-1 text-2xl font-semibold leading-none tracking-tight text-gray-900  md:text-2xl lg:text-2xl">
-                    발주{' '}
-                    <span class="underline-offset-3 underline decoration-blue-400 decoration-4 ">
-                      추천 상품
-                    </span>
-                  </h1>
-                  <p class="text-l lg:text-l ml-3 mt-2 font-normal text-gray-500 dark:text-gray-400">
-                    재고가 10개 이하인 제품들의 추천제품 목록입니다.
-                  </p>
-                </div>
-                <Table className="mt-3">
-                  <Table.Head>
-                    <Table.HeadCell>image</Table.HeadCell>
-                    <Table.HeadCell>Brand</Table.HeadCell>
-                    <Table.HeadCell>Name</Table.HeadCell>
-                    <Table.HeadCell></Table.HeadCell>
-                  </Table.Head>
-                  <Table.Body className="divide-y">
-                    {recommend.map((product, idx) => (
-                      <Table.Row
-                        className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                        key={idx}
                       >
                         <Table.Cell>
                           <Image src={product.image} alt={product.name} width="70" height="70" />
